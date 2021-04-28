@@ -3,6 +3,9 @@ const fs = require('fs');
 const axios = require('axios').default;
 const Binance = require('node-binance-api');
 const config = require('./config/config.json');
+const alias = {
+    EPS: 'ELLIP',
+};
 
 async function fetchSpotWallet(client) {
     const res = await client.balance();
@@ -29,8 +32,8 @@ async function fetchFuturesWallet(client) {
     try {
         const res = await client.deliveryBalance();
         return res
-        .map(x => ({asset: x.asset, size: +x.balance}))
-        .filter(x => x.size > 0);
+            .map(x => ({asset: x.asset, size: +x.balance}))
+            .filter(x => x.size > 0);
     } catch (e) {
         return [];
     }
@@ -39,16 +42,17 @@ async function fetchFuturesWallet(client) {
 async function fetchPerpetualWallet(client) {
     try {
         const res = await client.futuresBalance();
-    return res
-        .map(x => ({asset: x.asset, size: +x.balance}))
-        .filter(x => x.size > 0);
+        return res
+            .map(x => ({asset: x.asset, size: +x.balance}))
+            .filter(x => x.size > 0);
     } catch (e) {
         return [];
     }
 }
 
 async function fetchTokenPrice(tokens) {
-    const res = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokens.join(',')}&tsyms=USD`);
+    const tokenlist = tokens.map(x => alias[x] || x).join(',');
+    const res = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokenlist}&tsyms=USD`);
     return res.data;
 }
 
@@ -70,7 +74,7 @@ async function fetchTokenPrice(tokens) {
     const result = Object.keys(asset_map).map(k => ({
         asset: k,
         size: asset_map[k],
-        price: prices[k]['USD'],
+        price: prices[alias[k] || k]['USD'],
     }));
     console.log(result);
 

@@ -26,17 +26,25 @@ async function fetchEarnWallet(client) {
 }
 
 async function fetchFuturesWallet(client) {
-    const res = await client.deliveryBalance();
-    return res
+    try {
+        const res = await client.deliveryBalance();
+        return res
         .map(x => ({asset: x.asset, size: +x.balance}))
         .filter(x => x.size > 0);
+    } catch (e) {
+        return [];
+    }
 }
 
 async function fetchPerpetualWallet(client) {
-    const res = await client.futuresBalance();
+    try {
+        const res = await client.futuresBalance();
     return res
         .map(x => ({asset: x.asset, size: +x.balance}))
         .filter(x => x.size > 0);
+    } catch (e) {
+        return [];
+    }
 }
 
 async function fetchTokenPrice(tokens) {

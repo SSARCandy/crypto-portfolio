@@ -1,0 +1,8 @@
+{
+    "name": "Asset Allocation",
+    "short_name": "Asset",
+    "start_url": "/index.html",
+    "theme_color": "#673AB7",
+    "background_color": "#ffffff",
+    "display": "standalone"
+  }

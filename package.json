@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/SSARCandy/binance-portfolio#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "binance-api-node": "^0.10.41",
     "lodash": "^4.17.21",
     "node-binance-api": "^0.12.5"

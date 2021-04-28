@@ -36,8 +36,8 @@
                 <td>{{ asset.size * asset.price | Number(0) }}</td>
             </tr>
         </table>
-        <div>Total: {{ nav | Number(0) }}</div>
-        <!-- <span>Update Time: {{ `${((dayjs() - dayjs(time)) / 1000*60).toFixed(2)}min ago` }}</span> -->
+        <div style="float: right;">Total: ${{ nav | Number(0) }}</div>
+        <span>Update Time: {{ `${((dayjs() - dayjs(time)) /(1000*60)).toFixed(0)} min ago` }}</span>
     </div>
     <script src="/app.js"></script>
 </body>

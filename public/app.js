@@ -43,11 +43,22 @@ var app = new Vue({
 
         $('#container').highcharts({
             chart: {
-                type: 'pie'
+                type: 'pie',
             },
             plotOptions: {
                 pie: {
+                    size: '90%',
                     innerSize: '80%',
+                    dataLabels: {
+                        distance: '2%',
+                        filter: {
+                            property: 'percentage',
+                            operator: '>',
+                            value: 2
+                        },
+                        overflow: 'allow',
+                        crop: false
+                    }
                 }
             },
             title: {

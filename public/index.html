@@ -19,7 +19,7 @@
 </head>
 
 <body>
-    <div id="container" style="height: 400px;"></div>
+    <div id="container" style="height: 400px; width: 500;"></div>
 
     <div id="app">
         <table id="asset">
@@ -36,8 +36,7 @@
                 <td>{{ asset.size * asset.price | Number(0) }}</td>
             </tr>
         </table>
-        <!-- <div style="float: right;">Total: ${{ nav | Number(0) }}</div> -->
-        <span>Update Time: {{ `${((dayjs() - dayjs(time)) /(1000*60)).toFixed(0)} min ago` }}</span>
+        <span>Last Update: {{ `${((dayjs() - dayjs(time)) /(1000*60)).toFixed(0)} min ago` }}</span>
     </div>
     <script src="/app.js"></script>
 </body>

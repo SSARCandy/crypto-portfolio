@@ -21,9 +21,13 @@
 </head>
 
 <body>
-    <div id="container" style="height: 400px; width: 500;"></div>
 
     <div id="app">
+        <div id="container" 
+            style="height: 400px; width: 500;"
+            @touchstart="startDrag"
+            @touchmove="doDrag"
+        ></div>
         <table id="asset">
             <tr>
                 <th>Token</th>

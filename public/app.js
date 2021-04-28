@@ -1,6 +1,3 @@
-/* global Vue */
-/* global dayjs */
-
 var app = new Vue({
     el: '#app',
     data: {
@@ -42,47 +39,33 @@ var app = new Vue({
         const json = await res.json();
         this.time = json.time;
         this.assets = _.sortBy(json.data, [function (o) { return -o.price * o.size; }]);
-        this.nav = _.sum(this.assets.map(({price, size}) => price*size));
+        this.nav = _.sum(this.assets.map(({ price, size }) => price * size));
 
-        const data = {
-            labels: this.assets.map(x => x.asset),
-            datasets: [{
-                data: this.assets.map(x => (x.price * x.size).toFixed(0)),
-                backgroundColor: [
-                    '#A41623',
-                    '#F85E00',
-                    '#FFB563',
-                    '#FFD29D',
-                    '#918450',
-                    '#8CB369',
-                    '#F4E285',
-                    '#F4A259',
-                    '#5B8E7D',
-                    '#BC4B51',
-                    '#384D48',
-                    '#ACAD94',
-                    '#E08E45',
-                    '#F8F4A6',
-                    '#BDF7B7',
-                    '#3943B7',
-                    '#F7A072',
-                    '#0FA3B1',
-                    '#EDDEA4',
-                    '#0F084B',
-                ],
-                hoverOffset: 4
-            }]
-        };
-        const myChart = new Chart(
-            document.getElementById('myChart'), {
-            type: 'pie',
-            data,
-            options: {
-                legend: {
-                    display: false
+        $('#container').highcharts({
+            chart: {
+                type: 'pie'
+            },
+            plotOptions: {
+                pie: {
+                    innerSize: '80%',
                 }
-            }
-        }
-        );
+            },
+            title: {
+                verticalAlign: 'middle',
+                floating: true,
+                text: `Total<br>$${ new Intl.NumberFormat('en-US', {
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                }).format(this.nav) }`,
+            },
+            tooltip: {
+                pointFormat: '<b>{point.percentage:.1f}%</b>'
+            },
+            series: [{
+                name: '',
+                colorByPoint: true,
+                data: this.assets.map(x => [x.asset, x.price*x.size])
+            }]
+        });
     },
 });

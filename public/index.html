@@ -8,18 +8,18 @@
     <!-- production version, optimized for size and speed -->
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"
-        integrity="sha256-ur/YlHMU96MxHEsy3fHGszZHas7NzH4RQlD4tDVvFhw=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.slim.min.js"
         integrity="sha512-6ORWJX/LrnSjBzwefdNUyLCMTIsGoNP6NftMy2UAm1JBm6PRZCO1d7OHBStWpVFZLO+RerTvqX/Z9mBFfCJZ4A=="
         crossorigin="anonymous"></script>
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"
+        integrity="sha256-ur/YlHMU96MxHEsy3fHGszZHas7NzH4RQlD4tDVvFhw=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/app.css">
     <script>dayjs().format()</script>
 </head>
 
 <body>
-    <canvas id="myChart" width="1000" height="1000"></canvas>
+    <div id="container" style="height: 400px;"></div>
 
     <div id="app">
         <table id="asset">
@@ -36,7 +36,7 @@
                 <td>{{ asset.size * asset.price | Number(0) }}</td>
             </tr>
         </table>
-        <div style="float: right;">Total: ${{ nav | Number(0) }}</div>
+        <!-- <div style="float: right;">Total: ${{ nav | Number(0) }}</div> -->
         <span>Update Time: {{ `${((dayjs() - dayjs(time)) /(1000*60)).toFixed(0)} min ago` }}</span>
     </div>
     <script src="/app.js"></script>

@@ -47,17 +47,18 @@ var app = new Vue({
             },
             plotOptions: {
                 pie: {
-                    size: '90%',
+                    size: '80%',
                     innerSize: '80%',
                     dataLabels: {
                         distance: '2%',
+                        alignTo: 'toPlotEdges',
                         filter: {
                             property: 'percentage',
                             operator: '>',
-                            value: 2
+                            value: 5
                         },
                         overflow: 'allow',
-                        crop: false
+                        crop: true
                     }
                 }
             },

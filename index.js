@@ -64,8 +64,12 @@ async function fetchTokenPrice(tokens) {
         size: asset_map[k],
         price: prices[k]['USD'],
     }));
-    console.log(result)
-    fs.writeFileSync('asset.json', JSON.stringify(result));
+    console.log(result);
+
+    fs.writeFileSync('./public/asset.json', JSON.stringify({
+        time: Date.now(),
+        data: result,
+    }));
 
 })();
 

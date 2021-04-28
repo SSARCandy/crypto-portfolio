@@ -4,7 +4,9 @@
 var app = new Vue({
     el: '#app',
     data: {
+        time: '',
         assets: [],
+        nav: 0,
     },
     computed: {
         sorted: function () {
@@ -37,9 +39,10 @@ var app = new Vue({
     },
     created: async function () {
         const res = await fetch('/asset.json');
-        this.assets = await res.json();
-        this.assets = _.sortBy(this.assets, [function (o) { return -o.price * o.size; }]);
-
+        const json = await res.json();
+        this.time = json.time;
+        this.assets = _.sortBy(json.data, [function (o) { return -o.price * o.size; }]);
+        this.nav = _.sum(this.assets.map(({price, size}) => price*size));
 
         const data = {
             labels: this.assets.map(x => x.asset),

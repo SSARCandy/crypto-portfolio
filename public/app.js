@@ -57,16 +57,17 @@ var app = new Vue({
         doDrag(event) {
             if (this.dragging) {
                 const degree = this.getDegree(event)
-
                 this.startAngle = degree + this.startAngleOffset;
                 this.chart.series[0].update({
                     startAngle: this.startAngle
                 });
             }
+            event.preventDefault();
+            event.stopImmediatePropagation();
         }
     },
     mounted() {
-        window.addEventListener('touchend', this.stopDrag);
+        window.addEventListener('touchend', this.stopDrag, { passive: false });
     },
     created: async function () {
         const res = await fetch('/asset.json');

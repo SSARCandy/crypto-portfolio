@@ -3,6 +3,16 @@
 
 <head>
     <title>Asset Allocation</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81178870-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-81178870-1');
+    </script>
+
     <link rel="manifest" href="/manifest.json">
     <meta http-equiv="refresh" content="3600">
     <meta name="robots" content="noindex">
@@ -24,11 +34,8 @@
 <body>
 
     <div id="app">
-        <div id="container" 
-            style="height: 400px; width: 500;"
-            @mousedown="startDrag" @touchstart="startDrag"
-            @mousemove="doDrag" @touchmove="doDrag"
-        ></div>
+        <div id="container" style="height: 400px; width: 500;" @mousedown="startDrag" @touchstart="startDrag"
+            @mousemove="doDrag" @touchmove="doDrag"></div>
         <table id="asset">
             <tr>
                 <th>Token</th>

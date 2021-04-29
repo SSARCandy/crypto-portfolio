@@ -18,8 +18,6 @@ self.addEventListener('install', function () {
 self.addEventListener('active', function () {
   return self.clients.claim();
 });
-self.addEventListener('fetch', function(event) {});
-
 
 var precacheUrls = [];
 precacheUrls.push('/');

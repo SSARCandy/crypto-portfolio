@@ -9,14 +9,14 @@
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
         gtag('config', 'UA-81178870-1');
     </script>
-
     <link rel="manifest" href="/manifest.json">
+    <link rel=icon href=/icons/icon_192.png type="image/png">
     <meta http-equiv="refresh" content="3600">
     <meta name="robots" content="noindex">
     <meta name="googlebot" content="noindex">
+    <meta name="theme-color" content="#ffffff">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2">
     <!-- production version, optimized for size and speed -->
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -32,7 +32,6 @@
 </head>
 
 <body>
-
     <div id="app">
         <div id="container" style="height: 400px; width: 500;" @mousedown="startDrag" @touchstart="startDrag"
             @mousemove="doDrag" @touchmove="doDrag"></div>

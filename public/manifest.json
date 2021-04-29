@@ -1,8 +1,21 @@
 {
-    "name": "Asset Allocation",
-    "short_name": "Asset",
-    "start_url": "/index.html",
-    "theme_color": "#673AB7",
-    "background_color": "#ffffff",
-    "display": "standalone"
-  }
+  "name": "Asset Allocation",
+  "short_name": "Portfolio",
+  "start_url": "/index.html?source=pwa",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/icons/icon_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon_192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

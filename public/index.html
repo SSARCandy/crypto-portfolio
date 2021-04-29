@@ -26,8 +26,8 @@
     <div id="app">
         <div id="container" 
             style="height: 400px; width: 500;"
-            @touchstart="startDrag"
-            @touchmove="doDrag"
+            @mousedown="startDrag" @touchstart="startDrag"
+            @mousemove="doDrag" @touchmove="doDrag"
         ></div>
         <table id="asset">
             <tr>
@@ -38,8 +38,8 @@
             </tr>
             <tr v-for="asset in assets">
                 <td>{{ asset.asset }}</td>
-                <td>{{ asset.size | toFixed(5) }}</td>
-                <td>{{ asset.price | Number(5) }}</td>
+                <td>{{ asset.size | Number(4) }}</td>
+                <td>{{ asset.price | Number(4) }}</td>
                 <td>{{ asset.size * asset.price | Number(0) }}</td>
             </tr>
         </table>

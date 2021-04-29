@@ -39,8 +39,8 @@ var app = new Vue({
     },
     methods: {
         getDegree(event) {
-            const x = event.touches[0].clientX;
-            const y = event.touches[0].clientY;
+            const x = event.offsetX ? event.offsetX : event.touches[0].clientX;
+            const y = event.offsetY ? event.offsetY : event.touches[0].clientY;
             const [w, h] = this.chart_size;
             const offset = [w / 2 - x, h / 2 - y];
             const radians = Math.atan2(offset[1], offset[0]);
@@ -68,6 +68,7 @@ var app = new Vue({
     },
     mounted() {
         window.addEventListener('touchend', this.stopDrag, { passive: false });
+        window.addEventListener('mouseup', this.stopDrag, { passive: false });
     },
     created: async function () {
         const res = await fetch('/asset.json');

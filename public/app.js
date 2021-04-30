@@ -1,9 +1,12 @@
 var app = new Vue({
     el: '#app',
     data: {
+        id: window.location.host,
+        firebase: firebase.firestore(),
         time: '',
         assets: [],
-        nav: 0,
+        userdata: {},
+
         dragging: false,
         chart_size: null,
         chart: null,
@@ -14,6 +17,9 @@ var app = new Vue({
         sorted: function () {
             return _.orderBy(this.strategies, this.sort_key, this.sort_order ? 'desc' : 'asc');
         },
+        nav: function () {
+            return _.sum(this.assets.map(({ price, size }) => price * size));
+        }
     },
     filters: {
         toFixed: (v, demical = 2) => {
@@ -38,6 +44,22 @@ var app = new Vue({
         },
     },
     methods: {
+        save() {
+            console.log("save");
+            this.firebase.collection('config').doc(this.id)
+                .set(this.userdata)
+                .then(() => {
+                    console.log('saved');
+                });
+        },
+        pnl(row) {
+            const { asset, size, price } = row;
+            if (!this.userdata[asset]) return null;
+            return size * (price - this.userdata[asset]);
+        },
+        color: (v) => {
+            return { 'buy': v > 0, 'sell': v < 0 };
+        },
         getDegree(event) {
             const x = event.offsetX ? event.offsetX : event.touches[0].clientX;
             const y = event.offsetY ? event.offsetY : event.touches[0].clientY;
@@ -64,6 +86,51 @@ var app = new Vue({
             }
             event.preventDefault();
             event.stopImmediatePropagation();
+        },
+        initChart() {
+            this.chart = Highcharts.chart('container', {
+                chart: {
+                    type: 'pie',
+                    animation: false
+                },
+                plotOptions: {
+                    pie: {
+                        size: '80%',
+                        innerSize: '80%',
+                        dataLabels: {
+                            distance: '2%',
+                            alignTo: 'toPlotEdges',
+                            filter: {
+                                property: 'percentage',
+                                operator: '>',
+                                value: 5
+                            },
+                            overflow: 'allow',
+                            crop: true
+                        }
+                    },
+                    series: {
+                        animation: false
+                    }
+                },
+                title: {
+                    verticalAlign: 'middle',
+                    floating: true,
+                    text: `Total<br>$${new Intl.NumberFormat('en-US', {
+                        maximumFractionDigits: 0,
+                        minimumFractionDigits: 0,
+                    }).format(this.nav)}`,
+                },
+                tooltip: {
+                    pointFormat: '<b>{point.percentage:.1f}%</b>'
+                },
+                series: [{
+                    name: '',
+                    colorByPoint: true,
+                    data: this.assets.map(x => [x.asset, x.price * x.size])
+                }]
+            });
+            this.chart_size = [$("#container").width(), $("#container").height()];
         }
     },
     mounted() {
@@ -75,51 +142,13 @@ var app = new Vue({
         const json = await res.json();
         this.time = json.time;
         this.assets = _.sortBy(json.data, [function (o) { return -o.price * o.size; }]);
-        this.nav = _.sum(this.assets.map(({ price, size }) => price * size));
-
-        this.chart = Highcharts.chart('container', {
-            chart: {
-                type: 'pie',
-                animation: false
-            },
-            plotOptions: {
-                pie: {
-                    size: '80%',
-                    innerSize: '80%',
-                    dataLabels: {
-                        distance: '2%',
-                        alignTo: 'toPlotEdges',
-                        filter: {
-                            property: 'percentage',
-                            operator: '>',
-                            value: 5
-                        },
-                        overflow: 'allow',
-                        crop: true
-                    }
-                },
-                series: {
-                    animation: false
-                }
-            },
-            title: {
-                verticalAlign: 'middle',
-                floating: true,
-                text: `Total<br>$${new Intl.NumberFormat('en-US', {
-                    maximumFractionDigits: 0,
-                    minimumFractionDigits: 0,
-                }).format(this.nav)}`,
-            },
-            tooltip: {
-                pointFormat: '<b>{point.percentage:.1f}%</b>'
-            },
-            series: [{
-                name: '',
-                colorByPoint: true,
-                data: this.assets.map(x => [x.asset, x.price * x.size])
-            }]
+        this.firebase.collection('config').doc(this.id).get().then(doc => {
+            if (doc.exists) {
+                this.userdata = doc.data();
+            }
         });
-        this.chart_size = [$("#container").width(), $("#container").height()];
+
+        this.initChart();
     },
 });
 
@@ -134,3 +163,14 @@ if ('serviceWorker' in navigator) {
         });
     });
 }
+
+// var db = 
+// db.collection("config").doc('x').set({
+//     x: 456
+// })
+// .then((docRef) => {
+//     console.log("Document written with ID: ");
+// })
+// .catch((error) => {
+//     console.error("Error adding document: ", error);
+// });

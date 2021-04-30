@@ -1,5 +1,7 @@
 body {
     font-family: monospace;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 table {
@@ -203,4 +205,33 @@ label {
 input {
     position: relative;
     vertical-align: middle;
+}
+
+.entry-price {
+    width: 100px;
+}
+
+.entry-price > input {
+    border: white;
+    width: 100%;
+    text-align: right;
+    font-family: monospace;
+}
+
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.save {
+    position: relative;
+    z-index: 999;
 }

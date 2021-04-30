@@ -12,6 +12,7 @@ var app = new Vue({
         chart: null,
         startAngle: 0,
         startAngleOffset: 0,
+        saved: false,
     },
     computed: {
         sorted: function () {
@@ -49,6 +50,8 @@ var app = new Vue({
             this.firebase.collection('config').doc(this.id)
                 .set(this.userdata)
                 .then(() => {
+                    this.saved = true;
+                    setTimeout(()=> { this.saved = false; }, 5000);
                     console.log('saved');
                 });
         },

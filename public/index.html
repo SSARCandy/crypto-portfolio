@@ -35,7 +35,6 @@
 
 <body>
     <div id="app">
-        <button v-on:click="save" class="save">save</button>
         <div id="container" style="height: 400px; width: 500;" @mousedown="startDrag" @touchstart="startDrag"
             @mousemove="doDrag" @touchmove="doDrag"></div>
         <table id="asset">
@@ -60,7 +59,10 @@
                 </td>
             </tr>
         </table>
-        <span>Last Update: {{ `${((dayjs() - dayjs(time)) /(1000*60)).toFixed(0)} min ago` }}</span>
+        <footer>
+            <span>Last Update: {{ `${((dayjs() - dayjs(time)) /(1000*60)).toFixed(0)} min ago` }}</span>
+            <button v-on:click="save" class="save">{{ saved ? 'done' : 'save' }}</button>
+        </footer>
     </div>
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>

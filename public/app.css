@@ -208,7 +208,7 @@ input {
 }
 
 .entry-price {
-    width: 100px;
+    max-width: 60px;
 }
 
 .entry-price > input {
@@ -232,6 +232,10 @@ input[type=number] {
 }
 
 .save {
-    position: relative;
-    z-index: 999;
+    float: right;
+}
+
+footer {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }

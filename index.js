@@ -96,7 +96,7 @@ async function fetchTokenPrice(tokens) {
             time: Date.now(),
             data: result,
         };
-        firebase.firestore().collection('asset').doc(cnf.id).set(res);
+        await firebase.firestore().collection('asset').doc(cnf.id).set(res);
     }
     process.exit(0);
 })();

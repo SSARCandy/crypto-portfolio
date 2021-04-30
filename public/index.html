@@ -1,93 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="">
 
 <head>
-    <title>Asset Allocation</title>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81178870-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'UA-81178870-1');
-    </script>
-    <link rel="manifest" href="/manifest.json">
-    <link rel=icon href=/icons/favicon.ico>
-    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-    <meta content="utf-8" http-equiv="encoding">
-    <meta name="robots" content="noindex">
-    <meta name="googlebot" content="noindex">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2">
-    <!-- production version, optimized for size and speed -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.slim.min.js"
-        integrity="sha512-6ORWJX/LrnSjBzwefdNUyLCMTIsGoNP6NftMy2UAm1JBm6PRZCO1d7OHBStWpVFZLO+RerTvqX/Z9mBFfCJZ4A=="
-        crossorigin="anonymous"></script>
-    <script src="https://code.highcharts.com/highcharts.src.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"
-        integrity="sha256-ur/YlHMU96MxHEsy3fHGszZHas7NzH4RQlD4tDVvFhw=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/app.css">
-    <script>dayjs().format()</script>
+  <title>Asset Allocation</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81178870-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'UA-81178870-1');
+  </script>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+  <meta name="robots" content="noindex">
+  <meta name="googlebot" content="noindex">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/app.css">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="icon" href="<%= BASE_URL %>icons/favicon.ico">
 </head>
 
 <body>
-    <div id="app">
-        <div id="container" style="height: 400px; width: 500;" @mousedown="startDrag" @touchstart="startDrag"
-            @mousemove="doDrag" @touchmove="doDrag"></div>
-        <table id="asset">
-            <tr>
-                <th>Token</th>
-                <th>Size</th>
-                <th>Price</th>
-                <th>Value</th>
-                <th>Entry</th>
-                <th>PnL</th>
-                <th v-if="screen_width > 500">Return</th>
-            </tr>
-            <tr v-for="asset in assets">
-                <td>{{ asset.asset }}</td>
-                <td>{{ asset.size | Number(2) }}</td>
-                <td>{{ asset.price | Number(2) }}</td>
-                <td>{{ asset.size * asset.price | Number(0) }}</td>
-                <td class="entry-price">
-                    <input v-model="userdata[asset.asset]" type="number">
-                </td>
-                <td v-bind:class="color(pnl(asset))">{{ pnl(asset) | Number(0) }}</td>
-                <td v-bind:class="color(pnl(asset))" v-if="screen_width > 500">{{ pnl_return(asset) | Precentage(2) }}</td>
-            </tr>
-        </table>
-        <footer>
-            <span>Last Update: {{ `${((dayjs() - dayjs(time)) /(1000*60)).toFixed(0)} min ago` }}</span>
-            <button v-on:click="save" class="save">{{ saved ? 'Done!' : 'Save' }}</button>
-        </footer>
-    </div>
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
-
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-firestore.js"></script>
-    <script>
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        var firebaseConfig = {
-            apiKey: "AIzaSyAiOeRX2NENGgKbW0VVQ4xR0gbPuyKJ5Ks",
-            authDomain: "binance-portfolio-153c4.firebaseapp.com",
-            projectId: "binance-portfolio-153c4",
-            storageBucket: "binance-portfolio-153c4.appspot.com",
-            messagingSenderId: "694089558371",
-            appId: "1:694089558371:web:4e512f91c263ca77ad4b56",
-            measurementId: "G-VT35JJGKW4"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-    </script>
-    <script src="/app.js"></script>
+  <noscript>
+    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+        Please enable it to continue.</strong>
+  </noscript>
+  <div id="app"></div>
+  <!-- built files will be auto injected -->
 </body>
 
 </html>

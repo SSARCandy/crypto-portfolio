@@ -144,20 +144,24 @@ export default {
       window.innerWidth > 0 ? window.innerWidth : screen.width;
   },
   created: async function () {
-    const asset = await database.collection("asset").doc(this.id).get();
-    if (!asset.exists) return;
-    const { time, data } = asset.data();
-    this.time = time;
-    this.assets = _.sortBy(data, [
-      function (o) {
-        return -o.price * o.size;
-      },
-    ]);
-
     const config = await database.collection("config").doc(this.id).get();
     if (config.exists) {
       this.userdata = config.data();
     }
+    
+    database
+      .collection("asset")
+      .doc(this.id)
+      .onSnapshot((asset) => {
+        if (!asset.exists) return;
+        const { time, data } = asset.data();
+        this.time = time;
+        this.assets = _.sortBy(data, [
+          function (o) {
+            return -o.price * o.size;
+          },
+        ]);
+      });
   },
 };
 

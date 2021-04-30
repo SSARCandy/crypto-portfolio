@@ -13,6 +13,7 @@ var app = new Vue({
         startAngle: 0,
         startAngleOffset: 0,
         saved: false,
+        screen_width: 0,
     },
     computed: {
         sorted: function () {
@@ -46,19 +47,22 @@ var app = new Vue({
     },
     methods: {
         save() {
-            console.log("save");
             this.firebase.collection('config').doc(this.id)
                 .set(this.userdata)
                 .then(() => {
                     this.saved = true;
                     setTimeout(()=> { this.saved = false; }, 5000);
-                    console.log('saved');
                 });
         },
         pnl(row) {
             const { asset, size, price } = row;
             if (!this.userdata[asset]) return null;
             return size * (price - this.userdata[asset]);
+        },
+        pnl_return(row) {
+            const { asset, price } = row;
+            if (!this.userdata[asset]) return null;
+            return price / this.userdata[asset] - 1;
         },
         color: (v) => {
             return { 'buy': v > 0, 'sell': v < 0 };
@@ -139,6 +143,7 @@ var app = new Vue({
     mounted() {
         window.addEventListener('touchend', this.stopDrag, { passive: false });
         window.addEventListener('mouseup', this.stopDrag, { passive: false });
+        this.screen_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
     },
     created: async function () {
         const res = await fetch('/asset.json');
@@ -166,14 +171,3 @@ if ('serviceWorker' in navigator) {
         });
     });
 }
-
-// var db = 
-// db.collection("config").doc('x').set({
-//     x: 456
-// })
-// .then((docRef) => {
-//     console.log("Document written with ID: ");
-// })
-// .catch((error) => {
-//     console.error("Error adding document: ", error);
-// });

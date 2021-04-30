@@ -45,6 +45,7 @@
                 <th>Value</th>
                 <th>Entry</th>
                 <th>PnL</th>
+                <th v-if="screen_width > 500">Return</th>
             </tr>
             <tr v-for="asset in assets">
                 <td>{{ asset.asset }}</td>
@@ -54,14 +55,13 @@
                 <td class="entry-price">
                     <input v-model="userdata[asset.asset]" type="number">
                 </td>
-                <td v-bind:class="color(pnl(asset))">
-                    {{ pnl(asset) | Number(0) }}
-                </td>
+                <td v-bind:class="color(pnl(asset))">{{ pnl(asset) | Number(0) }}</td>
+                <td v-bind:class="color(pnl(asset))" v-if="screen_width > 500">{{ pnl_return(asset) | Precentage(2) }}</td>
             </tr>
         </table>
         <footer>
             <span>Last Update: {{ `${((dayjs() - dayjs(time)) /(1000*60)).toFixed(0)} min ago` }}</span>
-            <button v-on:click="save" class="save">{{ saved ? 'done' : 'save' }}</button>
+            <button v-on:click="save" class="save">{{ saved ? 'Done!' : 'Save' }}</button>
         </footer>
     </div>
     <!-- The core Firebase JS SDK is always required and must be listed first -->

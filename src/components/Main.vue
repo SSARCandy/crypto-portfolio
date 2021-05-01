@@ -36,7 +36,7 @@
 
 <script>
 import PieChart from "./PieChart.vue";
-import _ from "lodash";
+import { sortBy } from "lodash";
 import dayjs from "dayjs";
 import firebase from "firebase/app";
 import "firebase/analytics";
@@ -75,18 +75,7 @@ export default {
       screen_width: 0,
     };
   },
-  computed: {
-    sorted: function () {
-      return _.orderBy(
-        this.strategies,
-        this.sort_key,
-        this.sort_order ? "desc" : "asc"
-      );
-    },
-    nav: function () {
-      return _.sum(this.assets.map(({ price, size }) => price * size));
-    },
-  },
+  computed: {},
   filters: {
     toFixed: (v, demical = 2) => {
       if (v == undefined) return 0;
@@ -148,7 +137,7 @@ export default {
     if (config.exists) {
       this.userdata = config.data();
     }
-    
+
     database
       .collection("asset")
       .doc(this.id)
@@ -156,7 +145,7 @@ export default {
         if (!asset.exists) return;
         const { time, data } = asset.data();
         this.time = time;
-        this.assets = _.sortBy(data, [
+        this.assets = sortBy(data, [
           function (o) {
             return -o.price * o.size;
           },

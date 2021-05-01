@@ -107,7 +107,7 @@ export default {
       )} min ago`;
     },
     async save() {
-      const doc1 = doc(database, `confg/${this.id}`);
+      const doc1 = doc(database, `config/${this.id}`);
       await setDoc(doc1, this.userdata);
       this.saved = true;
       setTimeout(() => {

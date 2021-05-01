@@ -2,8 +2,8 @@ const _ = require('lodash');
 const axios = require('axios').default;
 const Binance = require('node-binance-api');
 const config = require('./config/config.json');
-const firebase = require("firebase/app");
-require("firebase/firestore");
+const { initializeApp } = require("@firebase/app");
+const { getFirestore, doc, setDoc} = require("@firebase/firestore");
 
 const firebaseConfig = {
     apiKey: "AIzaSyAiOeRX2NENGgKbW0VVQ4xR0gbPuyKJ5Ks",
@@ -14,7 +14,8 @@ const firebaseConfig = {
     appId: "1:694089558371:web:4e512f91c263ca77ad4b56",
     measurementId: "G-VT35JJGKW4",
 };
-firebase.initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
+const database = getFirestore();
 
 const alias = {
     EPS: 'ELLIP',
@@ -96,7 +97,8 @@ async function fetchTokenPrice(tokens) {
             time: Date.now(),
             data: result,
         };
-        await firebase.firestore().collection('asset').doc(cnf.id).set(res);
+        const doc1 = doc(database, `asset/${cnf.id}`);
+        await setDoc(doc1, res);
     }
     process.exit(0);
 })();

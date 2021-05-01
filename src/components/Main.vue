@@ -133,7 +133,7 @@ export default {
       window.innerWidth > 0 ? window.innerWidth : screen.width;
   },
   created: async function () {
-    const doc1 = doc(database, `confg/${this.id}`);
+    const doc1 = doc(database, `config/${this.id}`);
     const config = await getDoc(doc1);
     if (config.exists()) {
       this.userdata = config.data();

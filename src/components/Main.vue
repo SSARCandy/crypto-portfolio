@@ -36,7 +36,7 @@
 
 <script>
 import PieChart from "./PieChart.vue";
-import { sortBy } from "lodash";
+import sortBy from "lodash/sortBy";
 import dayjs from "dayjs";
 import firebase from "firebase/app";
 import "firebase/analytics";

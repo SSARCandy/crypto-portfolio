@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { sum } from "lodash";
+import sum from "lodash/sum";
 import { Chart } from "highcharts-vue";
 
 export default {

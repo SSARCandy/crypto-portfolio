@@ -38,9 +38,9 @@
 import PieChart from "./PieChart.vue";
 import sortBy from "lodash/sortBy";
 import dayjs from "dayjs";
-import firebase from "firebase/app";
-import "firebase/analytics";
-import "firebase/firestore";
+import { initializeApp } from "@firebase/app";
+import { getAnalytics } from "@firebase/analytics";
+import { getFirestore, onSnapshot, doc, getDoc, setDoc } from "@firebase/firestore";
 dayjs().format();
 
 const firebaseConfig = {
@@ -52,11 +52,10 @@ const firebaseConfig = {
   appId: "1:694089558371:web:4e512f91c263ca77ad4b56",
   measurementId: "G-VT35JJGKW4",
 };
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+initializeApp(firebaseConfig);
+getAnalytics();
 
-const database = firebase.firestore();
+const database = getFirestore();
 
 export default {
   name: "Main",
@@ -108,7 +107,8 @@ export default {
       )} min ago`;
     },
     async save() {
-      await database.collection("config").doc(this.id).set(this.userdata);
+      const doc1 = doc(database, `confg/${this.id}`);
+      await setDoc(doc1, this.userdata);
       this.saved = true;
       setTimeout(() => {
         this.saved = false;
@@ -133,24 +133,23 @@ export default {
       window.innerWidth > 0 ? window.innerWidth : screen.width;
   },
   created: async function () {
-    const config = await database.collection("config").doc(this.id).get();
-    if (config.exists) {
+    const doc1 = doc(database, `confg/${this.id}`);
+    const config = await getDoc(doc1);
+    if (config.exists()) {
       this.userdata = config.data();
     }
 
-    database
-      .collection("asset")
-      .doc(this.id)
-      .onSnapshot((asset) => {
-        if (!asset.exists) return;
-        const { time, data } = asset.data();
-        this.time = time;
-        this.assets = sortBy(data, [
-          function (o) {
-            return -o.price * o.size;
-          },
-        ]);
-      });
+    const doc2 = doc(database, `asset/${this.id}`);
+    onSnapshot(doc2, (asset) => {
+      if (!asset.exists()) return;
+      const { time, data } = asset.data();
+      this.time = time;
+      this.assets = sortBy(data, [
+        function (o) {
+          return -o.price * o.size;
+        },
+      ]);
+    });
   },
 };
 

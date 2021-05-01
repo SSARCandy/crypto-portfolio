@@ -35,13 +35,6 @@ async function fetchEarnWallet(client) {
         .filter(x => x.size > 0);
 }
 
-async function fetchEarnWallet(client) {
-    const res = await client.lending();
-    return res.positionAmountVos
-        .map(x => ({ asset: x.asset, size: +x.amount }))
-        .filter(x => x.size > 0);
-}
-
 async function fetchFuturesWallet(client) {
     try {
         const res = await client.deliveryBalance();

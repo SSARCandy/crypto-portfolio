@@ -1,25 +1,50 @@
 {
-  "name": "binance-portfolio",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "v2",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SSARCandy/binance-portfolio.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/SSARCandy/binance-portfolio/issues"
-  },
-  "homepage": "https://github.com/SSARCandy/binance-portfolio#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "binance-api-node": "^0.10.41",
+    "core-js": "^3.6.5",
+    "dayjs": "^1.10.4",
+    "firebase": "^9.0.0-beta.1",
+    "highcharts": "^9.0.1",
+    "highcharts-vue": "^1.3.5",
     "lodash": "^4.17.21",
-    "node-binance-api": "^0.12.5"
-  }
+    "node-binance-api": "^0.12.5",
+    "vue": "^2.6.11"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "vue-template-compiler": "^2.6.11",
+    "webpack-bundle-analyzer": "^4.4.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }

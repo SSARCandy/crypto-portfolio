@@ -1,5 +1,5 @@
-  <template>
-  <div>
+<template>
+  <div id="main">
     <pie-chart v-if="assets.length > 0" :assets="assets" />
     <table id="asset">
       <tr>
@@ -157,4 +157,77 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#main {
+    font-family: monospace;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+th, td {
+    padding: 4px;
+    text-align: right;
+    border: 1px solid #ddd;
+}
+
+tr:hover {
+    background-color: #eee;
+}
+
+.bg-dead {
+    background-color: #bbb;
+}
+
+.sell {
+    color: red;
+    font-weight: 700;
+}
+
+.buy {
+    color: green;
+    font-weight: 700;
+}
+
+input {
+    position: relative;
+    vertical-align: middle;
+}
+
+.entry-price {
+    max-width: 60px;
+}
+
+.entry-price > input {
+    border: white;
+    width: 100%;
+    text-align: right;
+    font-family: monospace;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.save {
+    float: right;
+}
+
+footer {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
 </style>

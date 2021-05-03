@@ -71,9 +71,13 @@ export default {
         },
         xAxis: {
           type: "datetime",
-          labels: {
-            enabled: false,
+          dateTimeLabelFormats:{
+            day: '%d %b %Y'    //ex- 01 Jan 2016
           },
+          labels: {
+            rotation: 0,
+            format: '{value:%m-%d}',
+          }
         },
         yAxis: {
           title: {
@@ -92,8 +96,10 @@ export default {
         },
         series: [
           {
+            name: "",
             data: this.daily_nav.map((v) => {
-              return [Date(v[0]), v[1]];
+              const [y, m, d] = v[0].split('-');
+              return [Date.UTC(y, +m-1, d), v[1]];
             }),
           },
         ],
@@ -119,6 +125,11 @@ td {
   padding: 4px;
   text-align: right;
   border: 1px solid #ddd;
+}
+
+th:nth-child(1),
+td:nth-child(1) {
+  text-align: left;
 }
 
 tr:hover {

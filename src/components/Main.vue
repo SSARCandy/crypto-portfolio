@@ -1,46 +1,60 @@
 <template>
   <div id="main">
-    <pie-chart v-if="assets.length > 0" :assets="assets" />
-    <table id="asset">
-      <tr>
-        <th>Token</th>
-        <th>Size</th>
-        <th>Price</th>
-        <th>Value</th>
-        <th>Entry</th>
-        <th>PnL</th>
-        <th v-if="screen_width > 500">Return</th>
-      </tr>
-      <tr v-for="asset in assets" v-bind:key="asset.asset">
-        <td>{{ asset.asset }}</td>
-        <td>{{ asset.size | Number(2) }}</td>
-        <td>{{ asset.price | Number(2) }}</td>
-        <td>{{ (asset.size * asset.price) | Number(0) }}</td>
-        <td class="entry-price">
-          <input v-model="userdata[asset.asset]" type="number" />
-        </td>
-        <td v-bind:class="color(pnl(asset))">{{ pnl(asset) | Number(0) }}</td>
-        <td v-bind:class="color(pnl(asset))" v-if="screen_width > 500">
-          {{ pnl_return(asset) | Precentage(2) }}
-        </td>
-      </tr>
-    </table>
-    <footer>
-      <span>Last Update: {{ lastUpdate() }}</span>
-      <button v-on:click="save" class="save">
-        {{ saved ? "Done!" : "Save" }}
-      </button>
-    </footer>
+    <button class="btn"  v-on:click="is_nav_mode = !is_nav_mode">
+      <i class="fas fa-chart-line"></i>
+    </button>
+
+    <account-value v-if="is_nav_mode" :daily_nav="daily_nav" />
+    <div v-if="!is_nav_mode">
+      <pie-chart v-if="assets.length > 0" :assets="assets" />
+      <table id="asset">
+        <tr>
+          <th>Token</th>
+          <th>Size</th>
+          <th>Price</th>
+          <th>Value</th>
+          <th>Entry</th>
+          <th>PnL</th>
+          <th v-if="screen_width > 500">Return</th>
+        </tr>
+        <tr v-for="asset in assets" v-bind:key="asset.asset">
+          <td>{{ asset.asset }}</td>
+          <td>{{ asset.size | Number(2) }}</td>
+          <td>{{ asset.price | Number(2) }}</td>
+          <td>{{ (asset.size * asset.price) | Number(0) }}</td>
+          <td class="entry-price">
+            <input v-model="userdata[asset.asset]" type="number" />
+          </td>
+          <td v-bind:class="color(pnl(asset))">{{ pnl(asset) | Number(0) }}</td>
+          <td v-bind:class="color(pnl(asset))" v-if="screen_width > 500">
+            {{ pnl_return(asset) | Precentage(2) }}
+          </td>
+        </tr>
+      </table>
+      <footer>
+        <span>Last Update: {{ lastUpdate() }}</span>
+        <button v-on:click="save" class="save">
+          {{ saved ? "Done!" : "Save" }}
+        </button>
+      </footer>
+    </div>
   </div>
 </template>
 
 <script>
 import PieChart from "./PieChart.vue";
+import AccountValue from "./AccountValue";
 import sortBy from "lodash/sortBy";
 import dayjs from "dayjs";
 import { initializeApp } from "@firebase/app";
 import { getAnalytics } from "@firebase/analytics";
-import { getFirestore, onSnapshot, doc, getDoc, setDoc } from "@firebase/firestore";
+import {
+  getFirestore,
+  onSnapshot,
+  doc,
+  getDoc,
+  setDoc,
+} from "@firebase/firestore";
 dayjs().format();
 
 const firebaseConfig = {
@@ -61,6 +75,7 @@ export default {
   name: "Main",
   components: {
     PieChart,
+    AccountValue,
   },
   props: {},
   data() {
@@ -69,9 +84,12 @@ export default {
       time: "",
       assets: [],
       userdata: {},
+      daily_nav: [],
 
       saved: false,
       screen_width: 0,
+
+      is_nav_mode: false,
     };
   },
   computed: {},
@@ -150,64 +168,70 @@ export default {
         },
       ]);
     });
+
+    const doc3 = doc(database, `nav/${this.id}`);
+    const daily_nav = await getDoc(doc3);
+    if (daily_nav.exists()) {
+      this.daily_nav = sortBy(Object.entries(daily_nav.data()), (o) => o[0]);
+    }
   },
 };
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #main {
-    font-family: monospace;
-    max-width: 800px;
-    margin: 0 auto;
+  font-family: monospace;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 table {
-    border-collapse: collapse;
-    width: 100%;
-    font-size: 12px;
-    white-space: nowrap;
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
-th, td {
-    padding: 4px;
-    text-align: right;
-    border: 1px solid #ddd;
+th,
+td {
+  padding: 4px;
+  text-align: right;
+  border: 1px solid #ddd;
 }
 
 tr:hover {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .bg-dead {
-    background-color: #bbb;
+  background-color: #bbb;
 }
 
 .sell {
-    color: red;
-    font-weight: 700;
+  color: red;
+  font-weight: 700;
 }
 
 .buy {
-    color: green;
-    font-weight: 700;
+  color: green;
+  font-weight: 700;
 }
 
 input {
-    position: relative;
-    vertical-align: middle;
+  position: relative;
+  vertical-align: middle;
 }
 
 .entry-price {
-    max-width: 60px;
+  max-width: 60px;
 }
 
 .entry-price > input {
-    border: white;
-    width: 100%;
-    text-align: right;
-    font-family: monospace;
+  border: white;
+  width: 100%;
+  text-align: right;
+  font-family: monospace;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -218,17 +242,17 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
 .save {
-    float: right;
-    width: 100px;
+  float: right;
+  width: 100px;
 }
 
 footer {
-    padding-top: 10px;
-    padding-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 </style>

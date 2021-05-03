@@ -1,0 +1,121 @@
+<template>
+  <div>
+    <highcharts
+      id="account-nav"
+      style="height: 400px; width: 500"
+      :options="chartOptions"
+    ></highcharts>
+    <table id="nav-table">
+      <tr>
+        <th>Date</th>
+        <th>Value</th>
+      </tr>
+      <tr v-for="d in reversed_data" v-bind:key="d[0]">
+        <td>{{ d[0] }}</td>
+        <td>$ {{ d[1] | Number(0) }}</td>
+      </tr>
+    </table>
+  </div>
+</template>
+
+<script>
+import { Chart } from "highcharts-vue";
+
+export default {
+  name: "AccountValue",
+  props: {
+    daily_nav: Array,
+  },
+  components: {
+    highcharts: Chart,
+  },
+  data() {
+    return {};
+  },
+  filters: {
+    Number: (v, toFixed) => {
+      if (v == undefined) return 0;
+      const option =
+        typeof toFixed === "number"
+          ? {
+              maximumFractionDigits: toFixed,
+              minimumFractionDigits: toFixed,
+            }
+          : {};
+      return new Intl.NumberFormat("en-US", option).format(v);
+    },
+  },
+  computed: {
+    reversed_data: function() {
+      return [].concat(this.daily_nav).reverse();
+    },
+    chartOptions: function () {
+      return {
+        chart: {
+          type: "areaspline",
+          animation: false,
+        },
+        legend: {
+          enabled: false,
+        },
+        title: {
+          text: "Account Value",
+        },
+        plotOptions: {
+          series: {
+            animation: false,
+          },
+        },
+        xAxis: {
+          type: "datetime",
+        },
+        yAxis: {
+          title: {
+            enabled: false
+          },
+          labels: {
+            formatter: function () {
+              const v = this.value;
+              const l =
+                Math.abs(v) > 999
+                  ? Math.sign(v) * (Math.abs(v) / 1000).toFixed(1) + "k"
+                  : Math.sign(v) * Math.abs(v);
+              return `$ ${l}`;
+            },
+          },
+        },
+        series: [
+          {
+            data: this.daily_nav.map((v) => {
+              return [Date(v[0]), v[1]];
+            }),
+          },
+        ],
+      };
+    },
+  },
+  methods: {},
+  mounted() {},
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+th,
+td {
+  padding: 4px;
+  text-align: right;
+  border: 1px solid #ddd;
+}
+
+tr:hover {
+  background-color: #eee;
+}
+</style>

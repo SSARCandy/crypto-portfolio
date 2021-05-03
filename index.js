@@ -3,7 +3,7 @@ const axios = require('axios').default;
 const Binance = require('node-binance-api');
 const config = require('./config/config.json');
 const { initializeApp } = require("@firebase/app");
-const { getFirestore, doc, setDoc} = require("@firebase/firestore");
+const { getFirestore, doc, setDoc, arrayUnion, updateDoc } = require("@firebase/firestore");
 
 const firebaseConfig = {
     apiKey: "AIzaSyAiOeRX2NENGgKbW0VVQ4xR0gbPuyKJ5Ks",
@@ -92,6 +92,14 @@ async function fetchTokenPrice(tokens) {
         };
         const doc1 = doc(database, `asset/${cnf.id}`);
         await setDoc(doc1, res);
+
+        const nav = _.sum(result.map(a => a.price * a.size));
+        const new_element = arrayUnion({ 
+            d: ((new Date())).toISOString().substr(0, 10),
+            nav: nav 
+        });
+        const doc2 = doc(database, `nav/${cnf.id}`);
+        await updateDoc(doc2, {v: new_element});
     }
     process.exit(0);
 })();

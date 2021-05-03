@@ -65,7 +65,7 @@ export default {
           }).format(this.nav)}`,
         },
         tooltip: {
-          pointFormat: "<b>{point.percentage:.1f}%</b>",
+          pointFormat: "<b>{point.percentage:.1f}%</b><br><b>${point.y:.0f}</b>",
         },
         series: [
           {

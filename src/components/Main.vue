@@ -224,6 +224,7 @@ input[type=number] {
 
 .save {
     float: right;
+    width: 100px;
 }
 
 footer {

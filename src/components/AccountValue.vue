@@ -2,7 +2,7 @@
   <div>
     <highcharts
       id="account-nav"
-      style="height: 400px; width: 500"
+      style="height: 300px; width: 500"
       :options="chartOptions"
     ></highcharts>
     <table id="nav-table">
@@ -46,7 +46,7 @@ export default {
     },
   },
   computed: {
-    reversed_data: function() {
+    reversed_data: function () {
       return [].concat(this.daily_nav).reverse();
     },
     chartOptions: function () {
@@ -64,14 +64,20 @@ export default {
         plotOptions: {
           series: {
             animation: false,
+            marker: {
+              radius: 0,
+            },
           },
         },
         xAxis: {
           type: "datetime",
+          labels: {
+            enabled: false,
+          },
         },
         yAxis: {
           title: {
-            enabled: false
+            enabled: false,
           },
           labels: {
             formatter: function () {

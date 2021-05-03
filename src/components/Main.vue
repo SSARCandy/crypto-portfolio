@@ -1,6 +1,6 @@
 <template>
   <div id="main">
-    <button class="btn"  v-on:click="is_nav_mode = !is_nav_mode">
+    <button class="btn nav-btn" v-on:click="is_nav_mode = !is_nav_mode">
       <i class="fas fa-chart-line"></i>
     </button>
 
@@ -249,6 +249,13 @@ input[type="number"] {
 .save {
   float: right;
   width: 100px;
+}
+
+.nav-btn {
+  font-size: 18px;
+  position: absolute;
+  right: 5px;
+  z-index: 999;
 }
 
 footer {

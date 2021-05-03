@@ -94,6 +94,9 @@ export default {
             },
           },
         },
+        tooltip: {
+          pointFormat: "<b>${point.y:.0f}</b>",
+        },
         series: [
           {
             name: "",

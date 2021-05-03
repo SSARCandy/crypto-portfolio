@@ -149,6 +149,8 @@ export default {
   mounted() {
     this.screen_width =
       window.innerWidth > 0 ? window.innerWidth : screen.width;
+
+    document.title = `${this.id.split('.')[0]}'s Portfolio`;
   },
   created: async function () {
     const doc1 = doc(database, `config/${this.id}`);
@@ -261,5 +263,15 @@ input[type="number"] {
 footer {
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+button {
+  background: initial;
+  border: #dfdfdf 2px solid;
+  border-radius: 2px;
+}
+
+button:hover {
+  background-color: #eee;
 }
 </style>

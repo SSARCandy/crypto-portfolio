@@ -116,26 +116,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-table {
-  border-collapse: collapse;
-  width: 100%;
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-th,
-td {
-  padding: 4px;
-  text-align: right;
-  border: 1px solid #ddd;
-}
-
 th:nth-child(1),
 td:nth-child(1) {
   text-align: left;
-}
-
-tr:hover {
-  background-color: #eee;
 }
 </style>

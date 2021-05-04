@@ -1,5 +1,8 @@
 <template>
   <div id="main">
+    <button class="btn dark-btn" v-on:click="is_dark_mode = !is_dark_mode">
+      <i class="fas fa-moon"></i>
+    </button>
     <button class="btn nav-btn" v-on:click="is_nav_mode = !is_nav_mode">
       <i class="fas fa-chart-line"></i>
     </button>
@@ -90,6 +93,7 @@ export default {
       screen_width: 0,
 
       is_nav_mode: false,
+      is_dark_mode: localStorage.is_dark_mode === 'true',
     };
   },
   computed: {},
@@ -146,11 +150,18 @@ export default {
       return { buy: v > 0, sell: v < 0 };
     },
   },
+  watch: {
+    is_dark_mode: function (val) {
+      localStorage.is_dark_mode = val;
+      document.documentElement.setAttribute('data-theme', val ? 'dark' : 'light');
+    },
+  },
   mounted() {
     this.screen_width =
       window.innerWidth > 0 ? window.innerWidth : screen.width;
 
     document.title = `${this.id.split('.')[0]}'s Portfolio`;
+    document.documentElement.setAttribute('data-theme', this.is_dark_mode ? 'dark' : 'light');
   },
   created: async function () {
     const doc1 = doc(database, `config/${this.id}`);
@@ -181,7 +192,38 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
+:root {
+  --color-bg: #fff;
+  --color-text: #000;
+  --color-border: #ddd;
+}
+
+:root[data-theme="dark"] {
+  --color-bg: #1c1c1c;
+  --color-text: #eee;
+  --color-border: #777;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.highcharts-background {
+    fill: var(--color-bg) !important;
+}
+.highcharts-title {
+    fill: var(--color-text) !important;
+}
+.highcharts-data-label text {
+    fill: var(--color-text) !important;
+}
+.highcharts-text-outline {
+	fill: var(--color-bg) !important;
+  stroke-width: 0px;
+}
+
 #main {
   font-family: monospace;
   max-width: 800px;
@@ -199,15 +241,11 @@ th,
 td {
   padding: 4px;
   text-align: right;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
 }
 
 tr:hover {
-  background-color: #eee;
-}
-
-.bg-dead {
-  background-color: #bbb;
+  background-color: rgba(170, 170, 170, 0.603);
 }
 
 .sell {
@@ -231,10 +269,12 @@ input {
 
 .entry-price > input {
   font-size: 12px;
-  border: white;
   width: 100%;
   text-align: right;
   font-family: monospace;
+  background-color: var(--color-bg);
+  border: var(--color-bg);
+  color: var(--color-text);
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -261,6 +301,13 @@ input[type="number"] {
   z-index: 999;
 }
 
+.dark-btn {
+  font-size: 18px;
+  position: absolute;
+  left: 5px;
+  z-index: 999;
+}
+
 footer {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -268,11 +315,12 @@ footer {
 
 button {
   background: initial;
-  border: #dfdfdf 2px solid;
+  border: var(--color-border) 2px solid;
   border-radius: 2px;
+  color: var(--color-text);
 }
 
 button:hover {
-  background-color: #eee;
+  background-color: rgba(170, 170, 170, 0.603);
 }
 </style>

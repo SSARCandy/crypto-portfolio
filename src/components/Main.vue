@@ -19,8 +19,8 @@
         </tr>
         <tr v-for="asset in assets" v-bind:key="asset.asset">
           <td>{{ asset.asset }}</td>
-          <td>{{ asset.size | Number(2) }}</td>
-          <td>{{ asset.price | Number(2) }}</td>
+          <td>{{ asset.size | Number(3) }}</td>
+          <td>{{ asset.price | Number(3) }}</td>
           <td>{{ (asset.size * asset.price) | Number(0) }}</td>
           <td class="entry-price">
             <input v-model="userdata[asset.asset]" type="number" />
@@ -226,10 +226,11 @@ input {
 }
 
 .entry-price {
-  max-width: 60px;
+  max-width: 45px;
 }
 
 .entry-price > input {
+  font-size: 12px;
   border: white;
   width: 100%;
   text-align: right;

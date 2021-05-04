@@ -1,7 +1,7 @@
 <template>
   <div id="main">
     <button class="btn dark-btn" v-on:click="is_dark_mode = !is_dark_mode">
-      <i class="fas fa-moon"></i>
+      <i class="far fa-moon"></i>
     </button>
     <button class="btn nav-btn" v-on:click="is_nav_mode = !is_nav_mode">
       <i class="fas fa-chart-line"></i>

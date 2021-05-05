@@ -35,7 +35,7 @@
         </tr>
       </table>
       <footer>
-        <span>Last Update: {{ lastUpdate() }}</span>
+        <span>Update: {{ lastUpdate() }}</span>
         <button v-on:click="save" class="save">
           {{ saved ? "Done!" : "Save" }}
         </button>

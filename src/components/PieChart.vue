@@ -52,6 +52,11 @@ export default {
               crop: true,
             },
           },
+          series: {
+            animation: {
+              duration: 500
+            }
+          },
         },
         title: {
           verticalAlign: "middle",

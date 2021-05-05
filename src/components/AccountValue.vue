@@ -63,10 +63,13 @@ export default {
         },
         plotOptions: {
           series: {
-            animation: false,
+            animation: {
+              duration: 500
+            },
             marker: {
               radius: 0,
             },
+            fillOpacity: 1
           },
         },
         xAxis: {
@@ -101,6 +104,7 @@ export default {
         series: [
           {
             name: "",
+            background: "#00f",
             data: this.daily_nav.map((v) => {
               const [y, m, d] = v[0].split('-');
               return [Date.UTC(y, +m-1, d), v[1]];

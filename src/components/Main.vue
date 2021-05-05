@@ -22,7 +22,7 @@
         </tr>
         <tr v-for="asset in assets" v-bind:key="asset.asset">
           <td>{{ asset.asset }}</td>
-          <td>{{ asset.size | Number(3) }}</td>
+          <td>{{ asset.size | Number(2) }}</td>
           <td>{{ asset.price | Number(3) }}</td>
           <td>{{ (asset.size * asset.price) | Number(0) }}</td>
           <td class="entry-price">
@@ -211,17 +211,24 @@ body {
 }
 
 .highcharts-background {
-    fill: var(--color-bg) !important;
+  fill: var(--color-bg) !important;
 }
 .highcharts-title {
-    fill: var(--color-text) !important;
+  fill: var(--color-text) !important;
 }
 .highcharts-data-label text {
-    fill: var(--color-text) !important;
+  fill: var(--color-text) !important;
 }
 .highcharts-text-outline {
 	fill: var(--color-bg) !important;
   stroke-width: 0px;
+}
+.highcharts-point {
+  stroke-width: 1px;
+  stroke-opacity: .7;
+}
+.highcharts-credits {
+  display: none;
 }
 
 #main {
@@ -245,7 +252,11 @@ td {
 }
 
 tr:hover {
-  background-color: rgba(170, 170, 170, 0.603);
+  background-color: #eee;
+}
+
+[data-theme="dark"] tr:hover {
+  background-color: #333;
 }
 
 .sell {

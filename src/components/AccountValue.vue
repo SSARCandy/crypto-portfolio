@@ -62,6 +62,9 @@ export default {
           text: "Account Value",
         },
         plotOptions: {
+          areaspline: {
+            threshold: null
+          },
           series: {
             animation: {
               duration: 500
@@ -86,7 +89,6 @@ export default {
           title: {
             enabled: false,
           },
-          tickAmount: 5,
           labels: {
             formatter: function () {
               const v = this.value;

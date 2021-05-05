@@ -83,6 +83,7 @@ export default {
           title: {
             enabled: false,
           },
+          tickAmount: 5,
           labels: {
             formatter: function () {
               const v = this.value;

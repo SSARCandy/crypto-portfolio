@@ -52,9 +52,6 @@ export default {
               crop: true,
             },
           },
-          series: {
-            animation: false,
-          },
         },
         title: {
           verticalAlign: "middle",

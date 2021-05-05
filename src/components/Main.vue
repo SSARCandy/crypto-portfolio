@@ -9,7 +9,7 @@
 
     <account-value v-if="is_nav_mode" :daily_nav="daily_nav" />
     <div v-if="!is_nav_mode">
-      <pie-chart v-if="assets.length > 0" :assets="assets" />
+      <pie-chart :assets="assets" />
       <table id="asset">
         <tr>
           <th>Token</th>

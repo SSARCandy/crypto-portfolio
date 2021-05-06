@@ -35,7 +35,7 @@
         </tr>
       </table>
       <footer>
-        <span>Update: {{ lastUpdate() }}</span>
+        <span>Update: {{ lastUpdate }}</span>
         <button v-on:click="save" class="save">
           {{ saved ? "Done!" : "Save" }}
         </button>
@@ -84,6 +84,7 @@ export default {
   data() {
     return {
       id: window.location.host,
+      now: Date.now(),
       time: "",
       assets: [],
       userdata: {},
@@ -93,10 +94,15 @@ export default {
       screen_width: 0,
 
       is_nav_mode: false,
-      is_dark_mode: localStorage.is_dark_mode === 'true',
+      is_dark_mode: localStorage.is_dark_mode === "true",
     };
   },
-  computed: {},
+  computed: {
+    lastUpdate() {
+      const delta = (dayjs(this.now) - dayjs(this.time)) / (60 * 1000);
+      return `${delta.toFixed(0)} min ago`;
+    },
+  },
   filters: {
     toFixed: (v, demical = 2) => {
       if (v == undefined) return 0;
@@ -123,11 +129,6 @@ export default {
     },
   },
   methods: {
-    lastUpdate() {
-      return `${((dayjs() - dayjs(this.time)) / (1000 * 60)).toFixed(
-        0
-      )} min ago`;
-    },
     async save() {
       const doc1 = doc(database, `config/${this.id}`);
       await setDoc(doc1, this.userdata);
@@ -153,15 +154,21 @@ export default {
   watch: {
     is_dark_mode: function (val) {
       localStorage.is_dark_mode = val;
-      document.documentElement.setAttribute('data-theme', val ? 'dark' : 'light');
+      document.documentElement.setAttribute(
+        "data-theme",
+        val ? "dark" : "light"
+      );
     },
   },
   mounted() {
     this.screen_width =
       window.innerWidth > 0 ? window.innerWidth : screen.width;
 
-    document.title = `${this.id.split('.')[0]}'s Portfolio`;
-    document.documentElement.setAttribute('data-theme', this.is_dark_mode ? 'dark' : 'light');
+    document.title = `${this.id.split(".")[0]}'s Portfolio`;
+    document.documentElement.setAttribute(
+      "data-theme",
+      this.is_dark_mode ? "dark" : "light"
+    );
   },
   created: async function () {
     const doc1 = doc(database, `config/${this.id}`);
@@ -187,6 +194,9 @@ export default {
     if (daily_nav.exists()) {
       this.daily_nav = sortBy(Object.entries(daily_nav.data()), (o) => o[0]);
     }
+    setInterval(() => {
+      this.now = Date.now();
+    }, 60 * 1000);
   },
 };
 </script>
@@ -220,12 +230,12 @@ body {
   fill: var(--color-text) !important;
 }
 .highcharts-text-outline {
-	fill: var(--color-bg) !important;
+  fill: var(--color-bg) !important;
   stroke-width: 0px;
 }
 .highcharts-point {
   stroke-width: 1px;
-  stroke-opacity: .7;
+  stroke-opacity: 0.7;
 }
 .highcharts-credits {
   display: none;

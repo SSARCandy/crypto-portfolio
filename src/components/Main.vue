@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { firebase } from "../../config/config.json";
 import PieChart from "./PieChart.vue";
 import AccountValue from "./AccountValue";
 import sortBy from "lodash/sortBy";
@@ -58,18 +59,9 @@ import {
   getDoc,
   setDoc,
 } from "@firebase/firestore";
-dayjs().format();
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAiOeRX2NENGgKbW0VVQ4xR0gbPuyKJ5Ks",
-  authDomain: "binance-portfolio-153c4.firebaseapp.com",
-  projectId: "binance-portfolio-153c4",
-  storageBucket: "binance-portfolio-153c4.appspot.com",
-  messagingSenderId: "694089558371",
-  appId: "1:694089558371:web:4e512f91c263ca77ad4b56",
-  measurementId: "G-VT35JJGKW4",
-};
-initializeApp(firebaseConfig);
+dayjs().format();
+initializeApp(firebase);
 getAnalytics();
 
 const database = getFirestore();

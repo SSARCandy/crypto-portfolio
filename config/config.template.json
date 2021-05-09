@@ -1,0 +1,18 @@
+{
+    "firebase": {
+        "apiKey": "",
+        "authDomain": "",
+        "projectId": "",
+        "storageBucket": "",
+        "messagingSenderId": "",
+        "appId": "",
+        "measurementId": ""
+    },
+    "binance": [
+        {
+            "id": "x.ssarcandy.tw",
+            "APIKEY": "",
+            "APISECRET": ""
+        }
+    ]
+}

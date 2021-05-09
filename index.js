@@ -5,16 +5,7 @@ const config = require('./config/config.json');
 const { initializeApp } = require("@firebase/app");
 const { getFirestore, doc, setDoc, updateDoc } = require("@firebase/firestore");
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAiOeRX2NENGgKbW0VVQ4xR0gbPuyKJ5Ks",
-    authDomain: "binance-portfolio-153c4.firebaseapp.com",
-    projectId: "binance-portfolio-153c4",
-    storageBucket: "binance-portfolio-153c4.appspot.com",
-    messagingSenderId: "694089558371",
-    appId: "1:694089558371:web:4e512f91c263ca77ad4b56",
-    measurementId: "G-VT35JJGKW4",
-};
-initializeApp(firebaseConfig);
+initializeApp(config.firebase);
 const database = getFirestore();
 
 const alias = {
@@ -64,7 +55,7 @@ async function fetchTokenPrice(tokens) {
 }
 
 (async () => {
-    for (const cnf of config) {
+    for (const cnf of config.binance) {
         const client = new Binance().options(cnf);
         const spot = await fetchSpotWallet(client);
         const earn = await fetchEarnWallet(client);

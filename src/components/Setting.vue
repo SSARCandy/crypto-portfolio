@@ -10,7 +10,7 @@
           />
           <span class="slider round"></span>
         </label>
-        <span>Dark Mode</span>
+        <span>Dark mode</span>
       </div>
       <div class="setting-list">
         <label class="switch">
@@ -21,7 +21,18 @@
           />
           <span class="slider round"></span>
         </label>
-        <span>Hide Small Balance</span>
+        <span>Hide small balance</span>
+      </div>
+      <div class="setting-list">
+        <label class="switch">
+          <input
+            type="checkbox"
+            :checked="is_perfer_return"
+            v-on:click="click('is_perfer_return')"
+          />
+          <span class="slider round"></span>
+        </label>
+        <span>Show Return(%) in small device</span>
       </div>
     </div>
   </div>
@@ -34,6 +45,7 @@ export default {
   props: {
     is_hide_small_balance: Boolean,
     is_dark_mode: Boolean,
+    is_perfer_return: Boolean,
   },
   data() {
     return {};
@@ -133,6 +145,6 @@ input:checked + .slider:before {
 
 .setting-list > span {
   margin-left: 15px;
-  font-size: 20px;
+  font-size: 18px;
 }
 </style>

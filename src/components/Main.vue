@@ -13,6 +13,7 @@
       v-if="is_setting_mode"
       :is_dark_mode.sync="is_dark_mode"
       :is_hide_small_balance.sync="is_hide_small_balance"
+      :is_perfer_return.sync="is_perfer_return"
     />
     <account-value v-if="is_nav_mode" :daily_nav="daily_nav" />
     <div v-if="!is_nav_mode">
@@ -24,8 +25,8 @@
           <th>Price</th>
           <th>Value</th>
           <th>Entry</th>
-          <th>PnL</th>
-          <th v-if="screen_width > 500">Return</th>
+          <th v-if="should_show('pnl')">PnL</th>
+          <th v-if="should_show('pnl_return')">Return</th>
         </tr>
         <tr
           v-for="asset in assets"
@@ -39,8 +40,10 @@
           <td class="entry-price">
             <input v-model="userdata[asset.asset]" type="number" />
           </td>
-          <td v-bind:class="color(pnl(asset))">{{ pnl(asset) | Number(0) }}</td>
-          <td v-bind:class="color(pnl(asset))" v-if="screen_width > 500">
+          <td v-bind:class="color(pnl(asset))" v-if="should_show('pnl')">
+            {{ pnl(asset) | Number(0) }}
+          </td>
+          <td v-bind:class="color(pnl(asset))" v-if="should_show('pnl_return')">
             {{ pnl_return(asset) | Precentage(2) }}
           </td>
         </tr>
@@ -102,6 +105,7 @@ export default {
       is_nav_mode: false,
       is_hide_small_balance: localStorage.is_hide_small_balance === "true",
       is_dark_mode: localStorage.is_dark_mode === "true",
+      is_perfer_return: localStorage.is_perfer_return === "true",
     };
   },
   computed: {
@@ -157,6 +161,11 @@ export default {
     color: (v) => {
       return { buy: v > 0, sell: v < 0 };
     },
+    should_show(col) {
+      if (this.screen_width > 500) return true;
+      if (this.is_perfer_return) return col === "pnl_return";
+      return col === "pnl";
+    },
   },
   watch: {
     is_dark_mode: function (val) {
@@ -168,6 +177,9 @@ export default {
     },
     is_hide_small_balance: function (val) {
       localStorage.is_hide_small_balance = val;
+    },
+    is_perfer_return: function (val) {
+      localStorage.is_perfer_return = val;
     },
   },
   mounted() {

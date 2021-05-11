@@ -1,12 +1,32 @@
 <template>
   <div id="main">
-    <button class="btn dark-btn" v-on:click="is_dark_mode = !is_dark_mode">
-      <i class="far fa-moon"></i>
+    <button
+      class="btn setting-btn"
+      v-on:click="is_setting_mode = !is_setting_mode"
+    >
+      <i class="fas fa-cog"></i>
     </button>
     <button class="btn nav-btn" v-on:click="is_nav_mode = !is_nav_mode">
       <i class="fas fa-chart-line"></i>
     </button>
-
+    <div class="modal" v-if="is_setting_mode">
+      <div class="modal-content">
+        <div class="setting-list">
+          <label class="switch">
+            <input type="checkbox" v-model="is_dark_mode" />
+            <span class="slider round"></span>
+          </label>
+          <span>Dark Mode</span>
+        </div>
+        <div class="setting-list">
+          <label class="switch">
+            <input type="checkbox" v-model="is_hide_small_balance" />
+            <span class="slider round"></span>
+          </label>
+          <span>Hide Small Balance</span>
+        </div>
+      </div>
+    </div>
     <account-value v-if="is_nav_mode" :daily_nav="daily_nav" />
     <div v-if="!is_nav_mode">
       <pie-chart :assets="assets" />
@@ -20,7 +40,11 @@
           <th>PnL</th>
           <th v-if="screen_width > 500">Return</th>
         </tr>
-        <tr v-for="asset in assets" v-bind:key="asset.asset">
+        <tr
+          v-for="asset in assets"
+          v-bind:key="asset.asset"
+          v-show="!is_hide_small_balance || asset.size * asset.price > 1"
+        >
           <td>{{ asset.asset }}</td>
           <td>{{ asset.size | Number(2) }}</td>
           <td>{{ asset.price | Number(3) }}</td>
@@ -85,7 +109,9 @@ export default {
       saved: false,
       screen_width: 0,
 
+      is_setting_mode: false,
       is_nav_mode: false,
+      is_hide_small_balance: localStorage.is_hide_small_balance === "true",
       is_dark_mode: localStorage.is_dark_mode === "true",
     };
   },
@@ -150,6 +176,9 @@ export default {
         "data-theme",
         val ? "dark" : "light"
       );
+    },
+    is_hide_small_balance: function (val) {
+      localStorage.is_hide_small_balance = val;
     },
   },
   mounted() {
@@ -314,7 +343,7 @@ input[type="number"] {
   z-index: 999;
 }
 
-.dark-btn {
+.setting-btn {
   font-size: 18px;
   position: absolute;
   left: 5px;
@@ -335,5 +364,98 @@ button {
 
 button:hover {
   background-color: rgba(170, 170, 170, 0.603);
+}
+
+.fas {
+  vertical-align: middle;
+}
+
+.modal {
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: var(--color-bg);
+  margin: auto;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  width: 80%;
+  max-width: 500px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 12px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 0px;
+  bottom: -4px;
+  background-color: var(--color-border);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.setting-list {
+  margin: 15px 0;
+}
+
+.setting-list > span {
+  margin-left: 10px;
+  font-size: 20px;
 }
 </style>

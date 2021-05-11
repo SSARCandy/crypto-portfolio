@@ -74,7 +74,7 @@ export default {
 .modal-content {
   background-color: var(--color-bg);
   margin: auto;
-  padding: 20px;
+  padding: 0 15px;
   border: 1px solid var(--color-border);
   width: 80%;
   max-width: 500px;
@@ -140,11 +140,11 @@ input:checked + .slider:before {
 }
 
 .setting-list {
-  margin: 15px 0;
+  margin: 20px 0;
 }
 
 .setting-list > span {
   margin-left: 15px;
-  font-size: 18px;
+  font-size: 14px;
 }
 </style>

@@ -136,6 +136,7 @@ export default {
       return new Intl.NumberFormat("en-US", option).format(v);
     },
     Precentage: (v, demical = 1) => {
+      if (v === Infinity) return "Inf%";
       return `${(v * 100 || 0).toFixed(demical)}%`;
     },
   },

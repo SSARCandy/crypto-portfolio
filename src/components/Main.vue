@@ -43,7 +43,7 @@
         <tr
           v-for="asset in assets"
           v-bind:key="asset.asset"
-          v-show="!is_hide_small_balance || asset.size * asset.price > 1"
+          v-show="!is_hide_small_balance || asset.size * asset.price > 10"
         >
           <td>{{ asset.asset }}</td>
           <td>{{ asset.size | Number(2) }}</td>

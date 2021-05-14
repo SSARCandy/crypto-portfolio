@@ -44,7 +44,7 @@
             {{ pnl(asset) | Number(0) }}
           </td>
           <td v-bind:class="color(pnl(asset))" v-if="should_show('pnl_return')">
-            {{ pnl_return(asset) | Precentage(2) }}
+            {{ pnl_return(asset) | Precentage(1) }}
           </td>
         </tr>
       </table>

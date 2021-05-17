@@ -27,6 +27,7 @@
           <th>Entry</th>
           <th v-if="should_show('pnl')">PnL</th>
           <th v-if="should_show('pnl_return')">Return</th>
+          <th v-if="screen_width > 500">Note</th>
         </tr>
         <tr
           v-for="asset in assets"
@@ -45,6 +46,9 @@
           </td>
           <td v-bind:class="color(pnl(asset))" v-if="should_show('pnl_return')">
             {{ pnl_return(asset) | Precentage(1) }}
+          </td>
+          <td class="entry-price" style="max-width: 200px" v-if="screen_width > 500">
+            <input v-model="userdata[`${asset.asset}-note`]" />
           </td>
         </tr>
       </table>
@@ -266,7 +270,7 @@ body {
 
 #main {
   font-family: monospace;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 

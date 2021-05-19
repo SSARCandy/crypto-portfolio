@@ -17,7 +17,7 @@
     />
     <account-value v-if="is_nav_mode" :daily_nav="daily_nav" />
     <div v-if="!is_nav_mode">
-      <pie-chart :assets="assets" />
+      <pie-chart :assets="assets_with_px" />
       <table id="asset">
         <tr>
           <th>Token</th>
@@ -30,7 +30,7 @@
           <th v-if="screen_width > 500">Note</th>
         </tr>
         <tr
-          v-for="asset in assets"
+          v-for="asset in assets_with_px"
           v-bind:key="asset.asset"
           v-show="!is_hide_small_balance || asset.size * asset.price > 10"
         >
@@ -47,13 +47,25 @@
           <td v-bind:class="color(pnl(asset))" v-if="should_show('pnl_return')">
             {{ pnl_return(asset) | Precentage(1) }}
           </td>
-          <td class="entry-price" style="max-width: 200px" v-if="screen_width > 500">
+          <td
+            class="entry-price"
+            style="max-width: 200px"
+            v-if="screen_width > 500"
+          >
             <input v-model="userdata[`${asset.asset}-note`]" />
           </td>
         </tr>
       </table>
-      <footer>
-        <span>Update: {{ lastUpdate }}</span>
+      <footer style="display: flex; justify-content: space-between;">
+        <ul style="list-style: none; padding-left: 0;">
+          <li>
+            Total PnL:
+            <span v-bind:class="color(sum_pnl(assets_with_px))">{{
+              sum_pnl(assets_with_px) | Number(0)
+            }}</span>
+          </li>
+          <li>Update: {{ lastUpdate }}</li>
+        </ul>
         <button v-on:click="save" class="save">
           {{ saved ? "Done!" : "Save" }}
         </button>
@@ -68,6 +80,7 @@ import PieChart from "./PieChart.vue";
 import AccountValue from "./AccountValue";
 import Setting from "./Setting";
 import sortBy from "lodash/sortBy";
+import sum from "lodash/sum";
 import dayjs from "dayjs";
 import { initializeApp } from "@firebase/app";
 import { getAnalytics } from "@firebase/analytics";
@@ -99,6 +112,7 @@ export default {
       now: Date.now(),
       time: "",
       assets: [],
+      price_map: {},
       userdata: {},
       daily_nav: [],
 
@@ -114,8 +128,21 @@ export default {
   },
   computed: {
     lastUpdate() {
-      const delta = (dayjs(this.now) - dayjs(this.time)) / (60 * 1000);
-      return `${delta.toFixed(0)} min ago`;
+      const delta = (dayjs(this.now) - dayjs(this.time)) / 1000;
+      return `${delta.toFixed(0)} sec ago`;
+    },
+    assets_with_px() {
+      return sortBy(
+        this.assets.map((x) => ({
+          ...x,
+          price: this.price_map[x.asset],
+        })),
+        [
+          function (o) {
+            return -o.price * o.size;
+          },
+        ]
+      );
     },
   },
   filters: {
@@ -163,6 +190,14 @@ export default {
       if (!this.userdata[asset]) return null;
       return price / this.userdata[asset] - 1;
     },
+    sum_pnl(rows) {
+      return sum(
+        rows.map(({ asset, size, price }) => {
+          if (!this.userdata[asset]) return 0;
+          return size * (price - this.userdata[asset]);
+        })
+      );
+    },
     color: (v) => {
       return { buy: v > 0, sell: v < 0 };
     },
@@ -209,21 +244,23 @@ export default {
       if (!asset.exists()) return;
       const { time, data } = asset.data();
       this.time = time;
-      this.assets = sortBy(data, [
-        function (o) {
-          return -o.price * o.size;
-        },
-      ]);
+      this.assets = data;
     });
 
-    const doc3 = doc(database, `nav/${this.id}`);
-    const daily_nav = await getDoc(doc3);
+    const doc3 = doc(database, "price/spot");
+    onSnapshot(doc3, (price_map) => {
+      if (!price_map.exists()) return;
+      this.price_map = price_map.data();
+    });
+
+    const doc4 = doc(database, `nav/${this.id}`);
+    const daily_nav = await getDoc(doc4);
     if (daily_nav.exists()) {
       this.daily_nav = sortBy(Object.entries(daily_nav.data()), (o) => o[0]);
     }
     setInterval(() => {
       this.now = Date.now();
-    }, 60 * 1000);
+    }, 1000);
   },
 };
 </script>

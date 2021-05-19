@@ -50,12 +50,22 @@ async function fetchPerpetualWallet(client) {
 }
 
 async function fetchTokenPrice(tokens) {
-    const tokenlist = tokens.map(x => alias[x] || x).join(',');
-    const res = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokenlist}&tsyms=USD`);
-    return res.data;
+    let result = {};
+    const BATCH = 50;
+    for (let i = 0; i < tokens.length; i+= BATCH) {
+        const batch_list = _.slice(tokens, i, i + BATCH).map(x => alias[x] || x).join(',');
+        const res = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${batch_list}&tsyms=USD`);
+        result = {
+            ...result,
+            ...res.data,
+        };
+    }
+    return result;
 }
 
 (async () => {
+    let assets = [];
+    const results = {};
     for (const cnf of config.binance) {
         const client = new Binance().options(cnf);
         const spot = await fetchSpotWallet(client);
@@ -70,13 +80,12 @@ async function fetchTokenPrice(tokens) {
             }
         }
 
-        const prices = await fetchTokenPrice(Object.keys(asset_map));
         const result = Object.keys(asset_map).map(k => ({
             asset: k,
             size: asset_map[k],
-            price: prices[alias[k] || k]['USD'],
         }));
-        console.log(result);
+        results[cnf.id] = result;
+        assets = _.union(assets, Object.keys(asset_map));
 
         const res = {
             time: Date.now(),
@@ -85,12 +94,25 @@ async function fetchTokenPrice(tokens) {
         const doc1 = doc(database, `asset/${cnf.id}`);
         await setDoc(doc1, res);
 
-        const nav = _.sum(result.map(a => a.price * a.size));
+    }
+    let price_map = {};
+    const prices = await fetchTokenPrice(assets);
+    console.log(prices)
+    assets.forEach(k => {
+        price_map[k] = prices[alias[k] || k]['USD'];
+    });
+    const price_doc = doc(database, 'price/spot');
+    await setDoc(price_doc, price_map);
+
+    // update NAV
+    for (const cnf of config.binance) {
+        const nav = _.sum(results[cnf.id].map(a => price_map[a.asset] * a.size));
         const doc2 = doc(database, `nav/${cnf.id}`);
         await updateDoc(doc2, { 
             [((new Date())).toISOString().substr(0, 10)]: nav,
         });
     }
+    
     process.exit(0);
 })();
 

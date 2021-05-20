@@ -11,6 +11,7 @@ const database = getFirestore();
 const alias = {
     EPS: 'ELLIP',
     ONG: 'ONGAS',
+    COS: 'CONT',
 };
 
 async function fetchSpotWallet(client) {

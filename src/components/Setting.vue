@@ -1,6 +1,6 @@
 <template>
-  <div class="modal">
-    <div class="modal-content">
+  <div class="modal" v-if="is_setting_mode" v-on:click="click('is_setting_mode')">
+    <div class="modal-content" v-on:click="(e) => { e.stopImmediatePropagation(); }">
       <div class="setting-list">
         <label class="switch">
           <input
@@ -43,6 +43,7 @@ export default {
   name: "Setting",
   components: {},
   props: {
+    is_setting_mode: Boolean,
     is_hide_small_balance: Boolean,
     is_dark_mode: Boolean,
     is_perfer_return: Boolean,

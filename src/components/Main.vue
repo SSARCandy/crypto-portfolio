@@ -10,7 +10,7 @@
       <i class="fas fa-chart-line"></i>
     </button>
     <setting
-      v-if="is_setting_mode"
+      :is_setting_mode.sync="is_setting_mode"
       :is_dark_mode.sync="is_dark_mode"
       :is_hide_small_balance.sync="is_hide_small_balance"
       :is_perfer_return.sync="is_perfer_return"

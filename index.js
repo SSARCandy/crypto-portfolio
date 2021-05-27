@@ -100,7 +100,12 @@ async function fetchTokenPrice(tokens) {
     const prices = await fetchTokenPrice(assets);
     console.log(prices)
     assets.forEach(k => {
-        price_map[k] = prices[alias[k] || k]['USD'];
+        price_map[k] = 0;
+        try {
+            price_map[k] = prices[alias[k] || k]['USD'];
+        } catch (e) {
+            console.log(`cannot found ${k} price`);
+        }
     });
     const price_doc = doc(database, 'price/spot');
     await setDoc(price_doc, price_map);

@@ -59,7 +59,7 @@
       <footer style="display: flex; justify-content: space-between;">
         <ul style="list-style: none; padding-left: 0;">
           <li>
-            Total PnL:
+            Total Unrealized PnL:
             <span v-bind:class="color(sum_pnl(assets_with_px))">{{
               sum_pnl(assets_with_px) | Number(0)
             }}</span>

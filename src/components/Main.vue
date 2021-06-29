@@ -198,14 +198,16 @@ export default {
       }, 5000);
     },
     pnl(row) {
-      const { asset, size, price } = row;
+      const { asset, size } = row;
       if (!this.userdata[asset]) return 0;
-      return size * (price - this.userdata[asset]);
+      if (!this.price_map[asset]) return 0;
+      return size * (this.price_map[asset] - this.userdata[asset]);
     },
     pnl_return(row) {
-      const { asset, price } = row;
+      const { asset } = row;
       if (!this.userdata[asset]) return 0;
-      return price / this.userdata[asset] - 1;
+      if (!this.price_map[asset]) return 0;
+      return this.price_map[asset] / this.userdata[asset] - 1;
     },
     sum_pnl(rows) {
       return sum(

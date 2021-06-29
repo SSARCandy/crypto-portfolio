@@ -8,6 +8,7 @@
 
 <script>
 import sum from "lodash/sum";
+import orderBy from "lodash/orderBy";
 import { Chart } from "highcharts-vue";
 
 export default {
@@ -74,7 +75,7 @@ export default {
             name: "",
             colorByPoint: true,
             startAngle: this.startAngle,
-            data: this.assets.map((x) => [x.asset, x.price * x.size]),
+            data: orderBy(this.assets, 'notional_value', 'desc').map((x) => [x.asset, x.price * x.size]),
           },
         ],
       };

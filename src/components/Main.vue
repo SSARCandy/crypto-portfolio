@@ -17,35 +17,52 @@
     />
     <account-value v-if="is_nav_mode" :daily_nav="daily_nav" />
     <div v-if="!is_nav_mode">
-      <pie-chart :assets="assets_with_px" />
+      <pie-chart :assets="assets_table" />
       <table id="asset">
         <tr>
-          <th>Token</th>
-          <th>Size</th>
-          <th>Price</th>
-          <th>Value</th>
-          <th>Entry</th>
-          <th v-if="should_show('pnl')">PnL</th>
-          <th v-if="should_show('pnl_return')">Return</th>
+          <th v-on:click="change_sortkey('asset')">
+            Token {{ sorted_icon("asset") }}
+          </th>
+          <th v-on:click="change_sortkey('size')">
+            Size {{ sorted_icon("size") }}
+          </th>
+          <th v-on:click="change_sortkey('price')">
+            Price {{ sorted_icon("price") }}
+          </th>
+          <th v-on:click="change_sortkey('notional_value')">
+            Value {{ sorted_icon("notional_value") }}
+          </th>
+          <th v-on:click="change_sortkey('entry')">
+            Entry {{ sorted_icon("entry") }}
+          </th>
+          <th v-on:click="change_sortkey('pnl')" v-if="should_show('pnl')">
+            PnL {{ sorted_icon("pnl") }}
+          </th>
+          <th
+            v-on:click="change_sortkey('pnl_return')"
+            v-if="should_show('pnl_return')"
+          >
+            Return {{ sorted_icon("pnl_return") }}
+          </th>
           <th v-if="screen_width > 500">Note</th>
         </tr>
         <tr
-          v-for="asset in assets_with_px"
+          v-for="asset in assets_table"
           v-bind:key="asset.asset"
           v-show="!is_hide_small_balance || asset.size * asset.price > 10"
         >
           <td>{{ asset.asset }}</td>
           <td>{{ asset.size | Number(2) }}</td>
           <td>{{ asset.price | Number(3) }}</td>
-          <td>{{ (asset.size * asset.price) | Number(0) }}</td>
+          <td>{{ asset.notional_value | Number(0) }}</td>
           <td class="entry-price">
-            <input v-model="userdata[asset.asset]" type="number" />
+            <input v-model.lazy="userdata[asset.asset]" type="number" />
           </td>
-          <td v-bind:class="color(pnl(asset))" v-if="should_show('pnl')">
-            {{ pnl(asset) | Number(0) }}
+          <td v-bind:class="color(asset.pnl)" v-if="should_show('pnl')">
+            {{ asset.pnl | Number(0) }}
           </td>
-          <td v-bind:class="color(pnl(asset))" v-if="should_show('pnl_return')">
-            {{ pnl_return(asset) | Precentage(1) }}
+          <td v-bind:class="color(asset.pnl)" v-if="should_show('pnl_return')">
+            {{ asset.pnl_return | Precentage(1) }}
           </td>
           <td
             class="entry-price"
@@ -56,15 +73,15 @@
           </td>
         </tr>
       </table>
-      <footer style="display: flex; justify-content: space-between;">
-        <ul style="list-style: none; padding-left: 0;">
+      <footer style="display: flex; justify-content: space-between">
+        <ul style="list-style: none; padding-left: 0">
           <li>
             Total Unrealized PnL:
-            <span v-bind:class="color(sum_pnl(assets_with_px))">{{
-              sum_pnl(assets_with_px) | Number(0)
-            }}</span>
+            <span v-bind:class="color(sum_pnl(assets_table))">
+              {{ sum_pnl(assets_table) | Number(0) }}
+            </span>
           </li>
-          <li>Update: {{ lastUpdate }}</li>
+          <li><Timer :time="time" /></li>
         </ul>
         <button v-on:click="save" class="save">
           {{ saved ? "Done!" : "Save" }}
@@ -79,9 +96,10 @@ import { firebase } from "../../config/config.json";
 import PieChart from "./PieChart.vue";
 import AccountValue from "./AccountValue";
 import Setting from "./Setting";
+import Timer from "./Timer.vue";
 import sortBy from "lodash/sortBy";
+import orderBy from "lodash/orderBy";
 import sum from "lodash/sum";
-import dayjs from "dayjs";
 import { initializeApp } from "@firebase/app";
 import { getAnalytics } from "@firebase/analytics";
 import {
@@ -92,7 +110,6 @@ import {
   setDoc,
 } from "@firebase/firestore";
 
-dayjs().format();
 initializeApp(firebase);
 getAnalytics();
 
@@ -104,13 +121,13 @@ export default {
     PieChart,
     AccountValue,
     Setting,
+    Timer,
   },
   props: {},
   data() {
     return {
       id: window.location.host,
-      now: Date.now(),
-      time: "",
+      time: 0,
       assets: [],
       price_map: {},
       userdata: {},
@@ -124,24 +141,24 @@ export default {
       is_hide_small_balance: localStorage.is_hide_small_balance === "true",
       is_dark_mode: localStorage.is_dark_mode === "true",
       is_perfer_return: localStorage.is_perfer_return === "true",
+
+      sort_key: "notional_value",
+      sort_order: true,
     };
   },
   computed: {
-    lastUpdate() {
-      const delta = (dayjs(this.now) - dayjs(this.time)) / 1000;
-      return `${delta.toFixed(0)} sec ago`;
-    },
-    assets_with_px() {
-      return sortBy(
+    assets_table() {
+      return orderBy(
         this.assets.map((x) => ({
           ...x,
           price: this.price_map[x.asset],
+          notional_value: this.price_map[x.asset] * x.size,
+          entry: this.userdata[x.asset] || 0,
+          pnl: this.pnl(x),
+          pnl_return: this.pnl_return(x),
         })),
-        [
-          function (o) {
-            return -o.price * o.size;
-          },
-        ]
+        this.sort_key,
+        this.sort_order ? "desc" : "asc"
       );
     },
   },
@@ -182,12 +199,12 @@ export default {
     },
     pnl(row) {
       const { asset, size, price } = row;
-      if (!this.userdata[asset]) return null;
+      if (!this.userdata[asset]) return 0;
       return size * (price - this.userdata[asset]);
     },
     pnl_return(row) {
       const { asset, price } = row;
-      if (!this.userdata[asset]) return null;
+      if (!this.userdata[asset]) return 0;
       return price / this.userdata[asset] - 1;
     },
     sum_pnl(rows) {
@@ -198,13 +215,24 @@ export default {
         })
       );
     },
-    color: (v) => {
+    color(v) {
       return { buy: v > 0, sell: v < 0 };
     },
     should_show(col) {
       if (this.screen_width > 500) return true;
       if (this.is_perfer_return) return col === "pnl_return";
       return col === "pnl";
+    },
+    sorted_icon(k) {
+      if (k !== this.sort_key) return "";
+      return this.sort_order ? "▼" : "▲";
+    },
+    change_sortkey(k) {
+      if (k === this.sort_key) {
+        this.sort_order = !this.sort_order;
+        return;
+      }
+      this.sort_key = k;
     },
   },
   watch: {
@@ -258,9 +286,6 @@ export default {
     if (daily_nav.exists()) {
       this.daily_nav = sortBy(Object.entries(daily_nav.data()), (o) => o[0]);
     }
-    setInterval(() => {
-      this.now = Date.now();
-    }, 1000);
   },
 };
 </script>

@@ -21,28 +21,28 @@
       <table id="asset">
         <tr>
           <th v-on:click="change_sortkey('asset')">
-            Token {{ sorted_icon("asset") }}
+            {{ sorted_icon("asset") }}Token
           </th>
           <th v-on:click="change_sortkey('size')">
-            Size {{ sorted_icon("size") }}
+            {{ sorted_icon("size") }}Size
           </th>
           <th v-on:click="change_sortkey('price')">
-            Price {{ sorted_icon("price") }}
+            {{ sorted_icon("price") }}Price
           </th>
           <th v-on:click="change_sortkey('notional_value')">
-            Value {{ sorted_icon("notional_value") }}
+            {{ sorted_icon("notional_value") }}Value
           </th>
           <th v-on:click="change_sortkey('entry')">
-            Entry {{ sorted_icon("entry") }}
+            {{ sorted_icon("entry") }}Entry
           </th>
           <th v-on:click="change_sortkey('pnl')" v-if="should_show('pnl')">
-            PnL {{ sorted_icon("pnl") }}
+            {{ sorted_icon("pnl") }}PnL
           </th>
           <th
             v-on:click="change_sortkey('pnl_return')"
             v-if="should_show('pnl_return')"
           >
-            Return {{ sorted_icon("pnl_return") }}
+            {{ sorted_icon("pnl_return") }}Return
           </th>
           <th v-if="screen_width > 500">Note</th>
         </tr>
@@ -227,7 +227,7 @@ export default {
     },
     sorted_icon(k) {
       if (k !== this.sort_key) return "";
-      return this.sort_order ? "▼" : "▲";
+      return this.sort_order ? "↓" : "↑";
     },
     change_sortkey(k) {
       if (k === this.sort_key) {

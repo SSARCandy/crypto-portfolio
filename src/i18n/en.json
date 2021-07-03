@@ -1,0 +1,24 @@
+{
+    "asset": "Token",
+    "size": "Size",
+    "price": "Price",
+    "notional_value": "Value",
+    "entry": "Entry",
+    "pnl": "PnL",
+    "pnl_return": "Return",
+    "note": "Note",
+    "total_unrealized_pnl": "Total Unrealized PnL",
+    "update_time": "Update Time",
+    "save": "Save",
+    "saved": "Done !",
+    "sec_ago": "sec ago",
+
+    "date": "Date",
+    "nav": "Net Account Value",
+    "nav_page": "Net Account Value",
+
+    "dark_mode": "Dark Mode",
+    "hide_small_balance": "Hide Small Balance",
+    "show_return_in_small_device": "Show Return(%) in Small Device",
+    "language": "Switch between Chinese/English"
+}

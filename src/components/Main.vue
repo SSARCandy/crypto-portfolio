@@ -14,6 +14,7 @@
       :is_dark_mode.sync="is_dark_mode"
       :is_hide_small_balance.sync="is_hide_small_balance"
       :is_perfer_return.sync="is_perfer_return"
+      :is_chinese.sync="is_chinese"
     />
     <account-value v-if="is_nav_mode" :daily_nav="daily_nav" />
     <div v-if="!is_nav_mode">
@@ -21,30 +22,30 @@
       <table id="asset">
         <tr>
           <th v-on:click="change_sortkey('asset')">
-            {{ sorted_icon("asset") }}Token
+            {{ sorted_icon("asset") }}{{ $t('asset') }}
           </th>
           <th v-on:click="change_sortkey('size')">
-            {{ sorted_icon("size") }}Size
+            {{ sorted_icon("size") }}{{ $t('size') }}
           </th>
           <th v-on:click="change_sortkey('price')">
-            {{ sorted_icon("price") }}Price
+            {{ sorted_icon("price") }}{{ $t('price') }}
           </th>
           <th v-on:click="change_sortkey('notional_value')">
-            {{ sorted_icon("notional_value") }}Value
+            {{ sorted_icon("notional_value") }}{{ $t('notional_value') }}
           </th>
           <th v-on:click="change_sortkey('entry')">
-            {{ sorted_icon("entry") }}Entry
+            {{ sorted_icon("entry") }}{{ $t('entry') }}
           </th>
           <th v-on:click="change_sortkey('pnl')" v-if="should_show('pnl')">
-            {{ sorted_icon("pnl") }}PnL
+            {{ sorted_icon("pnl") }}{{ $t('pnl') }}
           </th>
           <th
             v-on:click="change_sortkey('pnl_return')"
             v-if="should_show('pnl_return')"
           >
-            {{ sorted_icon("pnl_return") }}Return
+            {{ sorted_icon("pnl_return") }}{{ $t('pnl_return') }}
           </th>
-          <th v-if="screen_width > 500">Note</th>
+          <th v-if="screen_width > 500">{{ $t('note') }}</th>
         </tr>
         <tr
           v-for="asset in assets_table"
@@ -76,7 +77,7 @@
       <footer style="display: flex; justify-content: space-between">
         <ul style="list-style: none; padding-left: 0">
           <li>
-            Total Unrealized PnL:
+            {{ $t('total_unrealized_pnl') }}:
             <span v-bind:class="color(sum_pnl(assets_table))">
               {{ sum_pnl(assets_table) | Number(0) }}
             </span>
@@ -84,7 +85,7 @@
           <li><Timer :time="time" /></li>
         </ul>
         <button v-on:click="save" class="save">
-          {{ saved ? "Done!" : "Save" }}
+          {{ saved ? $t('saved') : $t('save') }}
         </button>
       </footer>
     </div>
@@ -141,6 +142,7 @@ export default {
       is_hide_small_balance: localStorage.is_hide_small_balance === "true",
       is_dark_mode: localStorage.is_dark_mode === "true",
       is_perfer_return: localStorage.is_perfer_return === "true",
+      is_chinese: localStorage.is_chinese === "true",
 
       sort_key: "notional_value",
       sort_order: true,
@@ -251,6 +253,10 @@ export default {
     is_perfer_return: function (val) {
       localStorage.is_perfer_return = val;
     },
+    is_chinese: function (val) {
+      localStorage.is_chinese = val;
+      this.$i18n.locale = val ? "zh" : "en";
+    },
   },
   mounted() {
     this.screen_width =
@@ -263,6 +269,7 @@ export default {
     );
   },
   created: async function () {
+    this.$i18n.locale = this.is_chinese ? "zh" : "en";
     const doc1 = doc(database, `config/${this.id}`);
     const config = await getDoc(doc1);
     if (config.exists()) {

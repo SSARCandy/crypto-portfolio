@@ -1,0 +1,24 @@
+{
+    "asset": "幣",
+    "size": "量",
+    "price": "價",
+    "notional_value": "現值",
+    "entry": "入場價",
+    "pnl": "損益",
+    "pnl_return": "損益率",
+    "note": "備註",
+    "total_unrealized_pnl": "總未實現損益",
+    "update_time": "更新時間",
+    "save": "儲存",
+    "saved": "已儲存！",
+    "sec_ago": "秒前",
+
+    "date": "日期",
+    "nav": "總資產",
+    "nav_page": "總資產走勢",
+
+    "dark_mode": "深色模式",
+    "hide_small_balance": "隱藏小額資產",
+    "show_return_in_small_device": "在小螢幕裝置上顯示損益率",
+    "language": "切換語言 中文/英文"
+}

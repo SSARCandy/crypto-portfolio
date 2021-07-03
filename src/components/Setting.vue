@@ -10,7 +10,7 @@
           />
           <span class="slider round"></span>
         </label>
-        <span>Dark mode</span>
+        <span>{{ $t('dark_mode') }}</span>
       </div>
       <div class="setting-list">
         <label class="switch">
@@ -21,7 +21,7 @@
           />
           <span class="slider round"></span>
         </label>
-        <span>Hide small balance</span>
+        <span>{{ $t('hide_small_balance') }}</span>
       </div>
       <div class="setting-list">
         <label class="switch">
@@ -32,7 +32,18 @@
           />
           <span class="slider round"></span>
         </label>
-        <span>Show Return(%) in small device</span>
+        <span>{{ $t('show_return_in_small_device') }}</span>
+      </div>
+      <div class="setting-list">
+        <label class="switch">
+          <input
+            type="checkbox"
+            :checked="is_chinese"
+            v-on:click="click('is_chinese')"
+          />
+          <span class="slider round"></span>
+        </label>  
+        <span>{{ $t('language') }}</span>
       </div>
     </div>
   </div>
@@ -47,6 +58,7 @@ export default {
     is_hide_small_balance: Boolean,
     is_dark_mode: Boolean,
     is_perfer_return: Boolean,
+    is_chinese: Boolean,
   },
   data() {
     return {};

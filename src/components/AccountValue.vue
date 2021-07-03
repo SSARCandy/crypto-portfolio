@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     reversed_data: function () {
-      return [].concat(this.daily_nav).reverse();
+      return this.daily_nav.slice().reverse();
     },
     chartOptions: function () {
       return {

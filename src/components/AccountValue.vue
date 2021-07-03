@@ -7,8 +7,8 @@
     ></highcharts>
     <table id="nav-table">
       <tr>
-        <th>Date</th>
-        <th>Value</th>
+        <th>{{ $t('date') }}</th>
+        <th>{{ $t('nav') }}</th>
       </tr>
       <tr v-for="d in reversed_data" v-bind:key="d[0]">
         <td>{{ d[0] }}</td>
@@ -59,7 +59,7 @@ export default {
           enabled: false,
         },
         title: {
-          text: "Account Value",
+          text: this.$i18n.t("nav_page"),
         },
         plotOptions: {
           areaspline: {

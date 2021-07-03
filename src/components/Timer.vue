@@ -1,5 +1,5 @@
 <template>
-  <span>Update: {{ lastUpdate }}</span>
+  <span>{{ $t('update_time') }}: {{ lastUpdate }}</span>
 </template>
 
 <script>
@@ -19,7 +19,7 @@ export default {
   computed: {
     lastUpdate() {
       const delta = (dayjs(this.now) - dayjs(this.time)) / 1000;
-      return `${delta.toFixed(0)} sec ago`;
+      return `${delta.toFixed(0)} ${this.$i18n.t('sec_ago')}`;
     },
   },
   created: function () {

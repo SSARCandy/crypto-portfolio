@@ -14,6 +14,7 @@
       :is_dark_mode.sync="is_dark_mode"
       :is_hide_small_balance.sync="is_hide_small_balance"
       :is_perfer_return.sync="is_perfer_return"
+      :is_chinese.sync="is_chinese"
     />
     <account-value v-if="is_nav_mode" :daily_nav="daily_nav" />
     <div v-if="!is_nav_mode">
@@ -141,6 +142,7 @@ export default {
       is_hide_small_balance: localStorage.is_hide_small_balance === "true",
       is_dark_mode: localStorage.is_dark_mode === "true",
       is_perfer_return: localStorage.is_perfer_return === "true",
+      is_chinese: localStorage.is_chinese === "true",
 
       sort_key: "notional_value",
       sort_order: true,
@@ -253,6 +255,7 @@ export default {
     },
     is_chinese: function (val) {
       localStorage.is_chinese = val;
+      this.$i18n.locale = val ? "zh" : "en";
     },
   },
   mounted() {
@@ -266,6 +269,7 @@ export default {
     );
   },
   created: async function () {
+    this.$i18n.locale = this.is_chinese ? "zh" : "en";
     const doc1 = doc(database, `config/${this.id}`);
     const config = await getDoc(doc1);
     if (config.exists()) {

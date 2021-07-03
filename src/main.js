@@ -10,8 +10,8 @@ const messages = {
   "zh": require("./i18n/zh.json"),
 };
 const i18n = new VueI18n({
-  locale: 'zh', // set locale
-  messages, // set locale messages
+  locale: 'en', 
+  messages, 
 });
 
 new Vue({

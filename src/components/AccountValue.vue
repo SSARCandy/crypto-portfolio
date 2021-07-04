@@ -52,7 +52,7 @@ export default {
     chartOptions: function () {
       return {
         chart: {
-          type: "areaspline",
+          type: "area",
           animation: false,
         },
         legend: {

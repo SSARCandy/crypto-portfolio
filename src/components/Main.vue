@@ -22,33 +22,33 @@
       <table id="asset">
         <tr>
           <th v-on:click="change_sortkey('tag')" v-if="should_show('tag')">
-            {{ sorted_icon("tag") }}{{ $t('tag') }}
+            {{ sorted_icon("tag") }}{{ $t("tag") }}
           </th>
           <th v-on:click="change_sortkey('asset')">
-            {{ sorted_icon("asset") }}{{ $t('asset') }}
+            {{ sorted_icon("asset") }}{{ $t("asset") }}
           </th>
           <th v-on:click="change_sortkey('size')">
-            {{ sorted_icon("size") }}{{ $t('size') }}
+            {{ sorted_icon("size") }}{{ $t("size") }}
           </th>
           <th v-on:click="change_sortkey('price')">
-            {{ sorted_icon("price") }}{{ $t('price') }}
+            {{ sorted_icon("price") }}{{ $t("price") }}
           </th>
           <th v-on:click="change_sortkey('notional_value')">
-            {{ sorted_icon("notional_value") }}{{ $t('notional_value') }}
+            {{ sorted_icon("notional_value") }}{{ $t("notional_value") }}
           </th>
           <th v-on:click="change_sortkey('entry')">
-            {{ sorted_icon("entry") }}{{ $t('entry') }}
+            {{ sorted_icon("entry") }}{{ $t("entry") }}
           </th>
           <th v-on:click="change_sortkey('pnl')" v-if="should_show('pnl')">
-            {{ sorted_icon("pnl") }}{{ $t('pnl') }}
+            {{ sorted_icon("pnl") }}{{ $t("pnl") }}
           </th>
           <th
             v-on:click="change_sortkey('pnl_return')"
             v-if="should_show('pnl_return')"
           >
-            {{ sorted_icon("pnl_return") }}{{ $t('pnl_return') }}
+            {{ sorted_icon("pnl_return") }}{{ $t("pnl_return") }}
           </th>
-          <th v-if="screen_width > 500">{{ $t('note') }}</th>
+          <th v-if="screen_width > 500">{{ $t("note") }}</th>
         </tr>
         <tr
           v-for="asset in assets_table"
@@ -61,7 +61,11 @@
             v-if="should_show('tag')"
             v-on:click="change_tag(`${asset.asset}-tag`)"
           >
-            {{ userdata[`${asset.asset}-tag`] !== undefined ? userdata[`${asset.asset}-tag`] + 1 : '' }}
+            {{
+              userdata[`${asset.asset}-tag`] !== undefined
+                ? userdata[`${asset.asset}-tag`] + 1
+                : ""
+            }}
           </td>
           <td>{{ asset.asset }}</td>
           <td>{{ asset.size | Number(2) }}</td>
@@ -88,7 +92,7 @@
       <footer style="display: flex; justify-content: space-between">
         <ul style="list-style: none; padding-left: 0">
           <li>
-            {{ $t('total_unrealized_pnl') }}:
+            {{ $t("total_unrealized_pnl") }}:
             <span v-bind:class="color(sum_pnl(assets_table))">
               {{ sum_pnl(assets_table) | Number(0) }}
             </span>
@@ -96,7 +100,7 @@
           <li><Timer :time="time" /></li>
         </ul>
         <button v-on:click="save" class="save">
-          {{ saved ? $t('saved') : $t('save') }}
+          {{ saved ? $t("saved") : $t("save") }}
         </button>
       </footer>
     </div>
@@ -111,6 +115,7 @@ import Setting from "./Setting";
 import Timer from "./Timer.vue";
 import sortBy from "lodash/sortBy";
 import orderBy from "lodash/orderBy";
+import _ from "lodash";
 import sum from "lodash/sum";
 import { initializeApp } from "@firebase/app";
 import { getAnalytics } from "@firebase/analytics";
@@ -160,8 +165,7 @@ export default {
       sort_order: 1, // 0: asc, 1: desc, 2: un-sorted
     };
   },
-  computed: {
-  },
+  computed: {},
   filters: {
     toFixed: (v, demical = 2) => {
       if (v == undefined) return 0;
@@ -219,11 +223,18 @@ export default {
     },
     tagcolor(idx) {
       const color = [
-        "#4059FB", "#FF0000", "#00EE00", "#F1F605", "#0EE5E4", "#E65CA8", "#757673", "#F99700"
+        "#4059FB",
+        "#FF0000",
+        "#00EE00",
+        "#F1F605",
+        "#0EE5E4",
+        "#E65CA8",
+        "#757673",
+        "#F99700",
       ];
       return {
-        backgroundColor: color[idx]
-      }
+        backgroundColor: color[idx],
+      };
     },
     color(v) {
       return { buy: v > 0, sell: v < 0 };
@@ -244,21 +255,7 @@ export default {
       } else {
         this.sort_key = k;
       }
-      if (this.sort_order !== 2){
-        this.assets_table = orderBy(
-          this.assets.map((x) => ({
-            ...x,
-            tag: this.userdata[`${x.asset}-tag`],
-            price: this.price_map[x.asset],
-            notional_value: this.price_map[x.asset] * x.size,
-            entry: this.userdata[x.asset] || 0,
-            pnl: this.pnl(x),
-            pnl_return: this.pnl_return(x),
-          })),
-          this.sort_key,
-          this.sort_order === 1 ? "desc" : "asc"
-        );
-      }
+      this.update_assets_table();
     },
     change_tag(k) {
       this.sort_order = 2;
@@ -267,7 +264,40 @@ export default {
         return;
       }
       this.userdata[k] = (this.userdata[k] + 1) % 8;
-    }
+    },
+    update_assets_table() {
+      const res = this.assets.map((x) => ({
+        ...x,
+        tag: this.userdata[`${x.asset}-tag`],
+        price: this.price_map[x.asset],
+        notional_value: this.price_map[x.asset] * x.size,
+        entry: this.userdata[x.asset] || 0,
+        pnl: this.pnl(x),
+        pnl_return: this.pnl_return(x),
+      }));
+      if (this.sort_order !== 2) {
+        this.assets_table = orderBy(
+          res,
+          this.sort_key,
+          this.sort_order === 1 ? "desc" : "asc"
+        );
+      } else {
+        const assets_order = this.assets_table.map(x => x.asset);
+        const assets_map = _.keyBy(res, "asset");
+        const new_assets_table = [];
+        for (const asset of assets_order) {
+          const asset_row = assets_map[asset];
+          if (asset_row) {
+            new_assets_table.push(asset_row);
+            delete assets_map[asset];
+          } 
+        }
+        for (const k of Object.keys(assets_map)) {
+          new_assets_table.push(assets_map[k]);
+        }
+        this.assets_table = new_assets_table;
+      }
+    },
   },
   watch: {
     is_dark_mode: function (val) {
@@ -304,7 +334,7 @@ export default {
     const config = await getDoc(doc1);
     if (config.exists()) {
       this.userdata = config.data();
-      this.change_sortkey(this.sort_key);
+      this.update_assets_table();
     }
 
     const doc2 = doc(database, `asset/${this.id}`);
@@ -313,14 +343,14 @@ export default {
       const { time, data } = asset.data();
       this.time = time;
       this.assets = data;
-      this.change_sortkey(this.sort_key);
+      this.update_assets_table();
     });
 
     const doc3 = doc(database, "price/spot");
     onSnapshot(doc3, (price_map) => {
       if (!price_map.exists()) return;
       this.price_map = price_map.data();
-      this.change_sortkey(this.sort_key);
+      this.update_assets_table();
     });
 
     const doc4 = doc(database, `nav/${this.id}`);

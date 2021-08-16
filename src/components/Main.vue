@@ -282,7 +282,7 @@ export default {
           this.sort_order === 1 ? "desc" : "asc"
         );
       } else {
-        const assets_order = this.assets_table.map(x => x.asset);
+        const assets_order = this.assets_table.map((x) => x.asset);
         const assets_map = _.keyBy(res, "asset");
         const new_assets_table = [];
         for (const asset of assets_order) {
@@ -290,7 +290,7 @@ export default {
           if (asset_row) {
             new_assets_table.push(asset_row);
             delete assets_map[asset];
-          } 
+          }
         }
         for (const k of Object.keys(assets_map)) {
           new_assets_table.push(assets_map[k]);

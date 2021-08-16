@@ -21,6 +21,9 @@
       <pie-chart :assets="assets_table" />
       <table id="asset">
         <tr>
+          <th v-on:click="change_sortkey('tag')" v-if="should_show('tag')">
+            {{ sorted_icon("tag") }}{{ $t('tag') }}
+          </th>
           <th v-on:click="change_sortkey('asset')">
             {{ sorted_icon("asset") }}{{ $t('asset') }}
           </th>
@@ -52,6 +55,14 @@
           v-bind:key="asset.asset"
           v-show="!is_hide_small_balance || asset.size * asset.price > 10"
         >
+          <td
+            class="btn-tag"
+            v-bind:style="tagcolor(userdata[`${asset.asset}-tag`])"
+            v-if="should_show('tag')"
+            v-on:click="change_tag(`${asset.asset}-tag`)"
+          >
+            {{ userdata[`${asset.asset}-tag`] !== undefined ? userdata[`${asset.asset}-tag`] + 1 : '' }}
+          </td>
           <td>{{ asset.asset }}</td>
           <td>{{ asset.size | Number(2) }}</td>
           <td>{{ asset.price | Number(3) }}</td>
@@ -130,6 +141,7 @@ export default {
       id: window.location.host,
       time: 0,
       assets: [],
+      assets_table: [],
       price_map: {},
       userdata: {},
       daily_nav: [],
@@ -145,24 +157,10 @@ export default {
       is_chinese: localStorage.is_chinese === "true",
 
       sort_key: "notional_value",
-      sort_order: true,
+      sort_order: 1, // 0: asc, 1: desc, 2: un-sorted
     };
   },
   computed: {
-    assets_table() {
-      return orderBy(
-        this.assets.map((x) => ({
-          ...x,
-          price: this.price_map[x.asset],
-          notional_value: this.price_map[x.asset] * x.size,
-          entry: this.userdata[x.asset] || 0,
-          pnl: this.pnl(x),
-          pnl_return: this.pnl_return(x),
-        })),
-        this.sort_key,
-        this.sort_order ? "desc" : "asc"
-      );
-    },
   },
   filters: {
     toFixed: (v, demical = 2) => {
@@ -219,6 +217,14 @@ export default {
         })
       );
     },
+    tagcolor(idx) {
+      const color = [
+        "#4059FB", "#FF0000", "#00EE00", "#F1F605", "#0EE5E4", "#E65CA8", "#757673", "#F99700"
+      ];
+      return {
+        backgroundColor: color[idx]
+      }
+    },
     color(v) {
       return { buy: v > 0, sell: v < 0 };
     },
@@ -229,15 +235,39 @@ export default {
     },
     sorted_icon(k) {
       if (k !== this.sort_key) return "";
-      return this.sort_order ? "↓" : "↑";
+      if (this.sort_order === 2) return "";
+      return this.sort_order === 1 ? "↓" : "↑";
     },
     change_sortkey(k) {
       if (k === this.sort_key) {
-        this.sort_order = !this.sort_order;
+        this.sort_order = (this.sort_order + 1) % 3;
+      } else {
+        this.sort_key = k;
+      }
+      if (this.sort_order !== 2){
+        this.assets_table = orderBy(
+          this.assets.map((x) => ({
+            ...x,
+            tag: this.userdata[`${x.asset}-tag`],
+            price: this.price_map[x.asset],
+            notional_value: this.price_map[x.asset] * x.size,
+            entry: this.userdata[x.asset] || 0,
+            pnl: this.pnl(x),
+            pnl_return: this.pnl_return(x),
+          })),
+          this.sort_key,
+          this.sort_order === 1 ? "desc" : "asc"
+        );
+      }
+    },
+    change_tag(k) {
+      this.sort_order = 2;
+      if (this.userdata[k] === undefined) {
+        this.$set(this.userdata, k, 0);
         return;
       }
-      this.sort_key = k;
-    },
+      this.userdata[k] = (this.userdata[k] + 1) % 8;
+    }
   },
   watch: {
     is_dark_mode: function (val) {
@@ -274,6 +304,7 @@ export default {
     const config = await getDoc(doc1);
     if (config.exists()) {
       this.userdata = config.data();
+      this.change_sortkey(this.sort_key);
     }
 
     const doc2 = doc(database, `asset/${this.id}`);
@@ -282,12 +313,14 @@ export default {
       const { time, data } = asset.data();
       this.time = time;
       this.assets = data;
+      this.change_sortkey(this.sort_key);
     });
 
     const doc3 = doc(database, "price/spot");
     onSnapshot(doc3, (price_map) => {
       if (!price_map.exists()) return;
       this.price_map = price_map.data();
+      this.change_sortkey(this.sort_key);
     });
 
     const doc4 = doc(database, `nav/${this.id}`);
@@ -445,5 +478,10 @@ button:hover {
 
 .fas {
   vertical-align: middle;
+}
+
+.btn-tag {
+  width: 27px;
+  text-align: center;
 }
 </style>

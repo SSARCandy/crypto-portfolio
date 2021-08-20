@@ -15,8 +15,8 @@
       <tr v-for="(d, i) in reversed_data" v-bind:key="d[0]">
         <td>{{ d[0] }}</td>
         <td>$ {{ d[1] | Number(0) }}</td>
-        <td>
-          $ {{ (d[1] - reversed_data[Math.min(i + 1, reversed_data.length - 1)][1]) | Number(0) }}
+        <td v-bind:class="color(dail_pnl(i))">
+          $ {{ dail_pnl(i) | Number(0) }}
         </td>
       </tr>
     </table>
@@ -123,7 +123,17 @@ export default {
       };
     },
   },
-  methods: {},
+  methods: {
+    dail_pnl(idx) {
+      return (
+        this.reversed_data[idx][1] -
+        this.reversed_data[Math.min(idx + 1, this.reversed_data.length - 1)][1]
+      );
+    },
+    color(v) {
+      return { buy: v > 0, sell: v < 0 };
+    },
+  },
   mounted() {},
 };
 </script>

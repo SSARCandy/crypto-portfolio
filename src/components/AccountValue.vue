@@ -7,12 +7,14 @@
     ></highcharts>
     <table id="nav-table">
       <tr>
-        <th>{{ $t('date') }}</th>
-        <th>{{ $t('nav') }}</th>
+        <th>{{ $t("date") }}</th>
+        <th>{{ $t("nav") }}</th>
+        <th>{{ $t("diff") }}</th>
       </tr>
-      <tr v-for="d in reversed_data" v-bind:key="d[0]">
+      <tr v-for="(d, i) in reversed_data" v-bind:key="d[0]">
         <td>{{ d[0] }}</td>
         <td>$ {{ d[1] | Number(0) }}</td>
+        <td>$ {{ d[1] - reversed_data[Math.min(i + 1, reversed_data.length - 1)][1] | Number(0) }}</td>
       </tr>
     </table>
   </div>
@@ -63,27 +65,27 @@ export default {
         },
         plotOptions: {
           areaspline: {
-            threshold: null
+            threshold: null,
           },
           series: {
             animation: {
-              duration: 500
+              duration: 500,
             },
             marker: {
               radius: 0,
             },
-            fillOpacity: 1
+            fillOpacity: 1,
           },
         },
         xAxis: {
           type: "datetime",
-          dateTimeLabelFormats:{
-            day: '%d %b %Y'    //ex- 01 Jan 2016
+          dateTimeLabelFormats: {
+            day: "%d %b %Y", //ex- 01 Jan 2016
           },
           labels: {
             rotation: 0,
-            format: '{value:%m-%d}',
-          }
+            format: "{value:%m-%d}",
+          },
         },
         yAxis: {
           title: {
@@ -108,8 +110,8 @@ export default {
             name: "",
             background: "#00f",
             data: this.daily_nav.map((v) => {
-              const [y, m, d] = v[0].split('-');
-              return [Date.UTC(y, +m-1, d), v[1]];
+              const [y, m, d] = v[0].split("-");
+              return [Date.UTC(y, +m - 1, d), v[1]];
             }),
           },
         ],

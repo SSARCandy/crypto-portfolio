@@ -9,6 +9,7 @@
     "pnl_return": "Return",
     "note": "Note",
     "total_unrealized_pnl": "Total Unrealized PnL",
+    "today_pnl": "Today PnL",
     "update_time": "Update Time",
     "save": "Save",
     "saved": "Done !",
@@ -17,6 +18,7 @@
     "date": "Date",
     "nav": "Net Account Value",
     "nav_page": "Net Account Value",
+    "diff": "Daily PnL",
 
     "dark_mode": "Dark Mode",
     "hide_small_balance": "Hide Small Balance",

@@ -9,6 +9,7 @@
     "pnl_return": "損益率",
     "note": "備註",
     "total_unrealized_pnl": "總未實現損益",
+    "today_pnl": "今日損益",
     "update_time": "更新時間",
     "save": "儲存",
     "saved": "已儲存！",
@@ -17,6 +18,7 @@
     "date": "日期",
     "nav": "總資產",
     "nav_page": "總資產走勢",
+    "diff": "日增減",
 
     "dark_mode": "深色模式",
     "hide_small_balance": "隱藏小額資產",

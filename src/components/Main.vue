@@ -97,6 +97,12 @@
               {{ sum_pnl(assets_table) | Number(0) }}
             </span>
           </li>
+          <li>
+            {{ $t("today_pnl") }}:
+            <span v-bind:class="color(today_pnl())">
+              {{ today_pnl() | Number(0) }}
+            </span>
+          </li>
           <li><Timer :time="time" /></li>
         </ul>
         <button v-on:click="save" class="save">
@@ -219,6 +225,13 @@ export default {
           if (!this.userdata[asset]) return 0;
           return size * (price - this.userdata[asset]);
         })
+      );
+    },
+    today_pnl() {
+      if (this.daily_nav.length === 0) return 0;
+      return (
+        sum(this.assets_table.map(({ price, size }) => price * size)) -
+        this.daily_nav[0][1]
       );
     },
     tagcolor(idx) {

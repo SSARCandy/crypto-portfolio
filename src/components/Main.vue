@@ -228,10 +228,10 @@ export default {
       );
     },
     today_pnl() {
-      if (this.daily_nav.length === 0) return 0;
+      if (this.daily_nav.length < 2) return 0;
       return (
         sum(this.assets_table.map(({ price, size }) => price * size)) -
-        this.daily_nav[this.daily_nav.length - 1][1]
+        this.daily_nav[this.daily_nav.length - 2][1]
       );
     },
     tagcolor(idx) {

@@ -5,6 +5,7 @@
       style="height: 300px; width: 500"
       :options="chartOptions"
     ></highcharts>
+    <export-table :table_id="'nav-table'" />
     <table id="nav-table">
       <tr>
         <th>{{ $t("date") }}</th>
@@ -14,7 +15,9 @@
       <tr v-for="(d, i) in reversed_data" v-bind:key="d[0]">
         <td>{{ d[0] }}</td>
         <td>$ {{ d[1] | Number(0) }}</td>
-        <td>$ {{ d[1] - reversed_data[Math.min(i + 1, reversed_data.length - 1)][1] | Number(0) }}</td>
+        <td>
+          $ {{ (d[1] - reversed_data[Math.min(i + 1, reversed_data.length - 1)][1]) | Number(0) }}
+        </td>
       </tr>
     </table>
   </div>
@@ -22,6 +25,7 @@
 
 <script>
 import { Chart } from "highcharts-vue";
+import ExportTable from "./ExportTable.vue";
 
 export default {
   name: "AccountValue",
@@ -30,6 +34,7 @@ export default {
   },
   components: {
     highcharts: Chart,
+    ExportTable,
   },
   data() {
     return {};

@@ -231,7 +231,7 @@ export default {
       if (this.daily_nav.length === 0) return 0;
       return (
         sum(this.assets_table.map(({ price, size }) => price * size)) -
-        this.daily_nav[0][1]
+        this.daily_nav[this.daily_nav.length - 1][1]
       );
     },
     tagcolor(idx) {

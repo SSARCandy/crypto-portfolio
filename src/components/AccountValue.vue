@@ -16,7 +16,7 @@
         <td>{{ d[0] }}</td>
         <td>$ {{ d[1] | Number(0) }}</td>
         <td v-bind:class="color(dail_pnl(i))">
-          $ {{ dail_pnl(i) | Number(0) }}
+          {{ dail_pnl(i) | Number(0) }}
         </td>
       </tr>
     </table>

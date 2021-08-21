@@ -15,6 +15,7 @@
       :is_hide_small_balance.sync="is_hide_small_balance"
       :is_perfer_return.sync="is_perfer_return"
       :is_chinese.sync="is_chinese"
+      :timeframe.sync="timeframe"
     />
     <account-value v-if="is_nav_mode" :daily_nav="daily_nav" />
     <div v-if="!is_nav_mode">
@@ -27,11 +28,14 @@
           <th v-on:click="change_sortkey('asset')">
             {{ sorted_icon("asset") }}{{ $t("asset") }}
           </th>
-          <th v-on:click="change_sortkey('size')">
-            {{ sorted_icon("size") }}{{ $t("size") }}
-          </th>
           <th v-on:click="change_sortkey('price')">
             {{ sorted_icon("price") }}{{ $t("price") }}
+          </th>
+          <th v-on:click="change_sortkey('price_changes')" v-if="should_show('price_changes')">
+            {{ sorted_icon("price_changes") }}{{ $t("price_changes") }}
+          </th>
+          <th v-on:click="change_sortkey('size')">
+            {{ sorted_icon("size") }}{{ $t("size") }}
           </th>
           <th v-on:click="change_sortkey('notional_value')">
             {{ sorted_icon("notional_value") }}{{ $t("notional_value") }}
@@ -68,8 +72,14 @@
             }}
           </td>
           <td>{{ asset.asset }}</td>
-          <td>{{ asset.size | Number(2) }}</td>
           <td>{{ asset.price | Number(3) }}</td>
+          <td
+            v-bind:class="color(asset.price_changes)"
+            v-if="should_show('price_changes')"
+          >
+            {{ asset.price_changes | Precentage(1) }}
+          </td>
+          <td>{{ asset.size | Number(2) }}</td>
           <td>{{ asset.notional_value | Number(0) }}</td>
           <td class="entry-price">
             <input v-model.lazy="userdata[asset.asset]" type="number" />
@@ -115,14 +125,15 @@
 
 <script>
 import { firebase } from "../../config/config.json";
-import PieChart from "./PieChart.vue";
+import PieChart from "./PieChart";
 import AccountValue from "./AccountValue";
 import Setting from "./Setting";
-import Timer from "./Timer.vue";
+import Timer from "./Timer";
 import sortBy from "lodash/sortBy";
 import orderBy from "lodash/orderBy";
 import _ from "lodash";
 import sum from "lodash/sum";
+import { fetch_price_changes_pct } from "../common/utils";
 import { initializeApp } from "@firebase/app";
 import { getAnalytics } from "@firebase/analytics";
 import {
@@ -153,6 +164,7 @@ export default {
       time: 0,
       assets: [],
       assets_table: [],
+      assets_chages: {},
       price_map: {},
       userdata: {},
       daily_nav: [],
@@ -166,6 +178,7 @@ export default {
       is_dark_mode: localStorage.is_dark_mode === "true",
       is_perfer_return: localStorage.is_perfer_return === "true",
       is_chinese: localStorage.is_chinese === "true",
+      timeframe: localStorage.timeframe || '1d',
 
       sort_key: "notional_value",
       sort_order: 1, // 0: asc, 1: desc, 2: un-sorted
@@ -283,6 +296,7 @@ export default {
         ...x,
         tag: this.userdata[`${x.asset}-tag`],
         price: this.price_map[x.asset],
+        price_changes: this.assets_chages[x.asset],
         notional_value: this.price_map[x.asset] * x.size,
         entry: this.userdata[x.asset] || 0,
         pnl: this.pnl(x),
@@ -330,6 +344,11 @@ export default {
       localStorage.is_chinese = val;
       this.$i18n.locale = val ? "zh" : "en";
     },
+    timeframe: async function (val) {
+      localStorage.timeframe = val;
+      this.assets_chages = await fetch_price_changes_pct(this.assets.map(x => x.asset), this.timeframe);
+      this.update_assets_table();
+    },
   },
   mounted() {
     this.screen_width =
@@ -351,18 +370,20 @@ export default {
     }
 
     const doc2 = doc(database, `asset/${this.id}`);
-    onSnapshot(doc2, (asset) => {
+    onSnapshot(doc2, async (asset) => {
       if (!asset.exists()) return;
       const { time, data } = asset.data();
       this.time = time;
       this.assets = data;
+      this.assets_chages = await fetch_price_changes_pct(this.assets.map(x => x.asset), this.timeframe);
       this.update_assets_table();
     });
 
     const doc3 = doc(database, "price/spot");
-    onSnapshot(doc3, (price_map) => {
+    onSnapshot(doc3, async (price_map) => {
       if (!price_map.exists()) return;
       this.price_map = price_map.data();
+      this.assets_chages = await fetch_price_changes_pct(this.assets.map(x => x.asset), this.timeframe);
       this.update_assets_table();
     });
 
@@ -371,6 +392,7 @@ export default {
     if (daily_nav.exists()) {
       this.daily_nav = sortBy(Object.entries(daily_nav.data()), (o) => o[0]);
     }
+
   },
 };
 </script>
@@ -513,6 +535,7 @@ button {
   border: var(--color-border) 2px solid;
   border-radius: 2px;
   color: var(--color-text);
+  cursor: pointer;
 }
 
 button:hover {

@@ -3,6 +3,7 @@
     "asset": "Token",
     "size": "Size",
     "price": "Price",
+    "price_changes": "Chg%",
     "notional_value": "Value",
     "entry": "Entry",
     "pnl": "PnL",
@@ -23,5 +24,6 @@
     "dark_mode": "Dark Mode",
     "hide_small_balance": "Hide Small Balance",
     "show_return_in_small_device": "Show Return(%) in Small Device",
-    "language": "Switch between Chinese/English"
+    "language": "Switch between Chinese/English",
+    "timeframe": "Time-frame used for price changes"
 }

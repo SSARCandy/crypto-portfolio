@@ -1,6 +1,17 @@
 <template>
-  <div class="modal" v-if="is_setting_mode" v-on:click="click('is_setting_mode')">
-    <div class="modal-content" v-on:click="(e) => { e.stopImmediatePropagation(); }">
+  <div
+    class="modal"
+    v-if="is_setting_mode"
+    v-on:click="click('is_setting_mode')"
+  >
+    <div
+      class="modal-content"
+      v-on:click="
+        (e) => {
+          e.stopImmediatePropagation();
+        }
+      "
+    >
       <div class="setting-list">
         <label class="switch">
           <input
@@ -10,7 +21,7 @@
           />
           <span class="slider round"></span>
         </label>
-        <span>{{ $t('dark_mode') }}</span>
+        <span>{{ $t("dark_mode") }}</span>
       </div>
       <div class="setting-list">
         <label class="switch">
@@ -21,7 +32,7 @@
           />
           <span class="slider round"></span>
         </label>
-        <span>{{ $t('hide_small_balance') }}</span>
+        <span>{{ $t("hide_small_balance") }}</span>
       </div>
       <div class="setting-list">
         <label class="switch">
@@ -32,7 +43,7 @@
           />
           <span class="slider round"></span>
         </label>
-        <span>{{ $t('show_return_in_small_device') }}</span>
+        <span>{{ $t("show_return_in_small_device") }}</span>
       </div>
       <div class="setting-list">
         <label class="switch">
@@ -42,8 +53,48 @@
             v-on:click="click('is_chinese')"
           />
           <span class="slider round"></span>
-        </label>  
-        <span>{{ $t('language') }}</span>
+        </label>
+        <span>{{ $t("language") }}</span>
+      </div>
+      <hr />
+      <div class="setting-list">
+        <div>{{ $t("timeframe") }}:</div>
+        <button
+          v-on:click="change_timeframe('30m')"
+          :style="{ background: timeframe === '30m' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          30m
+        </button>
+        <button
+          v-on:click="change_timeframe('1h')"
+          :style="{ background: timeframe === '1h' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          1h
+        </button>
+        <button
+          v-on:click="change_timeframe('4h')"
+          :style="{ background: timeframe === '4h' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          4h
+        </button>
+        <button
+          v-on:click="change_timeframe('1d')"
+          :style="{ background: timeframe === '1d' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          1d
+        </button>
+        <button
+          v-on:click="change_timeframe('3d')"
+          :style="{ background: timeframe === '3d' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          3d
+        </button>
+        <button
+          v-on:click="change_timeframe('1w')"
+          :style="{ background: timeframe === '1w' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          1w
+        </button>
       </div>
     </div>
   </div>
@@ -59,6 +110,7 @@ export default {
     is_dark_mode: Boolean,
     is_perfer_return: Boolean,
     is_chinese: Boolean,
+    timeframe: String,
   },
   data() {
     return {};
@@ -66,6 +118,9 @@ export default {
   methods: {
     click(v) {
       this.$emit(`update:${v}`, !this[v]);
+    },
+    change_timeframe(v) {
+      this.$emit(`update:timeframe`, v);
     },
   },
 };

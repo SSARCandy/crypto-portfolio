@@ -76,6 +76,7 @@
           <td
             v-bind:class="color(asset.price_changes)"
             v-if="should_show('price_changes')"
+            style="width: 0px"
           >
             {{ asset.price_changes | Precentage(1) }}
           </td>

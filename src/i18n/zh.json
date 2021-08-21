@@ -3,7 +3,7 @@
     "asset": "幣",
     "size": "量",
     "price": "價",
-    "price_changes": "價格變化%",
+    "price_changes": "價格變化率",
     "notional_value": "現值",
     "entry": "入場價",
     "pnl": "損益",

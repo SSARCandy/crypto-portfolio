@@ -32,7 +32,7 @@
             {{ sorted_icon("price") }}{{ $t("price") }}
           </th>
           <th v-on:click="change_sortkey('price_changes')" v-if="should_show('price_changes')">
-            {{ sorted_icon("price_changes") }}{{ $t("price_changes") }}
+            {{ sorted_icon("price_changes") }}{{timeframe}} {{ $t("price_changes") }}
           </th>
           <th v-on:click="change_sortkey('size')">
             {{ sorted_icon("size") }}{{ $t("size") }}
@@ -375,6 +375,7 @@ export default {
       const { time, data } = asset.data();
       this.time = time;
       this.assets = data;
+      this.update_assets_table();
       this.assets_chages = await fetch_price_changes_pct(this.assets.map(x => x.asset), this.timeframe);
       this.update_assets_table();
     });
@@ -383,6 +384,7 @@ export default {
     onSnapshot(doc3, async (price_map) => {
       if (!price_map.exists()) return;
       this.price_map = price_map.data();
+      this.update_assets_table();
       this.assets_chages = await fetch_price_changes_pct(this.assets.map(x => x.asset), this.timeframe);
       this.update_assets_table();
     });
@@ -392,7 +394,6 @@ export default {
     if (daily_nav.exists()) {
       this.daily_nav = sortBy(Object.entries(daily_nav.data()), (o) => o[0]);
     }
-
   },
 };
 </script>

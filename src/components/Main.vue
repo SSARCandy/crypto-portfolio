@@ -209,6 +209,7 @@ export default {
     },
     Precentage: (v, demical = 1) => {
       if (v === Infinity) return "Inf%";
+      if (isNaN(v)) return "--";
       return `${(v * 100 || 0).toFixed(demical)}%`;
     },
   },

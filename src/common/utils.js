@@ -3,19 +3,26 @@ import Binance from "binance-api-node";
 async function fetch_price_changes_pct(assets, interval) {
     const map = {};
     const api = new Binance();
+    const valid_symbols = new Set((await api.exchangeInfo()).symbols.map(x => x.symbol));
+
     for (const asset of assets) {
-        map[asset] = 0;
-        if (~["USDT", "BUSD", "USDC"].indexOf(asset)) {
+        map[asset] = NaN;
+        if (asset === 'USDT') {
+            map[asset] = 0;
             continue;
         }
-        for (const base of ["USDT", "BTC", "BUSD"]) {
+        for (const base of ["USDT", "BTC", "BNB"]) {
+            const symbol  = `${asset}${base}`;
+            if (!valid_symbols.has(symbol)) {
+                continue;
+            }
             try {
                 const res = await api.candles({
+                    symbol,
                     interval,
-                    limit: 1,
-                    symbol: `${asset}${base}`,
+                    limit: 2,
                 });
-                map[asset] = (parseFloat(res[0].close) - parseFloat(res[0].open)) /
+                map[asset] = (parseFloat(res[1].close) - parseFloat(res[0].open)) /
                     parseFloat(res[0].open);
                 break;
             } catch (e) {

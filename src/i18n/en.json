@@ -20,6 +20,7 @@
     "nav": "Net Account Value",
     "nav_page": "Net Account Value",
     "diff": "Daily PnL",
+    "estimate_total_cost": "Estimated Total Cost",
 
     "dark_mode": "Dark Mode",
     "hide_small_balance": "Hide Small Balance",

@@ -31,6 +31,7 @@ export default {
   name: "AccountValue",
   props: {
     daily_nav: Array,
+    estimate_total_cost: Number,
   },
   components: {
     highcharts: Chart,
@@ -61,9 +62,10 @@ export default {
         chart: {
           type: "area",
           animation: false,
+          // styledMode: true,
         },
         legend: {
-          enabled: false,
+          enabled: true,
         },
         title: {
           text: this.$i18n.t("nav_page"),
@@ -79,7 +81,7 @@ export default {
             marker: {
               radius: 0,
             },
-            fillOpacity: 1,
+            fillOpacity: 0,
           },
         },
         xAxis: {
@@ -112,11 +114,21 @@ export default {
         },
         series: [
           {
-            name: "",
+            name: this.$i18n.t('nav'),
             background: "#00f",
+            fillOpacity: 1,
             data: this.daily_nav.map((v) => {
               const [y, m, d] = v[0].split("-");
               return [Date.UTC(y, +m - 1, d), v[1]];
+            }),
+          },
+          {
+            name: this.$i18n.t('estimate_total_cost'),
+            color: "#a00",
+            opacity: 0.5,
+            data: this.daily_nav.map((v) => {
+              const [y, m, d] = v[0].split("-");
+              return [Date.UTC(y, +m - 1, d), this.estimate_total_cost];              
             }),
           },
         ],

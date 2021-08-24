@@ -17,7 +17,11 @@
       :is_chinese.sync="is_chinese"
       :timeframe.sync="timeframe"
     />
-    <account-value v-if="is_nav_mode" :daily_nav="daily_nav" />
+    <account-value
+      v-if="is_nav_mode"
+      :daily_nav="daily_nav" 
+      :estimate_total_cost="estimate_total_cost"
+    />
     <div v-if="!is_nav_mode">
       <pie-chart :assets="assets_table" />
       <table id="asset">
@@ -114,6 +118,12 @@
               {{ today_pnl() | Number(0) }}
             </span>
           </li>
+          <li>
+            {{ $t("estimate_total_cost") }}:
+            <span>
+              {{ estimate_total_cost | Number(0) }}
+            </span>
+          </li>
           <li><Timer :time="time" /></li>
         </ul>
         <button v-on:click="save" class="save">
@@ -185,7 +195,14 @@ export default {
       sort_order: 1, // 0: asc, 1: desc, 2: un-sorted
     };
   },
-  computed: {},
+  computed: {
+    estimate_total_cost() {
+      return sum(this.assets_table.map(asset => {
+        if (~["USDT", "BUSD", "USDC"].indexOf(asset.asset)) return this.assets.size;
+        return asset.size * asset.entry;
+      }));
+    },
+  },
   filters: {
     toFixed: (v, demical = 2) => {
       if (v == undefined) return 0;
@@ -438,6 +455,10 @@ body {
 }
 .highcharts-credits {
   display: none;
+}
+.highcharts-legend-item text {
+  color: var(--color-text) !important;
+  fill: var(--color-text) !important;
 }
 
 #main {

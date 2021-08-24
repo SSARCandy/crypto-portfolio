@@ -197,10 +197,7 @@ export default {
   },
   computed: {
     estimate_total_cost() {
-      return sum(this.assets_table.map(asset => {
-        if (~["USDT", "BUSD", "USDC"].indexOf(asset.asset)) return this.assets.size;
-        return asset.size * asset.entry;
-      }));
+      return sum(this.assets_table.map(asset => asset.size * asset.entry));
     },
   },
   filters: {

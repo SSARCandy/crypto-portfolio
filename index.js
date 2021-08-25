@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const axios = require('axios').default;
 const Binance = require('node-binance-api');
+const Binance2 = require('binance-api-node').default;
 const config = require('./config/config.json');
 const { initializeApp } = require("@firebase/app");
 const { getFirestore, doc, setDoc, updateDoc } = require("@firebase/firestore");
@@ -53,7 +54,7 @@ async function fetchPerpetualWallet(client) {
 async function fetchTokenPrice(tokens) {
     let result = {};
     const BATCH = 50;
-    for (let i = 0; i < tokens.length; i+= BATCH) {
+    for (let i = 0; i < tokens.length; i += BATCH) {
         const batch_list = _.slice(tokens, i, i + BATCH).map(x => alias[x] || x).join(',');
         const res = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${batch_list}&tsyms=USD`);
         result = {
@@ -62,6 +63,22 @@ async function fetchTokenPrice(tokens) {
         };
     }
     return result;
+}
+
+/**
+ * It only consider cash flow between C2C and SPOT wallet
+ */
+async function fetchEstimateTotalCost(key, secret) {
+    const USD = ['USDT', 'BUSD', 'USDC'];
+    const client = new Binance2({
+        apiKey: key,
+        apiSecret: secret,
+    });
+    const in_flow = (await client.universalTransferHistory({ type: 'C2C_MAIN', size: 100 })).rows || [];
+    const out_flow = (await client.universalTransferHistory({ type: 'MAIN_C2C', size: 100 })).rows || [];
+    const total_in = _.sumBy(in_flow.filter(r => ~USD.indexOf(r.asset)), x => +x.amount);
+    const total_out = _.sumBy(out_flow.filter(r => ~USD.indexOf(r.asset)), x => +x.amount);
+    return total_in - total_out;
 }
 
 (async () => {
@@ -90,6 +107,7 @@ async function fetchTokenPrice(tokens) {
 
         const res = {
             time: Date.now(),
+            estimate_total_cost: (await fetchEstimateTotalCost(cnf.APIKEY, cnf.APISECRET)),
             data: result,
         };
         const doc1 = doc(database, `asset/${cnf.id}`);
@@ -114,11 +132,11 @@ async function fetchTokenPrice(tokens) {
     for (const cnf of config.binance) {
         const nav = _.sum(results[cnf.id].map(a => price_map[a.asset] * a.size));
         const doc2 = doc(database, `nav/${cnf.id}`);
-        await updateDoc(doc2, { 
+        await updateDoc(doc2, {
             [((new Date())).toISOString().substr(0, 10)]: nav,
         });
     }
-    
+
     process.exit(0);
 })();
 

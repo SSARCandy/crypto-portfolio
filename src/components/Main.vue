@@ -173,6 +173,7 @@ export default {
     return {
       id: window.location.host,
       time: 0,
+      reported_total_cost: 0,
       assets: [],
       assets_table: [],
       assets_chages: {},
@@ -197,7 +198,8 @@ export default {
   },
   computed: {
     estimate_total_cost() {
-      return sum(this.assets_table.map(asset => asset.size * asset.entry));
+      const estimated = sum(this.assets_table.map(asset => asset.size * asset.entry));
+      return Math.max(estimated, this.reported_total_cost);
     },
   },
   filters: {
@@ -388,8 +390,9 @@ export default {
     const doc2 = doc(database, `asset/${this.id}`);
     onSnapshot(doc2, async (asset) => {
       if (!asset.exists()) return;
-      const { time, data } = asset.data();
+      const { time, data, estimate_total_cost } = asset.data();
       this.time = time;
+      this.reported_total_cost = estimate_total_cost;
       this.assets = data;
       this.update_assets_table();
       this.assets_chages = await fetch_price_changes_pct(this.assets.map(x => x.asset), this.timeframe);

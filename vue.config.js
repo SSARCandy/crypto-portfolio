@@ -12,6 +12,9 @@ module.exports = {
         // })]
     },
     pwa: {
+        workboxOptions: {
+            skipWaiting: true
+        },
         manifestOptions: {
             name: "Asset Allocation",
             short_name: "Portfolio",

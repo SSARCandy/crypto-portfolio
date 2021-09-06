@@ -1,5 +1,5 @@
 <template>
-  <button v-on:click="download">Export As CSV</button>
+  <button v-on:click="download">{{ $t("export_as_csv") }}</button>
 </template>
 
 <script>

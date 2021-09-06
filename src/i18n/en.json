@@ -21,6 +21,7 @@
     "nav_page": "Net Account Value",
     "diff": "Daily PnL",
     "estimate_total_cost": "Estimated Total Cost",
+    "export_as_csv": "Export as CSV",
 
     "dark_mode": "Dark Mode",
     "hide_small_balance": "Hide Small Balance",

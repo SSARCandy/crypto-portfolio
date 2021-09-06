@@ -32,20 +32,20 @@
           <th v-on:click="change_sortkey('asset')">
             {{ sorted_icon("asset") }}{{ $t("asset") }}
           </th>
+          <th v-on:click="change_sortkey('price_changes')" v-if="should_show('price_changes')">
+            {{ sorted_icon("price_changes") }}{{timeframe}} {{ $t("price_changes") }}
+          </th>
           <th v-on:click="change_sortkey('price')">
             {{ sorted_icon("price") }}{{ $t("price") }}
           </th>
-          <th v-on:click="change_sortkey('price_changes')" v-if="should_show('price_changes')">
-            {{ sorted_icon("price_changes") }}{{timeframe}} {{ $t("price_changes") }}
+          <th v-on:click="change_sortkey('entry')">
+            {{ sorted_icon("entry") }}{{ $t("entry") }}
           </th>
           <th v-on:click="change_sortkey('size')">
             {{ sorted_icon("size") }}{{ $t("size") }}
           </th>
           <th v-on:click="change_sortkey('notional_value')">
             {{ sorted_icon("notional_value") }}{{ $t("notional_value") }}
-          </th>
-          <th v-on:click="change_sortkey('entry')">
-            {{ sorted_icon("entry") }}{{ $t("entry") }}
           </th>
           <th v-on:click="change_sortkey('pnl')" v-if="should_show('pnl')">
             {{ sorted_icon("pnl") }}{{ $t("pnl") }}
@@ -76,7 +76,6 @@
             }}
           </td>
           <td>{{ asset.asset }}</td>
-          <td>{{ asset.price | Number(3) }}</td>
           <td
             v-bind:class="color(asset.price_changes)"
             v-if="should_show('price_changes')"
@@ -84,11 +83,12 @@
           >
             {{ asset.price_changes | Precentage(1) }}
           </td>
-          <td>{{ asset.size | Number(2) }}</td>
-          <td>{{ asset.notional_value | Number(0) }}</td>
+          <td>{{ asset.price | Number(3) }}</td>
           <td class="entry-price">
             <input v-model.lazy="userdata[asset.asset]" type="number" />
           </td>
+          <td>{{ asset.size | Number(2) }}</td>
+          <td>{{ asset.notional_value | Number(0) }}</td>
           <td v-bind:class="color(asset.pnl)" v-if="should_show('pnl')">
             {{ asset.pnl | Number(0) }}
           </td>

@@ -74,8 +74,12 @@ async function fetchEstimateTotalCost(key, secret) {
         apiKey: key,
         apiSecret: secret,
     });
-    const in_flow = (await client.universalTransferHistory({ type: 'C2C_MAIN', size: 100 })).rows || [];
-    const out_flow = (await client.universalTransferHistory({ type: 'MAIN_C2C', size: 100 })).rows || [];
+    const C2C_MAIN = (await client.universalTransferHistory({ type: 'C2C_MAIN', size: 100 })).rows || [];
+    const PAY_MAIN = (await client.universalTransferHistory({ type: 'PAY_MAIN', size: 100 })).rows || [];
+    const MAIN_C2C = (await client.universalTransferHistory({ type: 'MAIN_C2C', size: 100 })).rows || [];
+    const MAIN_PAY = (await client.universalTransferHistory({ type: 'MAIN_PAY', size: 100 })).rows || [];
+    const in_flow = [...C2C_MAIN, ...PAY_MAIN];
+    const out_flow = [...MAIN_C2C, ...MAIN_PAY];
     const total_in = _.sumBy(in_flow.filter(r => ~USD.indexOf(r.asset)), x => +x.amount);
     const total_out = _.sumBy(out_flow.filter(r => ~USD.indexOf(r.asset)), x => +x.amount);
     return total_in - total_out;

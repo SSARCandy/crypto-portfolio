@@ -209,7 +209,12 @@ export default {
     },
     merge_by_coins() {
       return Object.values(this.assets_table.reduce((acc, { asset, size, price }) => {
-        acc[asset] = { asset, price, size: (acc[asset] ? acc[asset].size : 0) + size };
+        acc[asset] = { 
+          asset,
+          price,
+          size: (acc[asset] ? acc[asset].size : 0) + size,
+          notional_value: (acc[asset] ? acc[asset].notional_value : 0) + size * price
+        };
         return acc;
       }, {}));
     }

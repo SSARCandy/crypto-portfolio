@@ -30,7 +30,7 @@
           <th v-on:click="change_sortkey('tag')" v-if="should_show('tag')">
             {{ sorted_icon("tag") }}{{ $t("tag") }}
           </th>
-          <th v-on:click="change_sortkey('wallet')">
+          <th v-on:click="change_sortkey('wallet')" v-if="should_show('wallet')">
             {{ sorted_icon("wallet") }}{{ $t("wallet") }}
           </th>
           <th v-on:click="change_sortkey('asset')">
@@ -79,7 +79,7 @@
                 : ""
             }}
           </td>
-          <td>{{ asset.wallet }}</td>
+          <td v-if="should_show('wallet')">{{ asset.wallet }}</td>
           <td>{{ asset.asset }}</td>
           <td
             v-bind:class="color(asset.price_changes)"

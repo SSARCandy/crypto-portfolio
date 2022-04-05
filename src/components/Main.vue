@@ -89,7 +89,7 @@
           </td>
           <td>{{ asset.price | Number(3) }}</td>
           <td class="entry-price">
-            <input v-model.lazy="userdata[asset.asset]" type="number" />
+            <input v-model.lazy="userdata[entry_k(asset.asset, asset.wallet)]" type="number" />
           </td>
           <td>{{ asset.size | Number(2) }}</td>
           <td>{{ asset.notional_value | Number(0) }}</td>
@@ -243,22 +243,22 @@ export default {
       }, 5000);
     },
     pnl(row) {
-      const { asset, size } = row;
-      if (!this.userdata[asset]) return 0;
+      const { asset, size, wallet } = row;
+      if (!this.entry_p(asset, wallet)) return 0;
       if (!this.price_map[asset]) return 0;
-      return size * (this.price_map[asset] - this.userdata[asset]);
+      return size * (this.price_map[asset] - this.entry_p(asset, wallet));
     },
     pnl_return(row) {
-      const { asset } = row;
-      if (!this.userdata[asset]) return 0;
+      const { asset, wallet } = row;
+      if (!this.entry_p(asset, wallet)) return 0;
       if (!this.price_map[asset]) return 0;
-      return this.price_map[asset] / this.userdata[asset] - 1;
+      return this.price_map[asset] / this.entry_p(asset, wallet) - 1;
     },
     sum_pnl(rows) {
       return sum(
-        rows.map(({ asset, size, price }) => {
-          if (!this.userdata[asset]) return 0;
-          return size * (price - this.userdata[asset]);
+        rows.map(({ asset, size, price, wallet }) => {
+          if (!this.entry_p(asset, wallet)) return 0;
+          return size * (price - this.entry_p(asset, wallet));
         })
       );
     },
@@ -320,7 +320,7 @@ export default {
         price: this.price_map[x.asset],
         price_changes: this.assets_chages[x.asset],
         notional_value: this.price_map[x.asset] * x.size,
-        entry: this.userdata[x.asset] || 0,
+        entry: this.entry_p(x.asset, x.wallet),
         pnl: this.pnl(x),
         pnl_return: this.pnl_return(x),
       }));
@@ -349,6 +349,13 @@ export default {
     },
     symbol_key(token, wallet, type){
       return wallet !== 'binance' ? `${token}-${wallet}-${type}` : `${token}-${type}`;
+    },
+    entry_k(token, wallet){
+      return wallet !== 'binance' ? `${token}-${wallet}` : `${token}`;
+    },
+    entry_p(token, wallet) {
+      const k = wallet !== 'binance' ? `${token}-${wallet}` : `${token}`;
+      return this.userdata[k] || 0;
     }
   },
   watch: {

@@ -1,6 +1,7 @@
 const factory = {
   'binance': require('./binance'),
   'whalefin': require('./whalefin'),
+  'ftx': require('./ftx'),
 };
 
 /**

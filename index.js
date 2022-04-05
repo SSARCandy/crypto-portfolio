@@ -31,7 +31,7 @@ async function fetchTokenPrice(tokens) {
 
 (async () => {
     const results = {};
-    for (const type of ['binance', 'whalefin']) {
+    for (const type of ['binance', 'whalefin', 'ftx']) {
         for (const cnf of config[type]) {
             if (!results[cnf.id]) {
                 results[cnf.id] = [];

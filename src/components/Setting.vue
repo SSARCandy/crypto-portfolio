@@ -49,6 +49,17 @@
         <label class="switch">
           <input
             type="checkbox"
+            :checked="is_merge_wallets"
+            v-on:click="click('is_merge_wallets')"
+          />
+          <span class="slider round"></span>
+        </label>
+        <span>{{ $t("is_merge_wallets") }}</span>
+      </div>
+      <div class="setting-list">
+        <label class="switch">
+          <input
+            type="checkbox"
             :checked="is_chinese"
             v-on:click="click('is_chinese')"
           />
@@ -109,6 +120,7 @@ export default {
     is_hide_small_balance: Boolean,
     is_dark_mode: Boolean,
     is_perfer_return: Boolean,
+    is_merge_wallets: Boolean,
     is_chinese: Boolean,
     timeframe: String,
   },

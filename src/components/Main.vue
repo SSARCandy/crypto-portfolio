@@ -14,6 +14,7 @@
       :is_dark_mode.sync="is_dark_mode"
       :is_hide_small_balance.sync="is_hide_small_balance"
       :is_perfer_return.sync="is_perfer_return"
+      :is_merge_wallets.sync="is_merge_wallets"
       :is_chinese.sync="is_chinese"
       :timeframe.sync="timeframe"
     />
@@ -23,7 +24,7 @@
       :estimate_total_cost="estimate_total_cost"
     />
     <div v-if="!is_nav_mode">
-      <pie-chart :assets="assets_table" />
+      <pie-chart :assets="is_merge_wallets ? merge_by_coins : assets_table" />
       <table id="asset">
         <tr>
           <th v-on:click="change_sortkey('tag')" v-if="should_show('tag')">
@@ -193,6 +194,7 @@ export default {
       is_hide_small_balance: localStorage.is_hide_small_balance === "true",
       is_dark_mode: localStorage.is_dark_mode === "true",
       is_perfer_return: localStorage.is_perfer_return === "true",
+      is_merge_wallets: localStorage.is_merge_wallets === "true",
       is_chinese: localStorage.is_chinese === "true",
       timeframe: localStorage.timeframe || '1d',
 
@@ -205,6 +207,12 @@ export default {
       const estimated = sum(this.assets_table.map(asset => asset.size * asset.entry));
       return Math.max(estimated, this.reported_total_cost);
     },
+    merge_by_coins() {
+      return Object.values(this.assets_table.reduce((acc, { asset, size, price }) => {
+        acc[asset] = { asset, price, size: (acc[asset] ? acc[asset].size : 0) + size };
+        return acc;
+      }, {}));
+    }
   },
   filters: {
     toFixed: (v, demical = 2) => {
@@ -371,6 +379,9 @@ export default {
     },
     is_perfer_return: function (val) {
       localStorage.is_perfer_return = val;
+    },
+    is_merge_wallets: function (val) {
+      localStorage.is_merge_wallets = val;
     },
     is_chinese: function (val) {
       localStorage.is_chinese = val;

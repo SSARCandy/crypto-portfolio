@@ -1,8 +1,7 @@
 const _ = require('lodash');
 const axios = require('axios').default;
-const Binance = require('node-binance-api');
-const Binance2 = require('binance-api-node').default;
 const config = require('./config/config.json');
+const { UniversalWalletFetcher } = require('./WalletFetcher');
 const { initializeApp } = require("@firebase/app");
 const { getFirestore, doc, setDoc, updateDoc } = require("@firebase/firestore");
 
@@ -14,42 +13,6 @@ const alias = {
     ONG: 'ONGAS',
     COS: 'CONT',
 };
-
-async function fetchSpotWallet(client) {
-    const res = await client.balance();
-    return Object.entries(res)
-        .map(([k, v]) => ({ asset: k, size: (+v.available) + (+v.onOrder) }))
-        .filter(x => x.size > 0 && x.asset.indexOf('LD') != 0);
-}
-
-async function fetchEarnWallet(client) {
-    const res = await client.lending();
-    return res.positionAmountVos
-        .map(x => ({ asset: x.asset, size: +x.amount }))
-        .filter(x => x.size > 0);
-}
-
-async function fetchFuturesWallet(client) {
-    try {
-        const res = await client.deliveryBalance();
-        return res
-            .map(x => ({ asset: x.asset, size: +x.balance }))
-            .filter(x => x.size > 0);
-    } catch (e) {
-        return [];
-    }
-}
-
-async function fetchPerpetualWallet(client) {
-    try {
-        const res = await client.futuresBalance();
-        return res
-            .map(x => ({ asset: x.asset, size: +x.balance }))
-            .filter(x => x.size > 0);
-    } catch (e) {
-        return [];
-    }
-}
 
 async function fetchTokenPrice(tokens) {
     let result = {};
@@ -65,58 +28,30 @@ async function fetchTokenPrice(tokens) {
     return result;
 }
 
-/**
- * It only consider cash flow between C2C and SPOT wallet
- */
-async function fetchEstimateTotalCost(key, secret) {
-    const USD = ['USDT', 'BUSD', 'USDC'];
-    const client = new Binance2({
-        apiKey: key,
-        apiSecret: secret,
-    });
-    const C2C_MAIN = (await client.universalTransferHistory({ type: 'C2C_MAIN', size: 100 })).rows || [];
-    const PAY_MAIN = (await client.universalTransferHistory({ type: 'PAY_MAIN', size: 100 })).rows || [];
-    const MAIN_C2C = (await client.universalTransferHistory({ type: 'MAIN_C2C', size: 100 })).rows || [];
-    const MAIN_PAY = (await client.universalTransferHistory({ type: 'MAIN_PAY', size: 100 })).rows || [];
-    const in_flow = [...C2C_MAIN, ...PAY_MAIN];
-    const out_flow = [...MAIN_C2C, ...MAIN_PAY];
-    const total_in = _.sumBy(in_flow.filter(r => ~USD.indexOf(r.asset)), x => +x.amount);
-    const total_out = _.sumBy(out_flow.filter(r => ~USD.indexOf(r.asset)), x => +x.amount);
-    return total_in - total_out;
-}
 
 (async () => {
-    let assets = [];
     const results = {};
-    for (const cnf of config.binance) {
-        const client = new Binance().options(cnf);
-        const spot = await fetchSpotWallet(client);
-        const earn = await fetchEarnWallet(client);
-        const futs = await fetchFuturesWallet(client);
-        const perp = await fetchPerpetualWallet(client);
-
-        const asset_map = {};
-        for (const x of [spot, futs, earn, perp]) {
-            for (const { asset, size } of x) {
-                asset_map[asset] = asset_map[asset] ? asset_map[asset] + size : size;
+    for (const type of ['binance', 'whalefin']) {
+        for (const cnf of config[type]) {
+            if (!results[cnf.id]) {
+                results[cnf.id] = [];
             }
+            const balances = await UniversalWalletFetcher(type, cnf);
+            results[cnf.id].push(...balances);
         }
+    }
 
-        const result = Object.keys(asset_map).map(k => ({
-            asset: k,
-            size: asset_map[k],
-        }));
-        results[cnf.id] = result;
-        assets = _.union(assets, Object.keys(asset_map));
-
+    let assets = [];
+    for (const id of Object.keys(results)) {
         const res = {
             time: Date.now(),
-            estimate_total_cost: (await fetchEstimateTotalCost(cnf.APIKEY, cnf.APISECRET)),
-            data: result,
+            estimate_total_cost: 0,
+            data: results[id],
         };
-        const doc1 = doc(database, `asset/${cnf.id}`);
+        const doc1 = doc(database, `asset/${id}`);
         await setDoc(doc1, res);
 
+        assets = _.union(assets, results[id].map(x => x.asset));
     }
     let price_map = {};
     const prices = await fetchTokenPrice(assets);
@@ -133,9 +68,9 @@ async function fetchEstimateTotalCost(key, secret) {
     await setDoc(price_doc, price_map);
 
     // update NAV
-    for (const cnf of config.binance) {
-        const nav = _.sum(results[cnf.id].map(a => price_map[a.asset] * a.size));
-        const doc2 = doc(database, `nav/${cnf.id}`);
+    for (const id of Object.keys(results)) {
+        const nav = _.sum(results[id].map(a => price_map[a.asset] * a.size));
+        const doc2 = doc(database, `nav/${id}`);
         await updateDoc(doc2, {
             [((new Date())).toISOString().substr(0, 10)]: nav,
         });

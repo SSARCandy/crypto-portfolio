@@ -1,6 +1,7 @@
 {
     "tag": "Tag",
     "asset": "Token",
+    "wallet": "Wallet",
     "size": "Size",
     "price": "Price",
     "price_changes": "Chg%",

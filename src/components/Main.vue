@@ -29,6 +29,9 @@
           <th v-on:click="change_sortkey('tag')" v-if="should_show('tag')">
             {{ sorted_icon("tag") }}{{ $t("tag") }}
           </th>
+          <th v-on:click="change_sortkey('wallet')">
+            {{ sorted_icon("wallet") }}{{ $t("wallet") }}
+          </th>
           <th v-on:click="change_sortkey('asset')">
             {{ sorted_icon("asset") }}{{ $t("asset") }}
           </th>
@@ -60,21 +63,22 @@
         </tr>
         <tr
           v-for="asset in assets_table"
-          v-bind:key="asset.asset"
+          v-bind:key="asset.asset+asset.wallet"
           v-show="!is_hide_small_balance || asset.size * asset.price > 10"
         >
           <td
             class="btn-tag"
-            v-bind:style="tagcolor(userdata[`${asset.asset}-tag`])"
+            v-bind:style="tagcolor(userdata[symbol_key(asset.asset, asset.wallet, 'tag')])"
             v-if="should_show('tag')"
-            v-on:click="change_tag(`${asset.asset}-tag`)"
+            v-on:click="change_tag(symbol_key(asset.asset, asset.wallet, 'tag'))"
           >
             {{
-              userdata[`${asset.asset}-tag`] !== undefined
-                ? userdata[`${asset.asset}-tag`] + 1
+              userdata[symbol_key(asset.asset, asset.wallet, 'tag')] !== undefined
+                ? userdata[symbol_key(asset.asset, asset.wallet, 'tag')] + 1
                 : ""
             }}
           </td>
+          <td>{{ asset.wallet }}</td>
           <td>{{ asset.asset }}</td>
           <td
             v-bind:class="color(asset.price_changes)"
@@ -100,7 +104,7 @@
             style="max-width: 200px"
             v-if="screen_width > 500"
           >
-            <input v-model="userdata[`${asset.asset}-note`]" />
+            <input v-model="userdata[symbol_key(asset.asset, asset.wallet, 'note')]" />
           </td>
         </tr>
       </table>
@@ -312,7 +316,7 @@ export default {
     update_assets_table() {
       const res = this.assets.map((x) => ({
         ...x,
-        tag: this.userdata[`${x.asset}-tag`],
+        tag: this.userdata[this.symbol_key(x.asset, x.wallet, 'tag')],
         price: this.price_map[x.asset],
         price_changes: this.assets_chages[x.asset],
         notional_value: this.price_map[x.asset] * x.size,
@@ -343,6 +347,9 @@ export default {
         this.assets_table = new_assets_table;
       }
     },
+    symbol_key(token, wallet, type){
+      return wallet !== 'binance' ? `${token}-${wallet}-${type}` : `${token}-${type}`;
+    }
   },
   watch: {
     is_dark_mode: function (val) {

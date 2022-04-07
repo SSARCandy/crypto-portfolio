@@ -19,7 +19,6 @@ async function walletFetcher(credentials) {
     size: (+x.total),
     wallet: 'ftx',
   })).filter(x => x.size > 0);
-  console.log(result);
 
   return result;
 }

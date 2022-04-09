@@ -28,10 +28,17 @@ async function fetchTokenPrice(tokens) {
   return result;
 }
 
+const WALLETS = [
+  'binance',
+  'whalefin',
+  'ftx',
+  'terra',
+  'tezos',
+];
 
 (async () => {
   const results = {};
-  for (const type of ['binance', 'whalefin', 'ftx', 'terra']) {
+  for (const type of WALLETS) {
     for (const cnf of config[type]) {
       if (!results[cnf.id]) {
         results[cnf.id] = [];

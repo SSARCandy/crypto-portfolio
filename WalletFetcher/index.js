@@ -4,6 +4,7 @@ const factory = {
   'ftx': require('./ftx'),
   'terra': require('./terra'),
   'tezos': require('./tezos'),
+  'polkadot': require('./polkadot'),
 };
 
 /**

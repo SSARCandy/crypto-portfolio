@@ -34,6 +34,7 @@ const WALLETS = [
   'ftx',
   'terra',
   'tezos',
+  'polkadot',
 ];
 
 (async () => {

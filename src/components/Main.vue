@@ -1,14 +1,22 @@
 <template>
   <div id="main">
-    <button
-      class="btn setting-btn"
-      v-on:click="is_setting_mode = !is_setting_mode"
-    >
-      <i class="fas fa-cog"></i>
-    </button>
-    <button class="btn nav-btn" v-on:click="is_nav_mode = !is_nav_mode">
-      <i class="fas fa-chart-line"></i>
-    </button>
+    <div id="quick-access">
+      <button
+        class="btn setting-btn"
+        v-on:click="is_setting_mode = !is_setting_mode"
+      >
+        <i class="fas fa-cog"></i>
+      </button>
+      <button
+        class="btn setting-btn"
+        v-on:click="is_exchange_chart = !is_exchange_chart"
+      >
+        {{ $t("switch_chart") }}
+      </button>
+      <button class="btn setting-btn" v-on:click="is_nav_mode = !is_nav_mode">
+        <i class="fas fa-chart-line"></i>
+      </button>
+    </div>
     <setting
       :is_setting_mode.sync="is_setting_mode"
       :is_dark_mode.sync="is_dark_mode"
@@ -24,7 +32,7 @@
       :estimate_total_cost="estimate_total_cost"
     />
     <div v-if="!is_nav_mode">
-      <pie-chart :assets="is_merge_wallets ? merge_by_coins : assets_table" />
+      <pie-chart :assets="chart_data" />
       <table id="asset">
         <tr>
           <th v-on:click="change_sortkey('tag')" v-if="should_show('tag')">
@@ -190,6 +198,7 @@ export default {
       screen_width: 0,
 
       is_setting_mode: false,
+      is_exchange_chart: false,
       is_nav_mode: false,
       is_hide_small_balance: localStorage.is_hide_small_balance === "true",
       is_dark_mode: localStorage.is_dark_mode === "true",
@@ -207,17 +216,33 @@ export default {
       const estimated = sum(this.assets_table.map(asset => asset.size * asset.entry));
       return Math.max(estimated, this.reported_total_cost);
     },
-    merge_by_coins() {
-      return Object.values(this.assets_table.reduce((acc, { asset, size, price }) => {
-        acc[asset] = { 
-          asset,
-          price,
-          size: (acc[asset] ? acc[asset].size : 0) + size,
-          notional_value: (acc[asset] ? acc[asset].notional_value : 0) + size * price
-        };
-        return acc;
-      }, {}));
-    }
+    chart_data() {
+      if (this.is_exchange_chart) {
+        return Object.values(this.assets_table.reduce((acc, { wallet, notional_value }) => {
+          acc[wallet] = { 
+            name: wallet,
+            value: (acc[wallet] ? acc[wallet].value : 0) + notional_value,
+          };
+          return acc;
+        }, {}));
+
+      } else if (this.is_merge_wallets) {
+        return Object.values(this.assets_table.reduce((acc, { asset, notional_value }) => {
+          acc[asset] = { 
+            name: asset,
+            value: (acc[asset] ? acc[asset].value : 0) + notional_value,
+          };
+          return acc;
+        }, {}));
+      } else {
+        return this.assets_table.map(asset => {
+          return {
+            name: asset.asset,
+            value: asset.notional_value,
+          };
+        });
+      }
+    },
   },
   filters: {
     toFixed: (v, demical = 2) => {
@@ -565,18 +590,16 @@ input[type="number"] {
   width: 100px;
 }
 
-.nav-btn {
-  font-size: 18px;
-  position: absolute;
-  right: 5px;
-  z-index: 999;
+#quick-access {
+  display: flex;
+  justify-content: space-between;
 }
 
 .setting-btn {
   font-size: 18px;
-  position: absolute;
-  left: 5px;
   z-index: 999;
+  display: flex;
+  align-items: center;
 }
 
 footer {

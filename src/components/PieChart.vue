@@ -14,7 +14,7 @@ import { Chart } from "highcharts-vue";
 export default {
   name: "PieChart",
   props: {
-    assets: Array,
+    assets: Array, // [{ name: "", value: 0 }]
   },
   components: {
     highcharts: Chart,
@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     nav: function () {
-      return sum(this.assets.map(({ price, size }) => price * size));
+      return sum(this.assets.map(({ value }) => value));
     },
     chartOptions: function () {
       return {
@@ -75,7 +75,7 @@ export default {
             name: "",
             colorByPoint: true,
             startAngle: this.startAngle,
-            data: orderBy(this.assets, 'notional_value', 'desc').map((x) => [x.asset, x.price * x.size]),
+            data: orderBy(this.assets, 'value', 'desc').map((x) => [x.name, x.value]),
           },
         ],
       };

@@ -2,6 +2,7 @@ const factory = {
   'binance': require('./binance'),
   'whalefin': require('./whalefin'),
   'ftx': require('./ftx'),
+  'poloniex': require('./poloniex'),
   'terra': require('./terra'),
   'tezos': require('./tezos'),
   'polkadot': require('./polkadot'),

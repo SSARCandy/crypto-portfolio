@@ -32,6 +32,7 @@ const WALLETS = [
   'binance',
   'whalefin',
   'ftx',
+  'poloniex',
   'terra',
   'tezos',
   'polkadot',

@@ -6,6 +6,7 @@ const factory = {
   'terra': require('./terra'),
   'tezos': require('./tezos'),
   'polkadot': require('./polkadot'),
+  'tron': require('./tron'),
 };
 
 /**

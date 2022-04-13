@@ -36,6 +36,7 @@ const WALLETS = [
   'terra',
   'tezos',
   'polkadot',
+  'tron',
 ];
 
 (async () => {

@@ -450,8 +450,6 @@ export default {
       this.reported_total_cost = estimate_total_cost;
       this.assets = data;
       this.update_assets_table();
-      this.assets_chages = await fetch_price_changes_pct(this.assets.map(x => x.asset), this.timeframe);
-      this.update_assets_table();
     });
 
     const doc3 = doc(database, "price/spot");

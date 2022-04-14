@@ -77,12 +77,6 @@
           30m
         </button>
         <button
-          v-on:click="change_timeframe('1h')"
-          :style="{ background: timeframe === '1h' ? 'rgba(170, 170, 170, 0.603)' : '' }"
-        >
-          1h
-        </button>
-        <button
           v-on:click="change_timeframe('4h')"
           :style="{ background: timeframe === '4h' ? 'rgba(170, 170, 170, 0.603)' : '' }"
         >
@@ -93,12 +87,6 @@
           :style="{ background: timeframe === '1d' ? 'rgba(170, 170, 170, 0.603)' : '' }"
         >
           1d
-        </button>
-        <button
-          v-on:click="change_timeframe('3d')"
-          :style="{ background: timeframe === '3d' ? 'rgba(170, 170, 170, 0.603)' : '' }"
-        >
-          3d
         </button>
         <button
           v-on:click="change_timeframe('1w')"

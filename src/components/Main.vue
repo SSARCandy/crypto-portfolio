@@ -96,11 +96,11 @@
           >
             {{ asset.price_changes | Precentage(1) }}
           </td>
-          <td>{{ asset.price | Number(3) }}</td>
+          <td>{{ asset.price | toPrecision(5) }}</td>
           <td class="entry-price">
             <input v-model.lazy="userdata[entry_k(asset.asset, asset.wallet)]" type="number" />
           </td>
-          <td>{{ asset.size | Number(2) }}</td>
+          <td>{{ asset.size | nFormatter(3) }}</td>
           <td>{{ asset.notional_value | Number(0) }}</td>
           <td v-bind:class="color(asset.pnl)" v-if="should_show('pnl')">
             {{ asset.pnl | Number(0) }}
@@ -269,6 +269,19 @@ export default {
       if (v === Infinity) return "Inf%";
       if (isNaN(v)) return "--";
       return `${(v * 100 || 0).toFixed(demical)}%`;
+    },
+    nFormatter: (num, digits) => {
+      const lookup = [
+        { value: 1e3, symbol: "k" },
+        { value: 1e6, symbol: "M" },
+        { value: 1e8, symbol: "B" },
+      ];
+      const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+      const item = lookup.slice().reverse().find(function(item) {
+        return num >= item.value;
+      });
+      if (!item) return num.toFixed(digits);
+      return (num / item.value).toFixed(digits - 1).replace(rx, "$1") + item.symbol;
     },
   },
   methods: {

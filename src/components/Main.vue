@@ -100,7 +100,9 @@
           <td class="entry-price">
             <input v-model.lazy="userdata[entry_k(asset.asset, asset.wallet)]" type="number" />
           </td>
-          <td>{{ asset.size | nFormatter(3) }}</td>
+          <td v-tooltip="asset.size.toString()">
+            {{ asset.size | nFormatter(3) }}
+          </td>
           <td>{{ asset.notional_value | Number(0) }}</td>
           <td v-bind:class="color(asset.pnl)" v-if="should_show('pnl')">
             {{ asset.pnl | Number(0) }}
@@ -148,14 +150,16 @@
 </template>
 
 <script>
+import 'floating-vue/dist/style.css';
 import { firebase } from "../../config/config.json";
 import PieChart from "./PieChart";
+
 import AccountValue from "./AccountValue";
 import Setting from "./Setting";
 import Timer from "./Timer";
 import sortBy from "lodash/sortBy";
 import orderBy from "lodash/orderBy";
-import _ from "lodash";
+import keyBy from "lodash/keyBy";
 import sum from "lodash/sum";
 import { fetch_price_changes_pct } from "../common/utils";
 import { initializeApp } from "@firebase/app";
@@ -383,7 +387,7 @@ export default {
         );
       } else {
         const assets_order = this.assets_table.map((x) => x.asset);
-        const assets_map = _.keyBy(res, "asset");
+        const assets_map = keyBy(res, "asset");
         const new_assets_table = [];
         for (const asset of assets_order) {
           const asset_row = assets_map[asset];
@@ -498,6 +502,7 @@ export default {
 }
 
 body {
+  font-family: monospace;
   background-color: var(--color-bg);
   color: var(--color-text);
 }

@@ -34,6 +34,7 @@ const WALLETS = [
   'ftx',
   'poloniex',
   'bybit',
+  'max',
   'terra',
   'tezos',
   'polkadot',

@@ -4,6 +4,7 @@ const factory = {
   'ftx': require('./ftx'),
   'poloniex': require('./poloniex'),
   'bybit': require('./bybit'),
+  'max': require('./max'),
   'terra': require('./terra'),
   'tezos': require('./tezos'),
   'polkadot': require('./polkadot'),

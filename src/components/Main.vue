@@ -159,7 +159,6 @@ import Setting from "./Setting";
 import Timer from "./Timer";
 import sortBy from "lodash/sortBy";
 import orderBy from "lodash/orderBy";
-import keyBy from "lodash/keyBy";
 import sum from "lodash/sum";
 import { fetch_price_changes_pct } from "../common/utils";
 import { initializeApp } from "@firebase/app";
@@ -354,7 +353,7 @@ export default {
     },
     change_sortkey(k) {
       if (k === this.sort_key) {
-        this.sort_order = (this.sort_order + 1) % 3;
+        this.sort_order = (this.sort_order + 1) % 2;
       } else {
         this.sort_key = k;
       }
@@ -379,28 +378,11 @@ export default {
         pnl: this.pnl(x),
         pnl_return: this.pnl_return(x),
       }));
-      if (this.sort_order !== 2) {
-        this.assets_table = orderBy(
-          res,
-          this.sort_key,
-          this.sort_order === 1 ? "desc" : "asc"
-        );
-      } else {
-        const assets_order = this.assets_table.map((x) => x.asset);
-        const assets_map = keyBy(res, "asset");
-        const new_assets_table = [];
-        for (const asset of assets_order) {
-          const asset_row = assets_map[asset];
-          if (asset_row) {
-            new_assets_table.push(asset_row);
-            delete assets_map[asset];
-          }
-        }
-        for (const k of Object.keys(assets_map)) {
-          new_assets_table.push(assets_map[k]);
-        }
-        this.assets_table = new_assets_table;
-      }
+      this.assets_table = orderBy(
+        res,
+        this.sort_key,
+        this.sort_order === 1 ? "desc" : "asc"
+      );
     },
     symbol_key(token, wallet, type){
       return wallet !== 'binance' ? `${token}-${wallet}-${type}` : `${token}-${type}`;

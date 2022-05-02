@@ -48,6 +48,7 @@ const WALLETS = [
       if (!results[cnf.id]) {
         results[cnf.id] = [];
       }
+      console.log(type, cnf.id);
       const balances = await UniversalWalletFetcher(type, cnf);
       results[cnf.id].push(...balances);
     }

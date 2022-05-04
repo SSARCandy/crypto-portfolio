@@ -122,15 +122,6 @@ export default {
               return [Date.UTC(y, +m - 1, d), v[1]];
             }),
           },
-          {
-            name: this.$i18n.t('estimate_total_cost'),
-            color: "#a00",
-            opacity: 0.5,
-            data: this.daily_nav.map((v) => {
-              const [y, m, d] = v[0].split("-");
-              return [Date.UTC(y, +m - 1, d), this.estimate_total_cost];              
-            }),
-          },
         ],
       };
     },

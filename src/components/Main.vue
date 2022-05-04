@@ -9,7 +9,7 @@
       </button>
       <button
         class="btn setting-btn"
-        v-if="!is_setting_mode"
+        v-show="!is_nav_mode"
         v-on:click="is_exchange_chart = !is_exchange_chart"
       >
         {{ $t("switch_chart") }}

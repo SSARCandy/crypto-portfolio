@@ -5,7 +5,23 @@
       style="height: 300px; width: 500"
       :options="chartOptions"
     ></highcharts>
-    <export-table :table_id="'nav-table'" />
+    <div class="flex-container">
+      <div>
+        <button v-on:click="pick_range(30)" :class="{selected: timeframe === 30}">
+          30d
+        </button>
+        <button v-on:click="pick_range(90)" :class="{selected: timeframe === 90}">
+          90d
+        </button>
+        <button v-on:click="pick_range(180)" :class="{selected: timeframe === 180}">
+          180d
+        </button>
+        <button v-on:click="pick_range(undefined)" :class="{selected: timeframe === undefined}">
+          ALL
+        </button>
+      </div>
+      <export-table :table_id="'nav-table'" />
+    </div>
     <table id="nav-table">
       <tr>
         <th>{{ $t("date") }}</th>
@@ -38,7 +54,9 @@ export default {
     ExportTable,
   },
   data() {
-    return {};
+    return {
+      timeframe: undefined,
+    };
   },
   filters: {
     Number: (v, toFixed) => {
@@ -55,7 +73,7 @@ export default {
   },
   computed: {
     reversed_data: function () {
-      return this.daily_nav.slice().reverse();
+      return this.daily_nav.slice().reverse().slice(0, this.timeframe);
     },
     chartOptions: function () {
       return {
@@ -120,7 +138,7 @@ export default {
             data: this.daily_nav.map((v) => {
               const [y, m, d] = v[0].split("-");
               return [Date.UTC(y, +m - 1, d), v[1]];
-            }),
+            }).slice(-this.timeframe),
           },
         ],
       };
@@ -136,6 +154,9 @@ export default {
     color(v) {
       return { buy: v > 0, sell: v < 0 };
     },
+    pick_range(v) {
+      this.timeframe = v;
+    },
   },
   mounted() {},
 };
@@ -146,5 +167,14 @@ export default {
 th:nth-child(1),
 td:nth-child(1) {
   text-align: left;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.selected {
+  background: rgba(170, 170, 170, 0.603);
 }
 </style>

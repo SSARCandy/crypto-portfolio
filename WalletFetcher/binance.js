@@ -20,14 +20,14 @@ async function fetchLockStacking(client) {
     asset: x.asset,
     size: +x.amount,
   }))
-  .reduce((acc, { asset, size }) => {
-    const prev_sz = (acc[asset] || {}).size || 0;
-    acc[asset] = { 
-      asset: asset,
-      size: prev_sz + size,
-    };
-    return acc;
-  }, {}));
+    .reduce((acc, { asset, size }) => {
+      const prev_sz = (acc[asset] || {}).size || 0;
+      acc[asset] = { 
+        asset: asset,
+        size: prev_sz + size,
+      };
+      return acc;
+    }, {}));
 }
 
 async function fetchSpotWallet(client) {

@@ -13,6 +13,9 @@ const alias = {
   ONG: 'ONGAS',
   COS: 'CONT',
 };
+const overwrite = {
+  TWD: 0.034,
+};
 
 async function fetchTokenPrice(tokens) {
   let result = {};
@@ -73,6 +76,9 @@ const WALLETS = [
     price_map[k] = 0;
     try {
       price_map[k] = prices[alias[k] || k]['USD'];
+      if (overwrite[k]) {
+        price_map[k] = overwrite[k];
+      }
     } catch (e) {
       console.log(`cannot found ${k} price`);
     }

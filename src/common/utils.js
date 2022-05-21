@@ -42,7 +42,7 @@ async function huobi_price_changes_pct(assets, interval, map) {
     if (typeof(map[asset]) === 'number') continue;
     const qs = `period=${interval2huobi[interval]}&symbol=${asset.toLowerCase()}usdt&size=2`;
     const res = await (await fetch(`https://api.huobi.pro/market/history/kline?${qs}`)).json();
-    if (res.status !== 'ok') continue;
+    if (res.status !== 'ok' || res.data.length < 2) continue;
     const data = res.data.reverse();
     map[asset] = (data[1].close - data[0].open) / data[0].open;
   }

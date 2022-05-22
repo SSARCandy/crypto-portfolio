@@ -27,7 +27,7 @@
     "export_as_csv": "Export as CSV",
 
     "dark_mode": "Dark Mode",
-    "hide_small_balance": "Hide Small Balance",
+    "hide_small_balance": "Hide Small Balance (less than 0.1% NAV)",
     "show_return_in_small_device": "Show Return(%) in Small Device",
     "is_merge_wallets": "Merge Same Coins in Wallets in Pie Chart",
     "language": "Switch between Chinese/English",

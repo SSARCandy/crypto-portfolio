@@ -74,7 +74,7 @@
         <tr
           v-for="asset in assets_table"
           v-bind:key="asset.asset+asset.wallet"
-          v-show="!is_hide_small_balance || asset.size * asset.price > 10"
+          v-show="!is_hide_small_balance || asset.size * asset.price > small_balance_threshold"
         >
           <td
             class="btn-tag"
@@ -216,6 +216,10 @@ export default {
     };
   },
   computed: {
+    small_balance_threshold() {
+      const nav = sum(this.assets_table.map(asset => asset.size * asset.price));
+      return nav * 0.001;
+    },
     estimate_total_cost() {
       const estimated = sum(this.assets_table.map(asset => asset.size * asset.entry));
       return Math.max(estimated, this.reported_total_cost);

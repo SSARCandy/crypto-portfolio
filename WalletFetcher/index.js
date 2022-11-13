@@ -10,6 +10,7 @@ const factory = {
   'polkadot': require('./polkadot'),
   'tron': require('./tron'),
   'ethereum': require('./ethereum'),
+  'bitcoin': require('./bitcoin'),
 };
 
 /**

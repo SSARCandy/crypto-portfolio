@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const axios = require('axios').default;
 const config = require('./config/config.json');
-const { UniversalWalletFetcher } = require('./WalletFetcher');
+const { UniversalWalletFetcher, WALLETS } = require('./WalletFetcher');
 const { initializeApp } = require('@firebase/app');
 const { getFirestore, doc, setDoc, updateDoc } = require('@firebase/firestore');
 
@@ -14,7 +14,7 @@ const alias = {
   COS: 'CONT',
 };
 const overwrite = {
-  TWD: 0.034,
+  TWD: 0.032,
 };
 
 async function fetchTokenPrice(tokens) {
@@ -30,20 +30,6 @@ async function fetchTokenPrice(tokens) {
   }
   return result;
 }
-
-const WALLETS = [
-  'binance',
-  'whalefin',
-  // 'ftx',
-  'poloniex',
-  'bybit',
-  'max',
-  // 'terra',
-  'tezos',
-  'polkadot',
-  'tron',
-  'ethereum',
-];
 
 (async () => {
   const results = {};

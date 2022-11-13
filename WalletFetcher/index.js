@@ -1,11 +1,11 @@
 const factory = {
   'binance': require('./binance'),
   'whalefin': require('./whalefin'),
-  'ftx': require('./ftx'),
+  // 'ftx': require('./ftx'),
   'poloniex': require('./poloniex'),
   'bybit': require('./bybit'),
   'max': require('./max'),
-  'terra': require('./terra'),
+  // 'terra': require('./terra'),
   'tezos': require('./tezos'),
   'polkadot': require('./polkadot'),
   'tron': require('./tron'),
@@ -32,4 +32,5 @@ function UniversalWalletFetcher(wallet, credentials) {
 
 module.exports = {
   UniversalWalletFetcher,
+  WALLETS: Object.keys(factory),
 };

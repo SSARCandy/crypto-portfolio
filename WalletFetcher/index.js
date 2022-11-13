@@ -11,6 +11,7 @@ const factory = {
   'tron': require('./tron'),
   'ethereum': require('./ethereum'),
   'bitcoin': require('./bitcoin'),
+  'bitcoincash': require('./bitcoincash'),
 };
 
 /**

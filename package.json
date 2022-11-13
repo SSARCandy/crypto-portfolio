@@ -25,7 +25,8 @@
     "node-binance-api": "^0.12.5",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
-    "vue-i18n": "^8.24.5"
+    "vue-i18n": "^8.24.5",
+    "web3": "^1.8.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

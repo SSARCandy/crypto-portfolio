@@ -9,6 +9,7 @@ const factory = {
   'tezos': require('./tezos'),
   'polkadot': require('./polkadot'),
   'tron': require('./tron'),
+  'ethereum': require('./ethereum'),
 };
 
 /**

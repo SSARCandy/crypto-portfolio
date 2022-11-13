@@ -34,14 +34,15 @@ async function fetchTokenPrice(tokens) {
 const WALLETS = [
   'binance',
   'whalefin',
-  'ftx',
+  // 'ftx',
   'poloniex',
   'bybit',
   'max',
-  'terra',
+  // 'terra',
   'tezos',
   'polkadot',
   'tron',
+  'ethereum',
 ];
 
 (async () => {

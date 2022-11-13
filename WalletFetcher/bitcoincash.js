@@ -6,7 +6,7 @@ async function walletFetcher(credentials) {
   const res = await axios.get(`${URL}/${credentials.address}`);
   return [{
     asset: 'BCH',
-    size: +res.data.balance / decimal,
+    size: +res.data.balance.confirmed / decimal,
     wallet: 'bitcoincash',
   }];
 }

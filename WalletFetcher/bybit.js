@@ -20,7 +20,7 @@ async function spot_account(credentials) {
   const timestamp = Date.now();
   const query_string = `api_key=${credentials.APIKEY}&timestamp=${timestamp}`;
   const sign = crypto.createHmac('sha256', credentials.APISECRET).update(query_string).digest('hex');
-  const { data } = await axios.get('https://api.bybit.com//spot/v1/account', {
+  const { data } = await axios.get('https://api.bybit.com/spot/v1/account', {
     params: {
       api_key: credentials.APIKEY,
       timestamp,

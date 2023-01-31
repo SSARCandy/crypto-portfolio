@@ -42,6 +42,8 @@
 <script>
 import { Chart } from "highcharts-vue";
 import ExportTable from "./ExportTable.vue";
+import minBy from "lodash/minBy";
+import maxBy from "lodash/maxBy";
 
 export default {
   name: "AccountValue",
@@ -113,6 +115,9 @@ export default {
           },
         },
         yAxis: {
+          min: minBy(this.reversed_data, x => x[1])[1],
+          max: maxBy(this.reversed_data, x => x[1])[1],
+          minorTicks: true,
           title: {
             enabled: false,
           },
@@ -134,7 +139,7 @@ export default {
           {
             name: this.$i18n.t('nav'),
             background: "#00f",
-            fillOpacity: 1,
+            fillOpacity: 0.3,
             data: this.daily_nav.map((v) => {
               const [y, m, d] = v[0].split("-");
               return [Date.UTC(y, +m - 1, d), v[1]];

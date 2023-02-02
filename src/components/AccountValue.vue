@@ -117,7 +117,6 @@ export default {
         yAxis: {
           min: minBy(this.reversed_data, x => x[1])[1],
           max: maxBy(this.reversed_data, x => x[1])[1],
-          minorTicks: true,
           title: {
             enabled: false,
           },
@@ -168,7 +167,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 th:nth-child(1),
 td:nth-child(1) {
   text-align: left;
@@ -181,5 +180,9 @@ td:nth-child(1) {
 }
 .selected {
   background: rgba(170, 170, 170, 0.603);
+}
+
+.highcharts-grid-line {
+    stroke: var(--color-border) !important;
 }
 </style>

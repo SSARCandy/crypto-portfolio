@@ -70,7 +70,7 @@ export default {
   },
   data() {
     return {
-      timeframe: undefined,
+      timeframe: 30,
     };
   },
   filters: {

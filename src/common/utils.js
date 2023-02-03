@@ -39,7 +39,7 @@ const interval2huobi = {
 };
 async function huobi_price_changes_pct(assets, interval, map) {
   for (const asset of assets) {
-    if (typeof(map[asset]) === 'number') continue;
+    if (typeof (map[asset]) === 'number') continue;
     const qs = `period=${interval2huobi[interval]}&symbol=${asset.toLowerCase()}usdt&size=2`;
     const res = await (await fetch(`https://api.huobi.pro/market/history/kline?${qs}`)).json();
     if (res.status !== 'ok' || res.data.length < 2) continue;
@@ -82,7 +82,15 @@ function download_table_as_csv(table_id, separator = ',') {
   document.body.removeChild(link);
 }
 
+function number_formatter(v) {
+  const l = Math.abs(v) > 999
+    ? Math.sign(v) * (Math.abs(v) / 1000).toFixed(1) + "k"
+    : Math.sign(v) * Math.abs(v);
+  return `$ ${l}`;
+}
+
 export {
   download_table_as_csv,
   fetch_price_changes_pct,
+  number_formatter,
 };

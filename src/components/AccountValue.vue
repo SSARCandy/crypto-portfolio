@@ -7,16 +7,28 @@
     ></highcharts>
     <div class="flex-container">
       <div>
-        <button v-on:click="pick_range(30)" :class="{selected: timeframe === 30}">
+        <button
+          v-on:click="pick_range(30)"
+          :class="{ selected: timeframe === 30 }"
+        >
           30d
         </button>
-        <button v-on:click="pick_range(90)" :class="{selected: timeframe === 90}">
+        <button
+          v-on:click="pick_range(90)"
+          :class="{ selected: timeframe === 90 }"
+        >
           90d
         </button>
-        <button v-on:click="pick_range(180)" :class="{selected: timeframe === 180}">
+        <button
+          v-on:click="pick_range(180)"
+          :class="{ selected: timeframe === 180 }"
+        >
           180d
         </button>
-        <button v-on:click="pick_range(undefined)" :class="{selected: timeframe === undefined}">
+        <button
+          v-on:click="pick_range(undefined)"
+          :class="{ selected: timeframe === undefined }"
+        >
           ALL
         </button>
       </div>
@@ -40,6 +52,7 @@
 </template>
 
 <script>
+import { number_formatter } from "../common/utils";
 import { Chart } from "highcharts-vue";
 import ExportTable from "./ExportTable.vue";
 import minBy from "lodash/minBy";
@@ -102,6 +115,16 @@ export default {
               radius: 0,
             },
             fillOpacity: 0,
+            dataLabels: {
+              enabled: true,
+              verticalAlign: "top",
+              y: -20,
+              formatter: function () {
+                if (this.y === this.series.dataMax) {
+                  return number_formatter(this.y);
+                }
+              },
+            },
           },
         },
         xAxis: {
@@ -115,19 +138,14 @@ export default {
           },
         },
         yAxis: {
-          min: minBy(this.reversed_data, x => x[1])[1],
-          max: maxBy(this.reversed_data, x => x[1])[1],
+          min: minBy(this.reversed_data, (x) => x[1])[1],
+          max: maxBy(this.reversed_data, (x) => x[1])[1],
           title: {
             enabled: false,
           },
           labels: {
             formatter: function () {
-              const v = this.value;
-              const l =
-                Math.abs(v) > 999
-                  ? Math.sign(v) * (Math.abs(v) / 1000).toFixed(1) + "k"
-                  : Math.sign(v) * Math.abs(v);
-              return `$ ${l}`;
+              return number_formatter(this.value);
             },
           },
         },
@@ -136,13 +154,15 @@ export default {
         },
         series: [
           {
-            name: this.$i18n.t('nav'),
+            name: this.$i18n.t("nav"),
             background: "#00f",
             fillOpacity: 0.3,
-            data: this.daily_nav.map((v) => {
-              const [y, m, d] = v[0].split("-");
-              return [Date.UTC(y, +m - 1, d), v[1]];
-            }).slice(-this.timeframe),
+            data: this.daily_nav
+              .map((v) => {
+                const [y, m, d] = v[0].split("-");
+                return [Date.UTC(y, +m - 1, d), v[1]];
+              })
+              .slice(-this.timeframe),
           },
         ],
       };
@@ -183,6 +203,6 @@ td:nth-child(1) {
 }
 
 .highcharts-grid-line {
-    stroke: var(--color-border) !important;
+  stroke: var(--color-border) !important;
 }
 </style>

@@ -98,7 +98,7 @@ export default {
           // styledMode: true,
         },
         legend: {
-          enabled: true,
+          enabled: false,
         },
         title: {
           text: this.$i18n.t("nav_page"),
@@ -147,6 +147,9 @@ export default {
             formatter: function () {
               return number_formatter(this.value);
             },
+            style: {
+              fontSize: 9,
+            }
           },
         },
         tooltip: {
@@ -187,7 +190,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 th:nth-child(1),
 td:nth-child(1) {
   text-align: left;
@@ -202,6 +205,8 @@ td:nth-child(1) {
   background: rgba(170, 170, 170, 0.603);
 }
 
+</style>
+<style>
 .highcharts-grid-line {
   stroke: var(--color-border) !important;
 }

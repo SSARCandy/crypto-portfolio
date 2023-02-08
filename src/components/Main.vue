@@ -370,7 +370,10 @@ export default {
         this.$set(this.userdata, k, 0);
         return;
       }
-      this.userdata[k] = (this.userdata[k] + 1) % 8;
+      this.userdata[k] = (this.userdata[k] + 1) % 9;
+      if (this.userdata[k] == 8) {
+        delete this.userdata[k];
+      }
     },
     update_assets_table() {
       const res = this.assets.map((x) => ({

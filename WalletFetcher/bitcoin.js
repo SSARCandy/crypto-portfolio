@@ -5,10 +5,15 @@ const URL = 'https://api.blockcypher.com/v1/btc/main/addrs';
 const decimal = 10**8;
 
 async function walletFetcher(credentials) {
-  const res = await axios.get(`${URL}/${credentials.address}/balance`);
+  const addresses = credentials.address.split(',');
+  let sum = 0;
+  for (const address of addresses) {
+    const res = await axios.get(`${URL}/${address}/balance`);
+    sum += (+res.data.balance);
+  }
   return [{
     asset: 'BTC',
-    size: +res.data.balance / decimal,
+    size: sum / decimal,
     wallet: 'bitcoin',
   }];
 }

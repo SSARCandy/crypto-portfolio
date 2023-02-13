@@ -12,6 +12,10 @@ const tokens = [{
   name: 'USDC',
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   decimal: 10**6,
+}, {
+  name: 'ENS',
+  address: '0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72',
+  decimal: 10**18,
 }];
 
 async function walletFetcher(credentials) {

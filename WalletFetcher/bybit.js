@@ -46,8 +46,9 @@ async function walletFetcher(credentials) {
     const balances = await account_balance(credentials, type);
     await new Promise(r => setTimeout(r, 1000));
     for (const { coin, walletBalance } of balances) {
-      if (walletBalance === 0) continue;
-      result_map[coin] = result_map[coin] ? result_map[coin] + walletBalance : walletBalance;
+      const size = +walletBalance;
+      if (size === 0) continue;
+      result_map[coin] = result_map[coin] ? result_map[coin] + size : size;
     }
   }
   

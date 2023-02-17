@@ -30,7 +30,6 @@ async function account_balance(credentials, account_type) {
       'X-BAPI-RECV-WINDOW': 5000,
     },
   });
-  console.log(data)
   return data.result.balance;
 }
 

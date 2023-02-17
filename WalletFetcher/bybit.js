@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const axios = require('axios').default;
 const crypto = require('crypto');
+const { time } = require('console');
 
 async function derivative_account(credentials) {
   const timestamp = Date.now();
@@ -16,29 +17,38 @@ async function derivative_account(credentials) {
   return data.result;
 }
 
-async function spot_account(credentials) {
+async function account_balance(credentials, account_type) {
   const timestamp = Date.now();
-  const query_string = `api_key=${credentials.APIKEY}&timestamp=${timestamp}`;
-  const sign = crypto.createHmac('sha256', credentials.APISECRET).update(query_string).digest('hex');
-  const { data } = await axios.get('https://api.bybit.com/spot/v1/account', {
-    params: {
-      api_key: credentials.APIKEY,
-      timestamp,
-      sign,
+  const querystring = `accountType=${account_type}`;
+  const payload = `${timestamp}${credentials.APIKEY}5000${querystring}`;
+  const sign = crypto.createHmac('sha256', credentials.APISECRET).update(payload).digest('hex');
+  const { data } = await axios.get(`https://api.bybit.com/v5/asset/transfer/query-account-coins-balance?${querystring}`, {
+    headers: {
+      'X-BAPI-API-KEY': credentials.APIKEY,
+      'X-BAPI-TIMESTAMP': timestamp,
+      'X-BAPI-SIGN': sign,
+      'X-BAPI-RECV-WINDOW': 5000,
     },
   });
-  return _.keyBy(data.result.balances, 'coin');
+  console.log(data)
+  return data.result.balance;
 }
 
 async function walletFetcher(credentials) {
+  const types = [
+    'CONTRACT',
+    'SPOT',
+    'INVESTMENT',
+    'UNIFIED',
+    'FUND',
+  ];
   const result_map = {};
-  const perp_wallet = await derivative_account(credentials);
-  const spot_wallet = await spot_account(credentials);
-
-  for (const wallet of [perp_wallet, spot_wallet]) {
-    for (const [ k, v ] of Object.entries(wallet)) {
-      const size = _.get(v, 'wallet_balance', _.get(v, 'total', 0));
-      result_map[k] = +size;
+  for (const type of types) {
+    const balances = await account_balance(credentials, type);
+    await new Promise(r => setTimeout(r, 1000));
+    for (const { coin, walletBalance } of balances) {
+      if (walletBalance === 0) continue;
+      result_map[coin] = result_map[coin] ? result_map[coin] + walletBalance : walletBalance;
     }
   }
   

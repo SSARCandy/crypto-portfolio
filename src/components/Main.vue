@@ -34,6 +34,16 @@
     />
     <div v-if="!is_nav_mode">
       <pie-chart :assets="chart_data" />
+      <ul>
+        <li 
+          v-bind:key="asset.asset+asset.wallet"
+          v-for="asset in assets"
+          v-show="asset.asset == 'APP_ERROR'"
+          class="sell"
+        >
+          {{asset.wallet }} KEY ERROR
+        </li>
+      </ul>
       <table id="asset">
         <tr>
           <th v-on:click="change_sortkey('tag')" v-if="should_show('tag')">
@@ -74,7 +84,7 @@
         <tr
           v-for="asset in assets_table"
           v-bind:key="asset.asset+asset.wallet"
-          v-show="!is_hide_small_balance || asset.size * asset.price > small_balance_threshold"
+          v-show="asset.asset != 'APP_ERROR' && (!is_hide_small_balance || asset.size * asset.price > small_balance_threshold)"
         >
           <td
             class="btn-tag"

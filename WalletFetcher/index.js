@@ -24,12 +24,18 @@ const factory = {
  *  ...
  * ]
  */
-function UniversalWalletFetcher(wallet, credentials) {
+async function UniversalWalletFetcher(wallet, credentials) {
   if (!factory[wallet]) {
     console.error(`${wallet} is not supported`);
     return [];
   }
-  return factory[wallet](credentials);
+  try {
+    return await factory[wallet](credentials);
+  } catch (err) {
+    return [
+      {"size": -1, "asset": "APP_ERROR", "wallet": wallet}
+    ];
+  }
 }
 
 module.exports = {

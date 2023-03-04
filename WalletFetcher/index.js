@@ -32,6 +32,7 @@ async function UniversalWalletFetcher(wallet, credentials) {
   try {
     return await factory[wallet](credentials);
   } catch (err) {
+    console.log(wallet, 'error');
     return [
       {"size": -1, "asset": "APP_ERROR", "wallet": wallet}
     ];

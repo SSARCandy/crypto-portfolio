@@ -44,7 +44,7 @@ async function walletFetcher(credentials) {
   const result_map = {};
   for (const type of types) {
     const balances = await account_balance(credentials, type);
-    await new Promise(r => setTimeout(r, 1000));
+    await new Promise(r => setTimeout(r, 2000));
     for (const { coin, walletBalance } of balances) {
       const size = +walletBalance;
       if (size === 0) continue;

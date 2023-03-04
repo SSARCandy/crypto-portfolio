@@ -3,21 +3,23 @@ const crypto = require('crypto');
 
 async function walletFetcher(credentials) {
   const timestamp = Date.now();
-  const signStr = `command=returnCompleteBalances&nonce=${timestamp}`;
+  const signStr = `GET\n/accounts/balances\nsignTimestamp=${timestamp}`;
 
-  const sign = crypto.createHmac('sha512', credentials.APISECRET).update(signStr).digest('hex');
-  const res = await axios.post('https://poloniex.com/tradingApi', signStr, {
+  const sign = crypto.createHmac('sha256', credentials.APISECRET).update(signStr).digest('base64');
+  const res = await axios.get('https://api.poloniex.com/accounts/balances', {
     headers: {
-      'Key': credentials.APIKEY,
-      'Sign': sign,
+      'Content-Type': 'application/json',
+      'key': credentials.APIKEY,
+      'signature': sign,
+      'signTimestamp': timestamp,
     },
   });
 
-  const result = Object.entries(res.data).map(([k, v]) => ({
-    asset: k,
-    size: (+v.available) + (+v.onOrders),
+  const result = res.data[0].balances.map(x => ({
+    asset: x.currency,
+    size: (+x.available) + (+x.hold),
     wallet: 'poloniex',
-  })).filter(x => x.size > 0);
+  }));
 
   return result;
 }

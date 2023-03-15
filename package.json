@@ -25,7 +25,6 @@
     "lodash": "^4.17.21",
     "node-binance-api": "^0.12.5",
     "register-service-worker": "^1.7.1",
-    "stocks.js": "0.0.19",
     "vue": "^2.6.11",
     "vue-i18n": "^8.24.5",
     "web3": "^1.8.1"

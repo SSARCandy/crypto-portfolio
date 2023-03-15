@@ -436,7 +436,9 @@ export default {
     },
     timeframe: async function (val) {
       localStorage.timeframe = val;
-      this.assets_chages = await fetch_price_changes_pct(this.assets.map(x => x.asset), this.timeframe);
+      const cryptos = this.assets.filter(x => x.wallet != 'firstrade').map(x => x.asset);
+      // const stocks = this.assets.filter(x => x.wallet == 'firstrade').map(x => x.asset);
+      this.assets_chages = await fetch_price_changes_pct(cryptos, this.timeframe);
       this.update_assets_table();
     },
   },

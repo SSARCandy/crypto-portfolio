@@ -31,7 +31,30 @@ async function fetchTokenPrice(tokens) {
   return result;
 }
 
+async function constructPriceMap(assets, stock_prices) {
+  const price_map = {};
+  const prices = await fetchTokenPrice(assets);
+  assets.forEach(k => {
+    price_map[k] = 0
+    if (stock_prices[k]) {
+      price_map[k] = stock_prices[k];
+      return;
+    }
+    try {
+      price_map[k] = prices[alias[k] || k]['USD'];
+      if (overwrite[k]) {
+        price_map[k] = overwrite[k];
+      }
+    } catch (e) {
+      console.log(`cannot found ${k} price`);
+    }
+  });
+  console.log(price_map);
+  return price_map;
+}
+
 (async () => {
+  const stock_prices = {};
   const results = {};
   for (const type of WALLETS) {
     for (const cnf of config[type]) {
@@ -41,6 +64,11 @@ async function fetchTokenPrice(tokens) {
       console.log(type, cnf.id);
       const balances = await UniversalWalletFetcher(type, cnf);
       results[cnf.id].push(...balances);
+      if (type == 'firstrade') {
+        for (const {asset, price} of balances){
+          stock_prices[asset] = price;
+        }
+      }
     }
   }
 
@@ -56,22 +84,9 @@ async function fetchTokenPrice(tokens) {
 
     assets = _.union(assets, results[id].map(x => x.asset));
   }
-  let price_map = {};
-  const prices = await fetchTokenPrice(assets);
-  console.log(prices);
-  assets.forEach(k => {
-    price_map[k] = 0;
-    try {
-      price_map[k] = prices[alias[k] || k]['USD'];
-      if (overwrite[k]) {
-        price_map[k] = overwrite[k];
-      }
-    } catch (e) {
-      console.log(`cannot found ${k} price`);
-    }
-  });
-  const price_doc = doc(database, 'price/spot');
-  await setDoc(price_doc, price_map);
+  const price_map = await constructPriceMap(assets, stock_prices);
+  const crypto_px = doc(database, 'price/spot');
+  await setDoc(crypto_px, price_map);
 
   // update NAV
   for (const id of Object.keys(results)) {

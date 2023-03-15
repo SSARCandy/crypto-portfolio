@@ -26,6 +26,7 @@
       :is_merge_wallets.sync="is_merge_wallets"
       :is_chinese.sync="is_chinese"
       :timeframe.sync="timeframe"
+      :asset_type.sync="asset_type"
     />
     <account-value
       v-if="is_nav_mode"
@@ -220,6 +221,7 @@ export default {
       is_merge_wallets: localStorage.is_merge_wallets === "true",
       is_chinese: localStorage.is_chinese === "true",
       timeframe: localStorage.timeframe || '1d',
+      asset_type: localStorage.asset_type || 'crypto', //  'crypto' 'stocks' 'all'
 
       sort_key: "notional_value",
       sort_order: 1, // 0: asc, 1: desc, 2: un-sorted
@@ -395,7 +397,13 @@ export default {
         entry: this.entry_p(x.asset, x.wallet),
         pnl: this.pnl(x),
         pnl_return: this.pnl_return(x),
-      }));
+      }))
+      .filter(x => {
+        return this.asset_type === 'all' ? true :
+          this.asset_type === 'stocks' 
+            ? x.wallet === 'firstrade'
+            : x.wallet !== 'firstrade';
+      });
       this.assets_table = orderBy(
         res,
         this.sort_key,
@@ -436,11 +444,15 @@ export default {
     },
     timeframe: async function (val) {
       localStorage.timeframe = val;
-      const cryptos = this.assets.filter(x => x.wallet != 'firstrade').map(x => x.asset);
+      const cryptos = this.assets.filter(x => x.wallet !== 'firstrade').map(x => x.asset);
       // const stocks = this.assets.filter(x => x.wallet == 'firstrade').map(x => x.asset);
       this.assets_chages = await fetch_price_changes_pct(cryptos, this.timeframe);
       this.update_assets_table();
     },
+    asset_type: function (val) {
+      localStorage.asset_type = val;
+      this.update_assets_table();
+    }
   },
   mounted() {
     this.screen_width =
@@ -476,7 +488,8 @@ export default {
       if (!price_map.exists()) return;
       this.price_map = price_map.data();
       this.update_assets_table();
-      this.assets_chages = await fetch_price_changes_pct(this.assets.map(x => x.asset), this.timeframe);
+      const cryptos = this.assets.filter(x => x.wallet !== 'firstrade').map(x => x.asset);
+      this.assets_chages = await fetch_price_changes_pct(cryptos, this.timeframe);
       this.update_assets_table();
     });
 

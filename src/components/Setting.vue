@@ -95,6 +95,27 @@
           1w
         </button>
       </div>
+      <div class="setting-list">
+        <div>{{ $t("asset_type") }}:</div>
+        <button
+          v-on:click="change_asset_type('all')"
+          :style="{ background: asset_type === 'all' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          all
+        </button>
+        <button
+          v-on:click="change_asset_type('crypto')"
+          :style="{ background: asset_type === 'crypto' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          crypto
+        </button>
+        <button
+          v-on:click="change_asset_type('stocks')"
+          :style="{ background: asset_type === 'stocks' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          stocks
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -111,6 +132,7 @@ export default {
     is_merge_wallets: Boolean,
     is_chinese: Boolean,
     timeframe: String,
+    asset_type: String,
   },
   data() {
     return {};
@@ -121,6 +143,9 @@ export default {
     },
     change_timeframe(v) {
       this.$emit(`update:timeframe`, v);
+    },
+    change_asset_type(v) {
+      this.$emit(`update:asset_type`, v);
     },
   },
 };

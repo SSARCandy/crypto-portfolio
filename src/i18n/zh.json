@@ -2,7 +2,7 @@
     "switch_chart": "切換圓餅圖視角",
 
     "tag": "組",
-    "asset": "幣",
+    "asset": "資產",
     "wallet": "錢包",
     "size": "量",
     "price": "價",
@@ -31,5 +31,6 @@
     "show_return_in_small_device": "在小螢幕裝置上顯示損益率",
     "is_merge_wallets": "在圓餅圖顯示總和幣種資產",
     "language": "切換語言 中文/英文",
-    "timeframe": "價格變化率使用時框"
+    "timeframe": "價格變化率使用時框",
+    "asset_type": "顯示的資產類型"
 }

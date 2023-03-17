@@ -102,7 +102,7 @@
           <td v-if="should_show('wallet')">{{ asset.wallet }}</td>
           <td>{{ asset.asset }}</td>
           <td
-            v-bind:class="color(asset.price_changes)"
+            v-bind:class="color(asset.price_changes || asset.changepercent)"
             v-if="should_show('price_changes')"
             style="width: 0px"
           >

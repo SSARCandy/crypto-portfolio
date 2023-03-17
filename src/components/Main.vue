@@ -106,7 +106,7 @@
             v-if="should_show('price_changes')"
             style="width: 0px"
           >
-            {{ asset.price_changes | Precentage(1) }}
+            {{ (asset.price_changes || asset.changepercent) | Precentage(1) }}
           </td>
           <td>{{ asset.price | toPrecision(5) }}</td>
           <td class="entry-price">
@@ -489,7 +489,9 @@ export default {
       this.price_map = price_map.data();
       this.update_assets_table();
       const cryptos = this.assets.filter(x => x.wallet !== 'firstrade').map(x => x.asset);
-      this.assets_chages = await fetch_price_changes_pct(cryptos, this.timeframe);
+      if (this.should_show('price_changes')) {
+        this.assets_chages = await fetch_price_changes_pct(cryptos, this.timeframe);
+      }
       this.update_assets_table();
     });
 

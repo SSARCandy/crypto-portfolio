@@ -102,11 +102,11 @@
           <td v-if="should_show('wallet')">{{ asset.wallet }}</td>
           <td>{{ asset.asset }}</td>
           <td
-            v-bind:class="color(asset.price_changes || asset.changepercent)"
+            v-bind:class="color(asset.price_changes)"
             v-if="should_show('price_changes')"
             style="width: 0px"
           >
-            {{ (asset.price_changes || asset.changepercent) | Precentage(1) }}
+            {{ asset.price_changes | Precentage(1) }}
           </td>
           <td>{{ asset.price | toPrecision(5) }}</td>
           <td class="entry-price">
@@ -392,7 +392,7 @@ export default {
         ...x,
         tag: this.userdata[this.symbol_key(x.asset, x.wallet, 'tag')],
         price: this.price_map[x.asset],
-        price_changes: this.assets_chages[x.asset],
+        price_changes: this.assets_chages[x.asset] || x.changepercent,
         notional_value: this.price_map[x.asset] * x.size,
         entry: this.entry_p(x.asset, x.wallet),
         pnl: this.pnl(x),

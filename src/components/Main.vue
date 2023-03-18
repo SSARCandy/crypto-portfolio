@@ -141,8 +141,11 @@
           </li>
           <li>
             {{ $t("today_pnl") }}:
-            <span v-bind:class="color(today_pnl())">
+            <span v-if="asset_type === 'all'" v-bind:class="color(today_pnl())">
               {{ today_pnl() | Number(0) }}
+            </span>
+            <span v-if="asset_type !== 'all'">
+              {{ $t("today_pnl_error_msg") }}
             </span>
           </li>
           <li>

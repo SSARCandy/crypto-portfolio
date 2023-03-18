@@ -14,6 +14,7 @@
     "note": "備註",
     "total_unrealized_pnl": "總未實現損益",
     "today_pnl": "今日損益",
+    "today_pnl_error_msg": "今日損益只在顯示所有資產時有效",
     "update_time": "更新時間",
     "save": "儲存",
     "saved": "已儲存！",

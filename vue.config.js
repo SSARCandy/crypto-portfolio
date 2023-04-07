@@ -1,6 +1,7 @@
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 //     .BundleAnalyzerPlugin;
 module.exports = {
+  outputDir: 'doc',
   productionSourceMap: false,
   devServer: {
     disableHostCheck: true,

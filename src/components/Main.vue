@@ -202,7 +202,6 @@ export default {
   props: {},
   data() {
     return {
-      id: window.location.host,
       time: 0,
       reported_total_cost: 0,
       assets: [],
@@ -231,6 +230,12 @@ export default {
     };
   },
   computed: {
+    id() {
+      const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+      });
+      return params.id || window.location.host;
+    },
     small_balance_threshold() {
       const nav = sum(this.assets_table.map(asset => asset.size * asset.price));
       return nav * 0.001;

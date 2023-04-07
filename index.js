@@ -35,7 +35,7 @@ async function constructPriceMap(assets, stock_prices) {
   const price_map = {};
   const prices = await fetchTokenPrice(assets);
   assets.forEach(k => {
-    price_map[k] = 0
+    price_map[k] = 0;
     if (stock_prices[k]) {
       price_map[k] = stock_prices[k];
       return;
@@ -65,7 +65,7 @@ async function constructPriceMap(assets, stock_prices) {
       const balances = await UniversalWalletFetcher(type, cnf);
       results[cnf.id].push(...balances);
       if (type == 'firstrade') {
-        for (const {asset, price} of balances){
+        for (const { asset, price } of balances){
           stock_prices[asset] = price;
         }
       }

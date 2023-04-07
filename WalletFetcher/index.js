@@ -36,7 +36,7 @@ async function UniversalWalletFetcher(wallet, credentials) {
   } catch (err) {
     console.log(wallet, 'error');
     return [
-      {"size": -1, "asset": "APP_ERROR", "wallet": wallet}
+      { 'size': -1, 'asset': 'APP_ERROR', 'wallet': wallet },
     ];
   }
 }

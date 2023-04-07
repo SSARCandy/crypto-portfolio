@@ -2,6 +2,7 @@
 //     .BundleAnalyzerPlugin;
 module.exports = {
   outputDir: 'docs',
+  publicPath: '/crypto-portfolio',
   productionSourceMap: false,
   devServer: {
     disableHostCheck: true,

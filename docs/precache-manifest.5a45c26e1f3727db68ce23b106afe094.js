@@ -28,7 +28,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/crypto-portfolio/icons/favicon-32x32.png"
   },
   {
-    "revision": "7219c9f6a8425789a5a9711739dbeb15",
+    "revision": "a019becd9a1c6b7f7c40b9404d6ab9e9",
     "url": "/crypto-portfolio/index.html"
   },
   {
@@ -40,7 +40,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/crypto-portfolio/js/chunk-vendors.658c89b6.js"
   },
   {
-    "revision": "13ea3d52e4d2b5102010a4d44b319ec9",
+    "revision": "c406373ae3058f835995a8cda55349a9",
     "url": "/crypto-portfolio/manifest.json"
   },
   {

@@ -20,7 +20,7 @@ module.exports = {
     manifestOptions: {
       name: 'Asset Allocation',
       short_name: 'Portfolio',
-      start_url: '/index.html?source=pwa',
+      start_url: '/crypto-portfolio/index.html?source=pwa',
       theme_color: '#ffffff',
       background_color: '#ffffff',
       display: 'standalone',

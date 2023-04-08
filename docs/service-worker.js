@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/crypto-portfolio/precache-manifest.a5427744e64fd35525495aaacd146d13.js"
+  "/crypto-portfolio/precache-manifest.f070a5715cbcc0e2d686c36cd865c3bd.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "v2"});

@@ -67,7 +67,10 @@ async function fetchPerpetualWallet(client) {
 }
 
 async function walletFetcher(credentials) {
-  const client = new Binance().options(credentials);
+  const client = new Binance().options({
+    ...credentials,
+    'family': 4,
+  });
   const client2 = Binance2({
     apiKey: credentials.APIKEY,
     apiSecret: credentials.APISECRET,
@@ -90,6 +93,7 @@ async function walletFetcher(credentials) {
     size: asset_map[k],
     wallet: 'binance',
   }));
+
   return result;
 }
 

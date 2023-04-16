@@ -56,18 +56,28 @@
         </label>
         <span>{{ $t("is_merge_wallets") }}</span>
       </div>
-      <div class="setting-list">
-        <label class="switch">
-          <input
-            type="checkbox"
-            :checked="is_chinese"
-            v-on:click="click('is_chinese')"
-          />
-          <span class="slider round"></span>
-        </label>
-        <span>{{ $t("language") }}</span>
-      </div>
       <hr />
+      <div class="setting-list">
+        <div>{{ $t("language") }}:</div>
+        <button
+          v-on:click="change_language('en')"
+          :style="{ background: language === 'en' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          English
+        </button>
+        <button
+          v-on:click="change_language('zh')"
+          :style="{ background: language === 'zh' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          Chinese
+        </button>
+        <button
+          v-on:click="change_language('jp')"
+          :style="{ background: language === 'jp' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+        >
+          Japanese
+        </button>
+      </div>
       <div class="setting-list">
         <div>{{ $t("timeframe") }}:</div>
         <button
@@ -130,7 +140,7 @@ export default {
     is_dark_mode: Boolean,
     is_perfer_return: Boolean,
     is_merge_wallets: Boolean,
-    is_chinese: Boolean,
+    language: String,
     timeframe: String,
     asset_type: String,
   },
@@ -146,6 +156,9 @@ export default {
     },
     change_asset_type(v) {
       this.$emit(`update:asset_type`, v);
+    },
+    change_language(v) {
+      this.$emit(`update:language`, v);
     },
   },
 };

@@ -15,6 +15,7 @@ const alias = {
 };
 const overwrite = {
   TWD: 0.032,
+  TTT: 1e-8, // TODO: can't get correct price
 };
 
 async function fetchTokenPrice(tokens) {

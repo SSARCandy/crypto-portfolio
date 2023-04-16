@@ -1,0 +1,37 @@
+{
+    "switch_chart": "チャート表示切り替え",
+
+    "tag": "タグ",
+    "asset": "トークン",
+    "wallet": "ウォレット",
+    "size": "サイズ",
+    "price": "価格",
+    "price_changes": "変化率%",
+    "notional_value": "価値",
+    "entry": "エントリー",
+    "pnl": "利益と損失",
+    "pnl_return": "リターン",
+    "note": "メモ",
+    "total_unrealized_pnl": "未実現損益合計",
+    "today_pnl": "今日の利益と損失",
+    "today_pnl_error_msg": "全てのアセットタイプが表示されている場合のみ有効な PnL です",
+    "update_time": "更新時刻",
+    "save": "保存",
+    "saved": "完了！",
+    "sec_ago": "秒前",
+
+    "date": "日付",
+    "nav": "純資産価値",
+    "nav_page": "純資産価値",
+    "diff": "日次利益と損失",
+    "estimate_total_cost": "総コスト見積り",
+    "export_as_csv": "CSV でエクスポート",
+
+    "dark_mode": "ダークモード",
+    "hide_small_balance": "小額残高を非表示 (純資産価値の 0.1% 未満）",
+    "show_return_in_small_device": "小型デバイスでリターン（%）を表示",
+    "is_merge_wallets": "パイチャートで同じコインのウォレットを統合する",
+    "language": "言語切り替え",
+    "timeframe": "価格変動に使用される時間枠",
+    "asset_type": "表示するアセットタイプ"
+}

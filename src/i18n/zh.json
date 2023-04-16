@@ -25,13 +25,13 @@
     "nav_page": "總資產走勢",
     "diff": "日增減",
     "estimate_total_cost": "預估總成本",
-    "export_as_csv": "匯出",
+    "export_as_csv": "匯出 CSV",
 
     "dark_mode": "深色模式",
     "hide_small_balance": "隱藏小額資產 (小於 0.1% 總資產)",
     "show_return_in_small_device": "在小螢幕裝置上顯示損益率",
     "is_merge_wallets": "在圓餅圖顯示總和幣種資產",
-    "language": "切換語言 中文/英文",
+    "language": "切換語言",
     "timeframe": "價格變化率使用時框",
     "asset_type": "顯示的資產類型"
 }

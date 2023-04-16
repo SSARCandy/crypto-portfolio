@@ -10,6 +10,7 @@ Vue.use(FloatingVue);
 const messages = {
   "en": require("./i18n/en.json"),
   "zh": require("./i18n/zh.json"),
+  "jp": require("./i18n/jp.json"),
 };
 const i18n = new VueI18n({
   locale: 'en', 

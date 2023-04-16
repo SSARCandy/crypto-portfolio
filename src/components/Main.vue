@@ -24,7 +24,7 @@
       :is_hide_small_balance.sync="is_hide_small_balance"
       :is_perfer_return.sync="is_perfer_return"
       :is_merge_wallets.sync="is_merge_wallets"
-      :is_chinese.sync="is_chinese"
+      :language.sync="language"
       :timeframe.sync="timeframe"
       :asset_type.sync="asset_type"
     />
@@ -221,7 +221,7 @@ export default {
       is_dark_mode: localStorage.is_dark_mode === "true",
       is_perfer_return: localStorage.is_perfer_return === "true",
       is_merge_wallets: localStorage.is_merge_wallets === "true",
-      is_chinese: localStorage.is_chinese === "true",
+      language: localStorage.language || 'en',
       timeframe: localStorage.timeframe || '1d',
       asset_type: localStorage.asset_type || 'crypto', //  'crypto' 'stocks' 'all'
 
@@ -446,9 +446,9 @@ export default {
     is_merge_wallets: function (val) {
       localStorage.is_merge_wallets = val;
     },
-    is_chinese: function (val) {
-      localStorage.is_chinese = val;
-      this.$i18n.locale = val ? "zh" : "en";
+    language: function (val) {
+      localStorage.language = val;
+      this.$i18n.locale = val;
     },
     timeframe: async function (val) {
       localStorage.timeframe = val;
@@ -473,7 +473,7 @@ export default {
     );
   },
   created: async function () {
-    this.$i18n.locale = this.is_chinese ? "zh" : "en";
+    this.$i18n.locale = this.language;
     const doc1 = doc(database, `config/${this.id}`);
     const config = await getDoc(doc1);
     if (config.exists()) {

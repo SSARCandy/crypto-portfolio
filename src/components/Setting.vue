@@ -4,126 +4,30 @@
     v-if="is_setting_mode"
     v-on:click="click('is_setting_mode')"
   >
-    <div
-      class="modal-content"
-      v-on:click="
-        (e) => {
-          e.stopImmediatePropagation();
-        }
-      "
-    >
-      <div class="setting-list">
+    <div class="modal-content" v-on:click="(e) => { e.stopImmediatePropagation(); }">
+      <div v-for="(setting, index) in settingSwitchs" :key="index" class="setting-list">
         <label class="switch">
           <input
             type="checkbox"
-            :checked="is_dark_mode"
-            v-on:click="click('is_dark_mode')"
+            :checked="setting.value"
+            v-on:click="click(setting.key)"
           />
           <span class="slider round"></span>
         </label>
-        <span>{{ $t("dark_mode") }}</span>
+        <span>{{ $t(setting.label) }}</span>
       </div>
-      <div class="setting-list">
-        <label class="switch">
-          <input
-            type="checkbox"
-            :checked="is_hide_small_balance"
-            v-on:click="click('is_hide_small_balance')"
-          />
-          <span class="slider round"></span>
-        </label>
-        <span>{{ $t("hide_small_balance") }}</span>
-      </div>
-      <div class="setting-list">
-        <label class="switch">
-          <input
-            type="checkbox"
-            :checked="is_perfer_return"
-            v-on:click="click('is_perfer_return')"
-          />
-          <span class="slider round"></span>
-        </label>
-        <span>{{ $t("show_return_in_small_device") }}</span>
-      </div>
-      <div class="setting-list">
-        <label class="switch">
-          <input
-            type="checkbox"
-            :checked="is_merge_wallets"
-            v-on:click="click('is_merge_wallets')"
-          />
-          <span class="slider round"></span>
-        </label>
-        <span>{{ $t("is_merge_wallets") }}</span>
-      </div>
+      
       <hr />
-      <div class="setting-list">
-        <div>{{ $t("language") }}:</div>
-        <button
-          v-on:click="change_language('en')"
-          :style="{ background: language === 'en' ? 'rgba(170, 170, 170, 0.603)' : '' }"
+
+      <div v-for="(optionGroup, key) in settingOptions" :key="key" class="setting-list">
+        <div>{{ $t(key) }}:</div>
+        <button 
+          v-for="option in optionGroup"
+          v-on:click="change_keyvalue(key, option.value)"
+          v-bind:key="option.value"
+          v-bind:class="{ 'button-active': getSettingValue(key) === option.value }"
         >
-          English
-        </button>
-        <button
-          v-on:click="change_language('zh')"
-          :style="{ background: language === 'zh' ? 'rgba(170, 170, 170, 0.603)' : '' }"
-        >
-          Chinese
-        </button>
-        <button
-          v-on:click="change_language('jp')"
-          :style="{ background: language === 'jp' ? 'rgba(170, 170, 170, 0.603)' : '' }"
-        >
-          Japanese
-        </button>
-      </div>
-      <div class="setting-list">
-        <div>{{ $t("timeframe") }}:</div>
-        <button
-          v-on:click="change_timeframe('30m')"
-          :style="{ background: timeframe === '30m' ? 'rgba(170, 170, 170, 0.603)' : '' }"
-        >
-          30m
-        </button>
-        <button
-          v-on:click="change_timeframe('4h')"
-          :style="{ background: timeframe === '4h' ? 'rgba(170, 170, 170, 0.603)' : '' }"
-        >
-          4h
-        </button>
-        <button
-          v-on:click="change_timeframe('1d')"
-          :style="{ background: timeframe === '1d' ? 'rgba(170, 170, 170, 0.603)' : '' }"
-        >
-          1d
-        </button>
-        <button
-          v-on:click="change_timeframe('1w')"
-          :style="{ background: timeframe === '1w' ? 'rgba(170, 170, 170, 0.603)' : '' }"
-        >
-          1w
-        </button>
-      </div>
-      <div class="setting-list">
-        <div>{{ $t("asset_type") }}:</div>
-        <button
-          v-on:click="change_asset_type('all')"
-          :style="{ background: asset_type === 'all' ? 'rgba(170, 170, 170, 0.603)' : '' }"
-        >
-          all
-        </button>
-        <button
-          v-on:click="change_asset_type('crypto')"
-          :style="{ background: asset_type === 'crypto' ? 'rgba(170, 170, 170, 0.603)' : '' }"
-        >
-          crypto
-        </button>
-        <button
-          v-on:click="change_asset_type('stocks')"
-          :style="{ background: asset_type === 'stocks' ? 'rgba(170, 170, 170, 0.603)' : '' }"
-        >
-          stocks
+          {{ option.label }}
         </button>
       </div>
     </div>
@@ -145,20 +49,53 @@ export default {
     asset_type: String,
   },
   data() {
-    return {};
+    return {
+      settingSwitchs: [{
+        key: "is_dark_mode",
+        value: this.is_dark_mode,
+        label: "dark_mode",
+      }, {
+        key: "is_hide_small_balance",
+        value: this.is_hide_small_balance,
+        label: "hide_small_balance",
+      }, {
+        key: "is_perfer_return",
+        value: this.is_perfer_return,
+        label: "show_return_in_small_device",
+      }, {
+        key: "is_merge_wallets",
+        value: this.is_merge_wallets,
+        label: "is_merge_wallets",
+      }],
+      settingOptions: {
+        language: [
+          { value: 'en', label: 'English' },
+          { value: 'zh', label: 'Chinese' },
+          { value: 'jp', label: 'Japanese' }
+        ],
+        timeframe: [
+          { value: '30m', label: '30m' },
+          { value: '4h', label: '4h' },
+          { value: '1d', label: '1d' },
+          { value: '1w', label: '1w' }
+        ],
+        asset_type: [
+          { value: 'all', label: 'all' },
+          { value: 'crypto', label: 'crypto' },
+          { value: 'stocks', label: 'stocks' }
+        ],
+      },
+    };
   },
   methods: {
+    getSettingValue(key) {
+      return this[key];
+    },
     click(v) {
       this.$emit(`update:${v}`, !this[v]);
     },
-    change_timeframe(v) {
-      this.$emit(`update:timeframe`, v);
-    },
-    change_asset_type(v) {
-      this.$emit(`update:asset_type`, v);
-    },
-    change_language(v) {
-      this.$emit(`update:language`, v);
+    change_keyvalue(k, v) {
+      this.$emit(`update:${k}`, v);
     },
   },
 };
@@ -252,5 +189,9 @@ input:checked + .slider:before {
 .setting-list > span {
   margin-left: 15px;
   font-size: 14px;
+}
+
+.button-active {
+  background: rgba(170, 170, 170, 0.603);
 }
 </style>

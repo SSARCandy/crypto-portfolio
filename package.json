@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "testbuild": "ENV=dev vue-cli-service build && python3 -m http.server -d docs",
     "vue-lint": "vue-cli-service lint",
     "lint": "./node_modules/.bin/eslint -c ./config/.eslintrc index.js WalletFetcher"
   },

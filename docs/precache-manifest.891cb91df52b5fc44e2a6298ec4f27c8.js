@@ -28,7 +28,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/crypto-portfolio/icons/favicon-32x32.png"
   },
   {
-    "revision": "053115f9924211c51a1ea68226ed3971",
+    "revision": "beead3c396aff8640c8f4c130aba950f",
     "url": "/crypto-portfolio/index.html"
   },
   {

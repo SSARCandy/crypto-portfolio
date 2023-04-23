@@ -36,9 +36,9 @@ module.exports = {
       ],
     },
     iconPaths: {
-      favicon32: `${publicPath}/icons/favicon-32x32.png`,
-      favicon16: `${publicPath}/icons/favicon-16x16.png`,
-      appleTouchIcon: `${publicPath}/icons/apple-touch-icon.png`,
+      favicon32: '/icons/favicon-32x32.png',
+      favicon16: '/icons/favicon-16x16.png',
+      appleTouchIcon: '/icons/apple-touch-icon.png',
     },
   },
 };

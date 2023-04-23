@@ -24,6 +24,7 @@
       :is_hide_small_balance.sync="is_hide_small_balance"
       :is_perfer_return.sync="is_perfer_return"
       :is_merge_wallets.sync="is_merge_wallets"
+      :is_show_nav_title.sync="is_show_nav_title"
       :language.sync="language"
       :timeframe.sync="timeframe"
       :asset_type.sync="asset_type"
@@ -221,6 +222,7 @@ export default {
       is_dark_mode: localStorage.is_dark_mode === "true",
       is_perfer_return: localStorage.is_perfer_return === "true",
       is_merge_wallets: localStorage.is_merge_wallets === "true",
+      is_show_nav_title: localStorage.is_show_nav_title === "true",
       language: localStorage.language || 'en',
       timeframe: localStorage.timeframe || '1d',
       asset_type: localStorage.asset_type || 'crypto', //  'crypto' 'stocks' 'all'
@@ -230,6 +232,11 @@ export default {
     };
   },
   computed: {
+    title() {
+      return this.is_show_nav_title
+        ? `$${this.$options.filters.Number(this.nav, 0)}`
+        : `${this.id.split(".")[0]}'s Portfolio`;
+    },
     id() {
       const params = new Proxy(new URLSearchParams(window.location.search), {
         get: (searchParams, prop) => searchParams.get(prop),
@@ -237,8 +244,10 @@ export default {
       return params.id || window.location.host;
     },
     small_balance_threshold() {
-      const nav = sum(this.assets_table.map(asset => asset.size * asset.price));
-      return nav * 0.001;
+      return this.nav * 0.001;
+    },
+    nav() {
+      return sum(this.assets_table.map(asset => asset.size * asset.price));
     },
     estimate_total_cost() {
       const estimated = sum(this.assets_table.map(asset => asset.size * asset.entry));
@@ -343,10 +352,7 @@ export default {
     },
     today_pnl() {
       if (this.daily_nav.length < 2) return 0;
-      return (
-        sum(this.assets_table.map(({ price, size }) => price * size)) -
-        this.daily_nav[this.daily_nav.length - 2][1]
-      );
+      return this.nav - this.daily_nav[this.daily_nav.length - 2][1];
     },
     tagcolor(idx) {
       const color = [
@@ -417,6 +423,7 @@ export default {
         this.sort_key,
         this.sort_order === 1 ? "desc" : "asc"
       );
+      document.title = this.title;
     },
     symbol_key(token, wallet, type){
       return wallet !== 'binance' ? `${token}-${wallet}-${type}` : `${token}-${type}`;
@@ -446,6 +453,10 @@ export default {
     is_merge_wallets: function (val) {
       localStorage.is_merge_wallets = val;
     },
+    is_show_nav_title: function (val) {
+      localStorage.is_show_nav_title = val;
+      document.title = this.title;
+    },
     language: function (val) {
       localStorage.language = val;
       this.$i18n.locale = val;
@@ -466,7 +477,6 @@ export default {
     this.screen_width =
       window.innerWidth > 0 ? window.innerWidth : screen.width;
 
-    document.title = `${this.id.split(".")[0]}'s Portfolio`;
     document.documentElement.setAttribute(
       "data-theme",
       this.is_dark_mode ? "dark" : "light"

@@ -31,6 +31,7 @@
     "hide_small_balance": "小額残高を非表示 (純資産価値の 0.1% 未満）",
     "show_return_in_small_device": "小型デバイスでリターン（%）を表示",
     "is_merge_wallets": "パイチャートで同じコインのウォレットを統合する",
+    "is_show_nav_title": "「総資産」をウェブページのタイトルに表示する",
     "language": "言語切り替え",
     "timeframe": "価格変動に使用される時間枠",
     "asset_type": "表示するアセットタイプ"

@@ -31,6 +31,7 @@
     "hide_small_balance": "Hide Small Balance (less than 0.1% NAV)",
     "show_return_in_small_device": "Show Return(%) in Small Device",
     "is_merge_wallets": "Merge Same Coins in Wallets in Pie Chart",
+    "is_show_nav_title": "Show NAV on tab title",
     "language": "Change language",
     "timeframe": "Time-frame used for price changes",
     "asset_type": "Asset type to show"

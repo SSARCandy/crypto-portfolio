@@ -44,6 +44,7 @@ export default {
     is_dark_mode: Boolean,
     is_perfer_return: Boolean,
     is_merge_wallets: Boolean,
+    is_show_nav_title: Boolean,
     language: String,
     timeframe: String,
     asset_type: String,
@@ -66,6 +67,10 @@ export default {
         key: "is_merge_wallets",
         value: this.is_merge_wallets,
         label: "is_merge_wallets",
+      }, {
+        key: "is_show_nav_title",
+        value: this.is_show_nav_title,
+        label: "is_show_nav_title",
       }],
       settingOptions: {
         language: [

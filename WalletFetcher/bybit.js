@@ -20,7 +20,7 @@ async function account_balance(credentials, account_type) {
 async function walletFetcher(credentials) {
   const types = [
     'CONTRACT',
-    'INVESTMENT',
+    // 'INVESTMENT',
     'UNIFIED',
     'FUND',
   ];

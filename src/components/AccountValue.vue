@@ -8,6 +8,12 @@
     <div class="flex-container">
       <div>
         <button
+          v-on:click="pick_range(7)"
+          :class="{ selected: timeframe === 7 }"
+        >
+          7d
+        </button>
+        <button
           v-on:click="pick_range(30)"
           :class="{ selected: timeframe === 30 }"
         >

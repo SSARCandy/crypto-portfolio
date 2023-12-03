@@ -12,6 +12,7 @@ const alias = {
   EPS: 'ELLIP',
   ONG: 'ONGAS',
   COS: 'CONT',
+  MNT: 'MANTLE',
 };
 const overwrite = {
   TWD: 0.032,

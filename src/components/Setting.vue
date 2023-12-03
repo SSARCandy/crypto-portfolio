@@ -9,7 +9,7 @@
         <label class="switch">
           <input
             type="checkbox"
-            :checked="setting.value"
+            :checked="getSettingValue(setting.key)"
             v-on:click="click(setting.key)"
           />
           <span class="slider round"></span>

@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const axios = require('axios').default;
 const config = require('./config/config.json');
+const Binance = require('binance-api-node').default;
 const { UniversalWalletFetcher, WALLETS } = require('./WalletFetcher');
 const { initializeApp } = require('@firebase/app');
 const { getFirestore, doc, setDoc, updateDoc } = require('@firebase/firestore');
@@ -58,6 +59,7 @@ async function constructPriceMap(assets, stock_prices) {
 (async () => {
   const stock_prices = {};
   const results = {};
+  const positions = {};
   for (const type of WALLETS) {
     for (const cnf of config[type]) {
       if (!results[cnf.id]) {
@@ -67,12 +69,34 @@ async function constructPriceMap(assets, stock_prices) {
       const balances = await UniversalWalletFetcher(type, cnf);
       results[cnf.id].push(...balances);
       if (type == 'firstrade') {
-        for (const { asset, price } of balances){
+        for (const { asset, price } of balances) {
           stock_prices[asset] = price;
         }
       }
+      if (type == 'binance') {
+        if (!positions[cnf.id]) {
+          positions[cnf.id] = [];
+        }
+        const client = Binance({
+          apiKey: cnf.APIKEY,
+          apiSecret: cnf.APISECRET,
+        });
+        const info = await client.futuresPositionRisk();
+
+        positions[cnf.id] = info
+          .filter(x => +(x.positionAmt) !== 0)
+          .map(({ symbol, positionAmt, unRealizedProfit, markPrice, notional }) => ({
+            symbol,
+            notional: + notional,
+            markPrice: +markPrice,
+            positionAmt: +positionAmt,
+            unRealizedProfit: +unRealizedProfit,
+          }));
+      }
     }
   }
+
+
 
   let assets = [];
   for (const id of Object.keys(results)) {
@@ -80,6 +104,7 @@ async function constructPriceMap(assets, stock_prices) {
       time: Date.now(),
       estimate_total_cost: 0,
       data: results[id],
+      positions: positions[id],
     };
     const doc1 = doc(database, `asset/${id}`);
     await setDoc(doc1, res);

@@ -27,6 +27,14 @@
     "estimate_total_cost": "Estimated Total Cost",
     "export_as_csv": "Export as CSV",
 
+    "positions_count": "Number of Positions",
+    "symbol": "Symbol",
+    "position_notional": "Value",
+    "mark_price": "Mark Price",
+    "initial_size": "Initial Size",
+    "unrealized_pnl": "PnL",
+    "total_initial_size": "Total Initial Size",
+
     "dark_mode": "Dark Mode",
     "hide_small_balance": "Hide Small Balance (less than 0.1% NAV)",
     "show_return_in_small_device": "Show Return(%) in Small Device",

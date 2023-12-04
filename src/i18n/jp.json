@@ -27,6 +27,14 @@
     "estimate_total_cost": "総コスト見積り",
     "export_as_csv": "CSV でエクスポート",
 
+    "positions_count": "ポジション数",
+    "symbol": "シンボル",
+    "position_notional": "評価額",
+    "mark_price": "マークプライス",
+    "initial_size": "初期サイズ",
+    "unrealized_pnl": "損益",
+    "total_initial_size": "総初期サイズ",
+
     "dark_mode": "ダークモード",
     "hide_small_balance": "小額残高を非表示 (純資産価値の 0.1% 未満）",
     "show_return_in_small_device": "小型デバイスでリターン（%）を表示",

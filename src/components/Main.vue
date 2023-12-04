@@ -9,14 +9,19 @@
       </button>
       <button
         class="btn setting-btn"
-        v-show="!is_nav_mode"
+        v-show="!is_nav_mode && !is_position_mode"
         v-on:click="is_exchange_chart = !is_exchange_chart"
       >
         {{ $t("switch_chart") }}
       </button>
-      <button class="btn setting-btn" v-on:click="is_nav_mode = !is_nav_mode">
-        <i class="fas fa-chart-line"></i>
-      </button>
+      <div style="display: flex;">
+        <button class="btn setting-btn" v-on:click="is_position_mode = !is_position_mode">
+          <i class="fas fa-scroll"></i>
+        </button>
+        <button class="btn setting-btn" v-on:click="is_nav_mode = !is_nav_mode">
+          <i class="fas fa-chart-line"></i>
+        </button>
+      </div>
     </div>
     <setting
       :is_setting_mode.sync="is_setting_mode"
@@ -34,7 +39,11 @@
       :daily_nav="daily_nav" 
       :estimate_total_cost="estimate_total_cost"
     />
-    <div v-if="!is_nav_mode">
+    <position-view
+      v-if="is_position_mode"
+      :positions="positions"
+    />
+    <div v-if="!is_nav_mode&& !is_position_mode">
       <pie-chart :assets="chart_data" />
       <ul>
         <li 
@@ -171,6 +180,7 @@ import { firebase } from "../../config/config.json";
 import PieChart from "./PieChart";
 
 import AccountValue from "./AccountValue";
+import PositionView from "./PositionView.vue";
 import Setting from "./Setting";
 import Timer from "./Timer";
 import sortBy from "lodash/sortBy";
@@ -197,6 +207,7 @@ export default {
   components: {
     PieChart,
     AccountValue,
+    PositionView,
     Setting,
     Timer,
   },
@@ -206,6 +217,7 @@ export default {
       time: 0,
       reported_total_cost: 0,
       assets: [],
+      positions: [],
       assets_table: [],
       assets_chages: {},
       price_map: {},
@@ -218,6 +230,7 @@ export default {
       is_setting_mode: false,
       is_exchange_chart: false,
       is_nav_mode: false,
+      is_position_mode: false,
       is_hide_small_balance: localStorage.is_hide_small_balance === "true",
       is_dark_mode: localStorage.is_dark_mode === "true",
       is_perfer_return: localStorage.is_perfer_return === "true",
@@ -494,10 +507,11 @@ export default {
     const doc2 = doc(database, `asset/${this.id}`);
     onSnapshot(doc2, async (asset) => {
       if (!asset.exists()) return;
-      const { time, data, estimate_total_cost } = asset.data();
+      const { time, data, positions, estimate_total_cost } = asset.data();
       this.time = time;
       this.reported_total_cost = estimate_total_cost;
       this.assets = data;
+      this.positions = positions;
       this.update_assets_table();
     });
 

@@ -1,7 +1,7 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ea2db5be9b89e20bd68a",
-    "url": "/crypto-portfolio/css/app.a9b7794a.css"
+    "revision": "c1129f983498cd25bc7f",
+    "url": "/crypto-portfolio/css/app.ffa97d53.css"
   },
   {
     "revision": "a4270d3753e11700ce56",
@@ -28,12 +28,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/crypto-portfolio/icons/favicon-32x32.png"
   },
   {
-    "revision": "34898eff16c748ad852d3dd95552595f",
+    "revision": "a17010f07be001a75db79d2cbaa315ad",
     "url": "/crypto-portfolio/index.html"
   },
   {
-    "revision": "ea2db5be9b89e20bd68a",
-    "url": "/crypto-portfolio/js/app.fe0c50fb.js"
+    "revision": "c1129f983498cd25bc7f",
+    "url": "/crypto-portfolio/js/app.0cce83e8.js"
   },
   {
     "revision": "a4270d3753e11700ce56",

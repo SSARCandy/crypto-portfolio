@@ -30,11 +30,14 @@
           {{ option.label }}
         </button>
       </div>
+
+      <div id="app-version">app version: {{ version }}</div>
     </div>
   </div>
 </template>
 
 <script>
+import { version } from "../../package.json";
 export default {
   name: "Setting",
   components: {},
@@ -51,6 +54,7 @@ export default {
   },
   data() {
     return {
+      version,
       settingSwitchs: [{
         key: "is_dark_mode",
         value: this.is_dark_mode,
@@ -107,6 +111,13 @@ export default {
 </script>
 
 <style scoped>
+
+#app-version {
+  font-size: 12px;
+  color: gray;
+  text-align: right;
+  padding-bottom: 8px;
+}
 .modal {
   position: fixed;
   z-index: 1;

@@ -2,7 +2,7 @@
   <div>
     <footer style="display: flex; justify-content: space-between">
       <ul style="list-style: none; padding-left: 0">
-        <li>{{ $t("positions_count") }}: {{ sorted.length }}</li>
+        <li>{{ $t("positions_count") }}: {{ positions.length }}</li>
         <li>{{ $t("total_initial_size") }}: {{ total_initial_size | Number(0) }}</li>
         <li>
           {{ $t("total_unrealized_pnl") }}:
@@ -12,6 +12,10 @@
         </li>
       </ul>
     </footer>
+    <div style="display: flex; justify-content: space-between; padding-bottom: 5px;">
+      <input type="text" v-model="keywords" placeholder="Search...">
+      <export-table :table_id="'position-table'" />
+    </div>
     <table id="position-table">
       <tr>
         <th v-on:click="change_sortkey('symbol')">
@@ -42,10 +46,11 @@
 </template>
 
 <script>
+import { filters, methods } from "../common/common";
+import ExportTable from "./ExportTable.vue";
 import orderBy from 'lodash/orderBy';
 import sumBy from 'lodash/sumBy';
 import sum from 'lodash/sum';
-import { filters, methods } from "../common/common";
 
 export default {
   name: "PositionView",
@@ -53,9 +58,11 @@ export default {
     positions: Array,
   },
   components: {
+    ExportTable,
   },
   data() {
     return {
+      keywords: '',
       sort_key: "unRealizedProfit",
       sort_order: true,
     };
@@ -68,6 +75,9 @@ export default {
           ...x,
           initial_size: (Math.abs(x.notional - x.unRealizedProfit)),
         }))
+        .filter((x) => {
+          return this.keywords.length === 0 || x.symbol.includes(this.keywords.toUpperCase());
+        })
         , this.sort_key, this.sort_order ? "desc" : "asc");
     },
     unrealized() {
@@ -111,5 +121,16 @@ td:nth-child(1) {
 
 .selected {
   background: rgba(170, 170, 170, 0.603);
+}
+
+input {
+  font-size: 12px;
+  width: 40%;
+  font-family: monospace;
+  border-style: hidden;
+  border-bottom: solid 1px;
+  border-color: var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 </style>

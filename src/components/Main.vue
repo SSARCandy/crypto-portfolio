@@ -5,21 +5,18 @@
         class="btn setting-btn"
         v-on:click="is_setting_mode = !is_setting_mode"
       >
-        <i class="fas fa-cog"></i>
-      </button>
-      <button
-        class="btn setting-btn"
-        v-show="!is_nav_mode && !is_position_mode"
-        v-on:click="is_exchange_chart = !is_exchange_chart"
-      >
-        {{ $t("switch_chart") }}
+        <i class="fas fa-fw fa-cog"></i>
       </button>
       <div style="display: flex;">
+        <button class="btn setting-btn" v-show="!is_nav_mode && !is_position_mode" v-on:click="is_exchange_chart = !is_exchange_chart">
+          <i class="fas fa-fw fa-chart-pie"></i>
+        </button>
+        <div style="width: 20px;"></div>
         <button class="btn setting-btn" v-on:click="is_position_mode = !is_position_mode; is_nav_mode = false;">
-          <i class="fas fa-scroll"></i>
+          <i class="fas fa-fw fa-scroll"></i>
         </button>
         <button class="btn setting-btn" v-on:click="is_nav_mode = !is_nav_mode; is_position_mode = false;">
-          <i class="fas fa-chart-line"></i>
+          <i class="fas fa-fw fa-chart-line"></i>
         </button>
       </div>
     </div>

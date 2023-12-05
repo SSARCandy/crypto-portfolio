@@ -15,10 +15,10 @@
         {{ $t("switch_chart") }}
       </button>
       <div style="display: flex;">
-        <button class="btn setting-btn" v-on:click="is_position_mode = !is_position_mode">
+        <button class="btn setting-btn" v-on:click="is_position_mode = !is_position_mode; is_nav_mode = false;">
           <i class="fas fa-scroll"></i>
         </button>
-        <button class="btn setting-btn" v-on:click="is_nav_mode = !is_nav_mode">
+        <button class="btn setting-btn" v-on:click="is_nav_mode = !is_nav_mode; is_position_mode = false;">
           <i class="fas fa-chart-line"></i>
         </button>
       </div>

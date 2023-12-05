@@ -618,6 +618,7 @@ input[type="number"] {
 #quick-access {
   display: flex;
   justify-content: space-between;
+  height: 30px;
 }
 
 .setting-btn {

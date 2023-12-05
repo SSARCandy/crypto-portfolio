@@ -7,7 +7,7 @@
         <li>
           {{ $t("total_unrealized_pnl") }}:
           <span v-bind:class="color(unrealized)">
-            {{ unrealized | Number(0) }}
+            {{ unrealized | Number(0) }} ({{ unrealized / total_initial_size | Precentage(1) }})
           </span>
         </li>
       </ul>
@@ -45,6 +45,7 @@
 import orderBy from 'lodash/orderBy';
 import sumBy from 'lodash/sumBy';
 import sum from 'lodash/sum';
+import { filters, methods } from "../common/common";
 
 export default {
   name: "PositionView",
@@ -59,25 +60,7 @@ export default {
       sort_order: true,
     };
   },
-  filters: {
-    Number: (v, toFixed) => {
-      if (v == undefined) return 0;
-      const option =
-        typeof toFixed === "number"
-          ? {
-            maximumFractionDigits: toFixed,
-            minimumFractionDigits: toFixed,
-          }
-          : {};
-      return new Intl.NumberFormat("en-US", option).format(v);
-    },
-    toPrecision: (v, precision) => {
-      if (v == undefined) return 0;
-      if (Math.abs(v) < 1e-8) return 0;
-      return v.toPrecision(precision);
-    },
-
-  },
+  filters: filters,
   computed: {
     sorted() {
       return orderBy(this.positions
@@ -95,9 +78,7 @@ export default {
     }
   },
   methods: {
-    color(v) {
-      return { buy: v > 0, sell: v < 0 };
-    },
+    ...methods,
     sorted_icon(k) {
       if (k !== this.sort_key) return "";
       return this.sort_order ? "↓" : "↑";

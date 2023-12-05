@@ -59,6 +59,7 @@
 
 <script>
 import { number_formatter } from "../common/utils";
+import { filters, methods } from "../common/common";
 import { Chart } from "highcharts-vue";
 import ExportTable from "./ExportTable.vue";
 import minBy from "lodash/minBy";
@@ -79,19 +80,7 @@ export default {
       timeframe: 30,
     };
   },
-  filters: {
-    Number: (v, toFixed) => {
-      if (v == undefined) return 0;
-      const option =
-        typeof toFixed === "number"
-          ? {
-              maximumFractionDigits: toFixed,
-              minimumFractionDigits: toFixed,
-            }
-          : {};
-      return new Intl.NumberFormat("en-US", option).format(v);
-    },
-  },
+  filters: filters,
   computed: {
     reversed_data: function () {
       return this.daily_nav.slice().reverse().slice(0, this.timeframe);
@@ -178,14 +167,12 @@ export default {
     },
   },
   methods: {
+    ...methods,
     dail_pnl(idx) {
       return (
         this.reversed_data[idx][1] -
         this.reversed_data[Math.min(idx + 1, this.reversed_data.length - 1)][1]
       );
-    },
-    color(v) {
-      return { buy: v > 0, sell: v < 0 };
     },
     pick_range(v) {
       this.timeframe = v;

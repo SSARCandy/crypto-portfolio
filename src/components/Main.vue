@@ -2,20 +2,20 @@
   <div id="main">
     <div id="quick-access">
       <button
-        class="btn setting-btn"
+        class="setting-btn"
         v-on:click="is_setting_mode = !is_setting_mode"
       >
         <i class="fas fa-fw fa-cog"></i>
       </button>
       <div style="display: flex;">
-        <button class="btn setting-btn" v-show="!is_nav_mode && !is_position_mode" v-on:click="is_exchange_chart = !is_exchange_chart">
+        <button class="setting-btn" v-show="!is_nav_mode && !is_position_mode" v-on:click="is_exchange_chart = !is_exchange_chart">
           <i class="fas fa-fw fa-chart-pie"></i>
         </button>
         <div style="width: 20px;"></div>
-        <button class="btn setting-btn" v-on:click="is_position_mode = !is_position_mode; is_nav_mode = false;">
+        <button class="setting-btn" v-on:click="is_position_mode = !is_position_mode; is_nav_mode = false;">
           <i class="fas fa-fw fa-scroll"></i>
         </button>
-        <button class="btn setting-btn" v-on:click="is_nav_mode = !is_nav_mode; is_position_mode = false;">
+        <button class="setting-btn" v-on:click="is_nav_mode = !is_nav_mode; is_position_mode = false;">
           <i class="fas fa-fw fa-chart-line"></i>
         </button>
       </div>
@@ -582,7 +582,7 @@ input {
 }
 
 .entry-price {
-  max-width: 45px;
+  max-width: 75px;
 }
 
 .entry-price > input {
@@ -593,6 +593,8 @@ input {
   background-color: var(--color-bg);
   border: var(--color-bg);
   color: var(--color-text);
+  border-style: hidden;
+  box-sizing: border-box;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -615,10 +617,12 @@ input[type="number"] {
 #quick-access {
   display: flex;
   justify-content: space-between;
-  height: 30px;
+  height: 40px;
 }
 
 .setting-btn {
+  width: 40px;
+  justify-content: space-around;
   font-size: 18px;
   z-index: 999;
   display: flex;

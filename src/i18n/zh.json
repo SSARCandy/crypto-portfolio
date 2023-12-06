@@ -34,6 +34,7 @@
     "initial_size": "初始價值",
     "unrealized_pnl": "盈虧",
     "total_initial_size": "總初始價值",
+    "total_position_size": "總價值",
 
     "dark_mode": "深色模式",
     "hide_small_balance": "隱藏小額資產 (小於 0.1% 總資產)",

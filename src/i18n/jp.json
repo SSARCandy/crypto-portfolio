@@ -34,6 +34,7 @@
     "initial_size": "初期サイズ",
     "unrealized_pnl": "損益",
     "total_initial_size": "総初期サイズ",
+    "total_position_size": "総価値",
 
     "dark_mode": "ダークモード",
     "hide_small_balance": "小額残高を非表示 (純資産価値の 0.1% 未満）",

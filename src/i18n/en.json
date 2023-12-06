@@ -34,6 +34,7 @@
     "initial_size": "Initial Size",
     "unrealized_pnl": "PnL",
     "total_initial_size": "Total Initial Size",
+    "total_position_size": "Total Position Size",
 
     "dark_mode": "Dark Mode",
     "hide_small_balance": "Hide Small Balance (less than 0.1% NAV)",

@@ -4,6 +4,7 @@
       <ul style="list-style: none; padding-left: 0">
         <li>{{ $t("positions_count") }}: {{ positions.length }}</li>
         <li>{{ $t("total_initial_size") }}: {{ total_initial_size | Number(0) }}</li>
+        <li>{{ $t("total_posiion_size") }}: {{ total_posiion_size | Number(0) }}</li>
         <li>
           {{ $t("total_unrealized_pnl") }}:
           <span v-bind:class="color(unrealized)">
@@ -85,7 +86,10 @@ export default {
     },
     total_initial_size() {
       return sum(this.positions.map(x => Math.abs(x.notional - x.unRealizedProfit)));
-    }
+    },
+    total_posiion_size() {
+      return sum(this.positions.map(x => Math.abs(x.notional)));
+    },
   },
   methods: {
     ...methods,

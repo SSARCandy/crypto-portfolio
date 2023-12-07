@@ -617,7 +617,7 @@ input[type="number"] {
 #quick-access {
   display: flex;
   justify-content: space-between;
-  height: 40px;
+  height: 35.5px;
 }
 
 .setting-btn {

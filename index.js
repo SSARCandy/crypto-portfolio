@@ -14,7 +14,7 @@ const alias = {
   ONG: 'ONGAS',
   COS: 'CONT',
   MNT: 'MANTLE',
-  ERN: 'ethernity',
+  ERN: 'ETHERNITY',
 };
 const overwrite = {
   TWD: 0.032,

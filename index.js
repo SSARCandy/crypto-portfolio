@@ -45,9 +45,10 @@ async function constructPriceMap(assets, stock_prices) {
       return;
     }
     try {
-      price_map[k] = prices[alias[k] || k]['USD'];
       if (overwrite[k]) {
         price_map[k] = overwrite[k];
+      } else {
+        price_map[k] = prices[alias[k] || k]['USD'];
       }
     } catch (e) {
       console.log(`cannot found ${k} price`);

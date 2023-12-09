@@ -28,19 +28,19 @@
         <th v-on:click="change_sortkey('initial_size')">
           {{ sorted_icon("initial_size") }}{{ $t("initial_size") }}
         </th>
-        <th v-on:click="change_sortkey('notional')">
-          {{ sorted_icon("notional") }}{{ $t("position_notional") }}
-        </th>
         <th v-on:click="change_sortkey('unRealizedProfit')">
           {{ sorted_icon("unRealizedProfit") }}{{ $t("unrealized_pnl") }}
+        </th>
+        <th v-on:click="change_sortkey('pnl_return')">
+          {{ sorted_icon("pnl_return") }}{{ $t("pnl_return") }}
         </th>
       </tr>
       <tr v-for="d in sorted" v-bind:key="d.symbol">
         <td>{{ d.symbol }}</td>
         <td>{{ d.markPrice | toPrecision(5) }}</td>
         <td>{{ d.initial_size | Number(0) }}</td>
-        <td v-bind:class="color(d.notional)">{{ d.notional | Number(0) }}</td>
         <td v-bind:class="color(d.unRealizedProfit)">{{ d.unRealizedProfit | Number(1) }}</td>
+        <td v-bind:class="color(d.unRealizedProfit)">{{ d.pnl_return | Precentage(1) }}</td>
       </tr>
     </table>
   </div>
@@ -72,10 +72,14 @@ export default {
   computed: {
     sorted() {
       return orderBy(this.positions
-        .map((x) => ({
-          ...x,
-          initial_size: (Math.abs(x.notional - x.unRealizedProfit)),
-        }))
+        .map((x) => {
+          const initial_size = (Math.abs(x.notional - x.unRealizedProfit));
+          return {
+            ...x,
+            initial_size,
+            pnl_return: x.unRealizedProfit / initial_size,
+          };
+        })
         .filter((x) => {
           return this.keywords.length === 0 || x.symbol.includes(this.keywords.toUpperCase());
         })

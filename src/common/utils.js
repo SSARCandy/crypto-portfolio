@@ -20,8 +20,11 @@ async function binance_price_changes_pct(assets, interval, map) {
           interval,
           limit: 2,
         });
-        map[asset] = (parseFloat(res[1].close) - parseFloat(res[0].open)) /
-          parseFloat(res[0].open);
+        const price_latest = parseFloat(res[1].close);
+        const price_oldest = parseFloat(res[0].open);
+
+        if (Date.now() - parseInt(res[1].closeTime) > 86400*1000) continue;
+        map[asset] = (price_latest - price_oldest) / price_oldest;
         break;
       } catch (e) {
         continue;

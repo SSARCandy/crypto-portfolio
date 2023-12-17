@@ -9,30 +9,23 @@ const { getFirestore, doc, setDoc, updateDoc } = require('@firebase/firestore');
 initializeApp(config.firebase);
 const database = getFirestore();
 
-const alias = {
-  EPS: 'ELLIP',
-  ONG: 'ONGAS',
-  COS: 'CONT',
-  MNT: 'MANTLE',
-  ERN: 'ETHERNITY',
-};
 const overwrite = {
   TWD: 0.032,
-  TTT: 1e-8, // TODO: can't get correct price
+  USD: 1,
 };
 
 async function fetchTokenPrice(tokens) {
-  let result = {};
-  const BATCH = 50;
-  for (let i = 0; i < tokens.length; i += BATCH) {
-    const batch_list = _.slice(tokens, i, i + BATCH).map(x => alias[x] || x).join(',');
-    const res = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${batch_list}&tsyms=USD`);
-    result = {
-      ...result,
-      ...res.data,
-    };
-  }
-  return result;
+  const batch_list = tokens.filter(x=> !~x.indexOf('_')).join(',');
+  const uri = `https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?CMC_PRO_API_KEY=${config.coinmarketcap.cmc_api_key}&aux=cmc_rank&symbol=${batch_list}`
+  const res = await axios.get(uri);
+  const data = res.data.data;
+  const results = Object.keys(data).map(k => {
+    return [
+      k, 
+      data[k].length > 0 ? data[k][0].quote.USD.price || 0 : 0,
+    ];
+  })
+  return Object.fromEntries(results);
 }
 
 async function constructPriceMap(assets, stock_prices) {
@@ -44,15 +37,7 @@ async function constructPriceMap(assets, stock_prices) {
       price_map[k] = stock_prices[k];
       return;
     }
-    try {
-      if (overwrite[k]) {
-        price_map[k] = overwrite[k];
-      } else {
-        price_map[k] = prices[alias[k] || k]['USD'];
-      }
-    } catch (e) {
-      console.log(`cannot found ${k} price`);
-    }
+    price_map[k] = overwrite[k] || prices[k] || 0;
   });
   console.log(price_map);
   return price_map;

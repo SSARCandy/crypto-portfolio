@@ -15,9 +15,11 @@ const overwrite = {
 };
 
 async function fetchTokenPrice(tokens) {
+  const keys = config.coinmarketcap.cmc_api_keys;
+  const key = keys[new Date().getHours() % keys.length];
   const batch_list = tokens.filter(x=> !~x.indexOf('_')).join(',');
-  const uri = `https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?CMC_PRO_API_KEY=${config.coinmarketcap.cmc_api_key}&aux=cmc_rank&symbol=${batch_list}`
-  const res = await axios.get(uri);
+  const query = `CMC_PRO_API_KEY=${key}&aux=cmc_rank&symbol=${batch_list}`;
+  const res = await axios.get(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?${query}`);
   const data = res.data.data;
   const results = Object.keys(data).map(k => {
     return [
@@ -39,7 +41,7 @@ async function constructPriceMap(assets, stock_prices) {
     }
     price_map[k] = overwrite[k] || prices[k] || 0;
   });
-  console.log(price_map);
+  // console.log(price_map);
   return price_map;
 }
 
@@ -96,7 +98,10 @@ async function constructPriceMap(assets, stock_prices) {
     const doc1 = doc(database, `asset/${id}`);
     await setDoc(doc1, res);
 
-    assets = _.union(assets, results[id].map(x => x.asset));
+    assets = _.union(assets, results[id]
+        .filter(x=> x.wallet !== 'firstrade')
+        .map(x => x.asset)
+    );
   }
   const price_map = await constructPriceMap(assets, stock_prices);
   const crypto_px = doc(database, 'price/spot');

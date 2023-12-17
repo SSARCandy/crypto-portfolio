@@ -19,7 +19,7 @@ async function walletFetcher(credentials) {
   });
   const result = res.data.map(x => ({
     asset: x.currency.toUpperCase(),
-    size: (+x.balance) + (+x.locked),
+    size: (+x.balance) + (+x.locked) + (+x.staked),
     wallet: 'max',
   })).filter(x => x.size > 0);
 

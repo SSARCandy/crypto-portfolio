@@ -252,7 +252,7 @@ export default {
       const params = new Proxy(new URLSearchParams(window.location.search), {
         get: (searchParams, prop) => searchParams.get(prop),
       });
-      return params.id || window.location.host;
+      return params.id;
     },
     small_balance_threshold() {
       return this.nav * 0.001;

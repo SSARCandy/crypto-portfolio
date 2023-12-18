@@ -41,7 +41,7 @@ async function constructPriceMap(assets, stock_prices) {
     }
     price_map[k] = overwrite[k] || prices[k] || 0;
   });
-  // console.log(price_map);
+  console.log(price_map);
   return price_map;
 }
 
@@ -99,7 +99,6 @@ async function constructPriceMap(assets, stock_prices) {
     await setDoc(doc1, res);
 
     assets = _.union(assets, results[id]
-        .filter(x=> x.wallet !== 'firstrade')
         .map(x => x.asset)
     );
   }

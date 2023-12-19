@@ -14,6 +14,9 @@ const overwrite = {
   USD: 1,
 };
 
+const COIN2ID = {
+  MAX: 5067,
+};
 async function fetchTokenPrice(tokens) {
   const keys = config.coinmarketcap.cmc_api_keys;
   const key = keys[new Date().getHours() % keys.length];
@@ -24,7 +27,12 @@ async function fetchTokenPrice(tokens) {
   const results = Object.keys(data).map(k => {
     return [
       k, 
-      data[k].length > 0 ? data[k][0].quote.USD.price || 0 : 0,
+      data[k].length > 0
+        ? (COIN2ID[k] 
+          ? data[k].filter(x => x.id === COIN2ID[k]) 
+          : data[k]
+          )[0].quote.USD.price || 0 
+        : 0,
     ];
   })
   return Object.fromEntries(results);
@@ -84,8 +92,6 @@ async function constructPriceMap(assets, stock_prices) {
       }
     }
   }
-
-
 
   let assets = [];
   for (const id of Object.keys(results)) {

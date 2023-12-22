@@ -4,7 +4,7 @@ const fs = require('fs');
 async function walletFetcher(credentials) {
   const cache_filename = `./caches/firstrade-cache-${credentials.id}.json`;
   const now = new Date();
-  if (now.getHours() !== 6) {
+  if (now.getMinutes() !== 0) {
     const cache = JSON.parse(fs.readFileSync(cache_filename));
     return cache;
   }

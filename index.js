@@ -108,16 +108,24 @@ async function constructPriceMap(assets, stock_prices) {
         .map(x => x.asset)
     );
   }
+  
+  const today = ((new Date())).toISOString().slice(0, 10);
   const price_map = await constructPriceMap(assets, stock_prices);
-  const crypto_px = doc(database, 'price/spot');
-  await setDoc(crypto_px, price_map);
+
+  const price_info = doc(database, 'price/spot');
+  await setDoc(price_info, price_map);
+
+  const snapshots = doc(database, 'price/snapshots');
+  await updateDoc(snapshots, {
+    [today]: price_map,
+  });
 
   // update NAV
   for (const id of Object.keys(results)) {
     const nav = _.sum(results[id].map(a => price_map[a.asset] * a.size));
     const doc2 = doc(database, `nav/${id}`);
     await updateDoc(doc2, {
-      [((new Date())).toISOString().substr(0, 10)]: nav,
+      [today]: nav,
     });
   }
 

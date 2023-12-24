@@ -193,6 +193,7 @@ td:nth-child(1) {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 5px;
 }
 .selected {
   background: rgba(170, 170, 170, 0.603);

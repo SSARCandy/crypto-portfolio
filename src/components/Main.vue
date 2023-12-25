@@ -206,7 +206,7 @@ export default {
       positions: [],
       assets_table: [],
       price_map: {},
-      price_history: {},
+      price_history: [],
       userdata: {},
       daily_nav: [],
 
@@ -360,22 +360,22 @@ export default {
       }
     },
     assets_chages(symbol) {
-      if (Object.keys(this.price_history).length === 0) return NaN;
+      if (this.price_history.length === 0) return NaN;
       const tf = parseInt(this.timeframe) + 1;
-      const prev = Object.values(this.price_history).slice(-tf)[0];
+      const prev = this.price_history.slice(-tf)[0];
       return (this.price_map[symbol] - prev[symbol]) / prev[symbol];
     },
     update_assets_table() {
       const res = this.assets.map((x) => ({
-        ...x,
-        tag: this.userdata[this.symbol_key(x.asset, x.wallet, 'tag')],
-        price: this.price_map[x.asset],
-        price_changes: this.assets_chages(x.asset),
-        notional_value: this.price_map[x.asset] * x.size,
-        entry: this.entry_p(x.asset, x.wallet),
-        pnl: this.pnl(x),
-        pnl_return: this.pnl_return(x),
-      }))
+          ...x,
+          tag: this.userdata[this.symbol_key(x.asset, x.wallet, 'tag')],
+          price: this.price_map[x.asset],
+          price_changes: this.assets_chages(x.asset),
+          notional_value: this.price_map[x.asset] * x.size,
+          entry: this.entry_p(x.asset, x.wallet),
+          pnl: this.pnl(x),
+          pnl_return: this.pnl_return(x),
+        }))
         .filter(x => {
           return this.asset_type === 'all' ? true :
             this.asset_type === 'stocks'
@@ -402,27 +402,18 @@ export default {
     async loadData() {
       const configDoc = doc(database, `config/${this.id}`);
       const dailyNavDoc = doc(database, `nav/${this.id}`);
-      const priceHistoryDoc = doc(database, 'price/snapshots');
 
-      const [config, dailyNav, priceHistory] = await Promise.all([
+      const [config, dailyNav] = await Promise.all([
         getDoc(configDoc),
         getDoc(dailyNavDoc),
-        getDoc(priceHistoryDoc)
       ]);
-
       if (config.exists()) {
         this.userdata = config.data();
-        this.update_assets_table();
       }
-
       if (dailyNav.exists()) {
         this.daily_nav = sortBy(Object.entries(dailyNav.data()), (o) => o[0]);
       }
-
-      if (priceHistory.exists()) {
-        this.price_history = priceHistory.data();
-        this.update_assets_table();
-      }
+      this.update_assets_table();
     },
     subscribeToAssetChanges() {
       const d = doc(database, `asset/${this.id}`);
@@ -437,10 +428,12 @@ export default {
       });
     },
     subscribeToPriceChanges() {
-      const d = doc(database, "price/spot");
-      onSnapshot(d, (price_map) => {
-        if (!price_map.exists()) return;
-        this.price_map = price_map.data();
+      const d = doc(database, "price/snapshots");
+      onSnapshot(d, (price_maps) => {
+        if (!price_maps.exists()) return;
+        const data = price_maps.data();
+        this.price_history = sortBy(Object.entries(data), (o) => o[0]).map(x => x[1]);
+        this.price_map = this.price_history.slice(-1)[0];
         this.update_assets_table();
       });
     },
@@ -472,7 +465,7 @@ export default {
     },
     timeframe: async function (val) {
       localStorage.timeframe = val;
-      this.update_assets_table();
+      await this.loadData();
     },
     asset_type: function (val) {
       localStorage.asset_type = val;

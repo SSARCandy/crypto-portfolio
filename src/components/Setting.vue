@@ -80,18 +80,18 @@ export default {
         language: [
           { value: 'en', label: 'English' },
           { value: 'zh', label: 'Chinese' },
-          { value: 'jp', label: 'Japanese' }
+          { value: 'jp', label: 'Japanese' },
         ],
         timeframe: [
-          { value: '30m', label: '30m' },
-          { value: '4h', label: '4h' },
           { value: '1d', label: '1d' },
-          { value: '1w', label: '1w' }
+          { value: '4d', label: '4d' },
+          { value: '7d', label: '7d' },
+          { value: '30d', label: '30d' },
         ],
         asset_type: [
           { value: 'all', label: 'all' },
           { value: 'crypto', label: 'crypto' },
-          { value: 'stocks', label: 'stocks' }
+          { value: 'stocks', label: 'stocks' },
         ],
       },
     };

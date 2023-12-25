@@ -87,6 +87,9 @@ export default {
     },
     chartOptions: function () {
       return {
+        accessibility: {
+          enabled: false,
+        },
         chart: {
           type: "area",
           animation: false,

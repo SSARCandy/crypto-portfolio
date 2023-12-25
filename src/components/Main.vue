@@ -64,7 +64,7 @@
             {{ sorted_icon("asset") }}{{ $t("asset") }}
           </th>
           <th v-on:click="change_sortkey('price_changes')" v-if="should_show('price_changes')">
-            {{ sorted_icon("price_changes") }}{{timeframe}} {{ $t("price_changes") }}
+            {{ sorted_icon("price_changes") }}{{ timeframe }} {{ $t("price_changes") }}
           </th>
           <th v-on:click="change_sortkey('price')">
             {{ sorted_icon("price") }}{{ $t("price") }}
@@ -81,10 +81,7 @@
           <th v-on:click="change_sortkey('pnl')" v-if="should_show('pnl')">
             {{ sorted_icon("pnl") }}{{ $t("pnl") }}
           </th>
-          <th
-            v-on:click="change_sortkey('pnl_return')"
-            v-if="should_show('pnl_return')"
-          >
+          <th v-on:click="change_sortkey('pnl_return')" v-if="should_show('pnl_return')">
             {{ sorted_icon("pnl_return") }}{{ $t("pnl_return") }}
           </th>
           <th v-if="screen_width > 500">{{ $t("note") }}</th>
@@ -108,11 +105,7 @@
           </td>
           <td v-if="should_show('wallet')">{{ asset.wallet }}</td>
           <td>{{ asset.asset }}</td>
-          <td
-            v-bind:class="color(asset.price_changes)"
-            v-if="should_show('price_changes')"
-            style="width: 0px"
-          >
+          <td v-bind:class="color(asset.price_changes)" v-if="should_show('price_changes')" style="width: 0px">
             {{ asset.price_changes | Precentage(1) }}
           </td>
           <td>{{ asset.price | toPrecision(5) }}</td>
@@ -129,11 +122,7 @@
           <td v-bind:class="color(asset.pnl)" v-if="should_show('pnl_return')">
             {{ asset.pnl_return | Precentage(1) }}
           </td>
-          <td
-            class="entry-price"
-            style="max-width: 200px"
-            v-if="screen_width > 500"
-          >
+          <td class="entry-price" style="max-width: 200px" v-if="screen_width > 500">
             <input v-model="userdata[symbol_key(asset.asset, asset.wallet, 'note')]" />
           </td>
         </tr>
@@ -184,7 +173,6 @@ import sortBy from "lodash/sortBy";
 import orderBy from "lodash/orderBy";
 import sum from "lodash/sum";
 import { filters, methods } from "../common/common";
-import { fetch_price_changes_pct } from "../common/utils";
 import { initializeApp } from "@firebase/app";
 import { getAnalytics } from "@firebase/analytics";
 import {
@@ -217,8 +205,8 @@ export default {
       assets: [],
       positions: [],
       assets_table: [],
-      assets_chages: {},
       price_map: {},
+      price_history: {},
       userdata: {},
       daily_nav: [],
 
@@ -267,7 +255,7 @@ export default {
     chart_data() {
       if (this.is_exchange_chart) {
         return Object.values(this.assets_table.reduce((acc, { wallet, notional_value }) => {
-          acc[wallet] = { 
+          acc[wallet] = {
             name: wallet,
             value: (acc[wallet] ? acc[wallet].value : 0) + notional_value,
           };
@@ -276,7 +264,7 @@ export default {
 
       } else if (this.is_merge_wallets) {
         return Object.values(this.assets_table.reduce((acc, { asset, notional_value }) => {
-          acc[asset] = { 
+          acc[asset] = {
             name: asset,
             value: (acc[asset] ? acc[asset].value : 0) + notional_value,
           };
@@ -371,23 +359,29 @@ export default {
         delete this.userdata[k];
       }
     },
+    assets_chages(symbol) {
+      if (Object.keys(this.price_history).length === 0) return NaN;
+      const tf = parseInt(this.timeframe) + 1;
+      const prev = Object.values(this.price_history).slice(-tf)[0];
+      return (this.price_map[symbol] - prev[symbol]) / prev[symbol];
+    },
     update_assets_table() {
       const res = this.assets.map((x) => ({
         ...x,
         tag: this.userdata[this.symbol_key(x.asset, x.wallet, 'tag')],
         price: this.price_map[x.asset],
-        price_changes: this.assets_chages[x.asset] || x.changepercent,
+        price_changes: this.assets_chages(x.asset),
         notional_value: this.price_map[x.asset] * x.size,
         entry: this.entry_p(x.asset, x.wallet),
         pnl: this.pnl(x),
         pnl_return: this.pnl_return(x),
       }))
-      .filter(x => {
-        return this.asset_type === 'all' ? true :
-          this.asset_type === 'stocks' 
-            ? x.wallet === 'firstrade'
-            : x.wallet !== 'firstrade';
-      });
+        .filter(x => {
+          return this.asset_type === 'all' ? true :
+            this.asset_type === 'stocks'
+              ? x.wallet === 'firstrade'
+              : x.wallet !== 'firstrade';
+        });
       this.assets_table = orderBy(
         res,
         this.sort_key,
@@ -395,16 +389,61 @@ export default {
       );
       document.title = this.title;
     },
-    symbol_key(token, wallet, type){
+    symbol_key(token, wallet, type) {
       return wallet !== 'binance' ? `${token}-${wallet}-${type}` : `${token}-${type}`;
     },
-    entry_k(token, wallet){
+    entry_k(token, wallet) {
       return wallet !== 'binance' ? `${token}-${wallet}` : `${token}`;
     },
     entry_p(token, wallet) {
       const k = wallet !== 'binance' ? `${token}-${wallet}` : `${token}`;
       return this.userdata[k] || 0;
-    }
+    },
+    async loadData() {
+      const configDoc = doc(database, `config/${this.id}`);
+      const dailyNavDoc = doc(database, `nav/${this.id}`);
+      const priceHistoryDoc = doc(database, 'price/snapshots');
+
+      const [config, dailyNav, priceHistory] = await Promise.all([
+        getDoc(configDoc),
+        getDoc(dailyNavDoc),
+        getDoc(priceHistoryDoc)
+      ]);
+
+      if (config.exists()) {
+        this.userdata = config.data();
+        this.update_assets_table();
+      }
+
+      if (dailyNav.exists()) {
+        this.daily_nav = sortBy(Object.entries(dailyNav.data()), (o) => o[0]);
+      }
+
+      if (priceHistory.exists()) {
+        this.price_history = priceHistory.data();
+        this.update_assets_table();
+      }
+    },
+    subscribeToAssetChanges() {
+      const d = doc(database, `asset/${this.id}`);
+      onSnapshot(d, (asset) => {
+        if (!asset.exists()) return;
+        const { time, data, positions, estimate_total_cost } = asset.data();
+        this.time = time;
+        this.reported_total_cost = estimate_total_cost;
+        this.assets = data;
+        this.positions = positions;
+        this.update_assets_table();
+      });
+    },
+    subscribeToPriceChanges() {
+      const d = doc(database, "price/spot");
+      onSnapshot(d, (price_map) => {
+        if (!price_map.exists()) return;
+        this.price_map = price_map.data();
+        this.update_assets_table();
+      });
+    },
   },
   watch: {
     is_dark_mode: function (val) {
@@ -433,9 +472,6 @@ export default {
     },
     timeframe: async function (val) {
       localStorage.timeframe = val;
-      const cryptos = this.assets.filter(x => x.wallet !== 'firstrade').map(x => x.asset);
-      // const stocks = this.assets.filter(x => x.wallet == 'firstrade').map(x => x.asset);
-      this.assets_chages = await fetch_price_changes_pct(cryptos, this.timeframe);
       this.update_assets_table();
     },
     asset_type: function (val) {
@@ -454,40 +490,13 @@ export default {
   },
   created: async function () {
     this.$i18n.locale = this.language;
-    const doc1 = doc(database, `config/${this.id}`);
-    const config = await getDoc(doc1);
-    if (config.exists()) {
-      this.userdata = config.data();
-      this.update_assets_table();
-    }
 
-    const doc2 = doc(database, `asset/${this.id}`);
-    onSnapshot(doc2, async (asset) => {
-      if (!asset.exists()) return;
-      const { time, data, positions, estimate_total_cost } = asset.data();
-      this.time = time;
-      this.reported_total_cost = estimate_total_cost;
-      this.assets = data;
-      this.positions = positions;
-      this.update_assets_table();
-    });
-
-    const doc3 = doc(database, "price/spot");
-    onSnapshot(doc3, async (price_map) => {
-      if (!price_map.exists()) return;
-      this.price_map = price_map.data();
-      this.update_assets_table();
-      const cryptos = this.assets.filter(x => x.wallet !== 'firstrade').map(x => x.asset);
-      if (this.should_show('price_changes')) {
-        this.assets_chages = await fetch_price_changes_pct(cryptos, this.timeframe);
-      }
-      this.update_assets_table();
-    });
-
-    const doc4 = doc(database, `nav/${this.id}`);
-    const daily_nav = await getDoc(doc4);
-    if (daily_nav.exists()) {
-      this.daily_nav = sortBy(Object.entries(daily_nav.data()), (o) => o[0]);
+    try {
+      await this.loadData();
+      this.subscribeToAssetChanges();
+      this.subscribeToPriceChanges();
+    } catch (error) {
+      console.error("Error in created hook:", error);
     }
   },
 };
@@ -516,23 +525,29 @@ body {
 .highcharts-background {
   fill: var(--color-bg) !important;
 }
+
 .highcharts-title {
   fill: var(--color-text) !important;
 }
+
 .highcharts-data-label text {
   fill: var(--color-text) !important;
 }
+
 .highcharts-text-outline {
   fill: var(--color-bg) !important;
   stroke-width: 0px;
 }
+
 .highcharts-point {
   stroke-width: 1px;
   stroke-opacity: 0.7;
 }
+
 .highcharts-credits {
   display: none;
 }
+
 .highcharts-legend-item text {
   color: var(--color-text) !important;
   fill: var(--color-text) !important;
@@ -585,7 +600,7 @@ input {
   max-width: 75px;
 }
 
-.entry-price > input {
+.entry-price>input {
   font-size: 12px;
   width: 100%;
   text-align: right;

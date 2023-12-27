@@ -20,18 +20,18 @@ const COIN2ID = {
 async function fetchTokenPrice(tokens) {
   const keys = config.coinmarketcap.cmc_api_keys;
   const key = keys[new Date().getHours() % keys.length];
-  const batch_list = tokens.filter(x=> !~x.indexOf('_')).join(',');
+  const batch_list = tokens.filter(x => !~x.indexOf('_')).join(',');
   const query = `CMC_PRO_API_KEY=${key}&aux=cmc_rank&symbol=${batch_list}`;
   const res = await axios.get(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?${query}`);
   const data = res.data.data;
   const results = Object.keys(data).map(k => {
     return [
-      k, 
+      k,
       data[k].length > 0
-        ? (COIN2ID[k] 
-          ? data[k].filter(x => x.id === COIN2ID[k]) 
+        ? (COIN2ID[k]
+          ? data[k].filter(x => x.id === COIN2ID[k])
           : data[k]
-          )[0].quote.USD.price || 0 
+        )[0].quote.USD.price || 0
         : 0,
     ];
   })
@@ -84,7 +84,7 @@ async function constructPriceMap(assets, stock_prices) {
           .filter(x => +(x.positionAmt) !== 0)
           .map(({ symbol, positionAmt, unRealizedProfit, markPrice, notional }) => ({
             symbol,
-            notional: + notional,
+            notional: +notional,
             markPrice: +markPrice,
             positionAmt: +positionAmt,
             unRealizedProfit: +unRealizedProfit,
@@ -105,10 +105,10 @@ async function constructPriceMap(assets, stock_prices) {
     await setDoc(doc1, res);
 
     assets = _.union(assets, results[id]
-        .map(x => x.asset)
+      .map(x => x.asset)
     );
   }
-  
+
   const today = ((new Date())).toISOString().slice(0, 10);
   const price_map = await constructPriceMap(assets, stock_prices);
 

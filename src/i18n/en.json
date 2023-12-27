@@ -27,6 +27,13 @@
     "estimate_total_cost": "Estimated Total Cost",
     "export_as_csv": "Export as CSV",
 
+    "7d": "7d",
+    "30d": "30d",
+    "90d": "90d",
+    "180d": "180d",
+    "365d": "365d",
+    "all": "ALL",
+
     "positions_count": "Number of Positions",
     "symbol": "Symbol",
     "position_notional": "Value",

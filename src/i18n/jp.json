@@ -27,6 +27,13 @@
     "estimate_total_cost": "総コスト見積り",
     "export_as_csv": "CSV でエクスポート",
 
+    "7d": "7 日",
+    "30d": "30 日",
+    "90d": "90 日",
+    "180d": "180 日",
+    "365d": "365 日",
+    "all": "全歷史",
+
     "positions_count": "ポジション数",
     "symbol": "シンボル",
     "position_notional": "評価額",

@@ -27,6 +27,13 @@
     "estimate_total_cost": "預估總成本",
     "export_as_csv": "匯出 CSV",
 
+    "7d": "7 日",
+    "30d": "30 日",
+    "90d": "90 日",
+    "180d": "180 日",
+    "365d": "365 日",
+    "all": "全歷史",
+
     "positions_count": "持倉數量",
     "symbol": "標的",
     "position_notional": "價值",

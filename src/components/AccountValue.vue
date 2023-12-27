@@ -8,34 +8,12 @@
     <div class="flex-container">
       <div>
         <button
-          v-on:click="pick_range(7)"
-          :class="{ selected: timeframe === 7 }"
+          v-for="tf in timeframes"
+          v-bind:key="tf.value"
+          v-on:click="pick_range(tf.value)"
+          :class="{ selected: timeframe === tf.value }"
         >
-          7d
-        </button>
-        <button
-          v-on:click="pick_range(30)"
-          :class="{ selected: timeframe === 30 }"
-        >
-          30d
-        </button>
-        <button
-          v-on:click="pick_range(90)"
-          :class="{ selected: timeframe === 90 }"
-        >
-          90d
-        </button>
-        <button
-          v-on:click="pick_range(180)"
-          :class="{ selected: timeframe === 180 }"
-        >
-          180d
-        </button>
-        <button
-          v-on:click="pick_range(undefined)"
-          :class="{ selected: timeframe === undefined }"
-        >
-          ALL
+          {{ $t(tf.label) }}
         </button>
       </div>
       <export-table :table_id="'nav-table'" />
@@ -78,6 +56,14 @@ export default {
   data() {
     return {
       timeframe: 30,
+      timeframes: [
+        { label: '7d', value: 7 },
+        { label: '30d', value: 30 },
+        { label: '90d', value: 90 },
+        { label: '180d', value: 180 },
+        { label: '365d', value: 365 },
+        { label: 'all', value: undefined }
+      ],
     };
   },
   filters: filters,

@@ -240,10 +240,7 @@ export default {
       const params = new Proxy(new URLSearchParams(window.location.search), {
         get: (searchParams, prop) => searchParams.get(prop),
       });
-      return {
-        'x.ssarcandy.tw': 'y.ssarcandy.tw',
-        'y.ssarcandy.tw': 'x.ssarcandy.tw',
-      }[params.id] || params.id;
+      return params.id;
     },
     small_balance_threshold() {
       return this.nav * 0.001;

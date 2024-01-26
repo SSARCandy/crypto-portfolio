@@ -38,7 +38,9 @@ async function fetchSpotWallet(client) {
 }
 
 async function fetchEarnWallet(client) {
-  const res = await client.privateRequest('GET', '/sapi/v1/simple-earn/flexible/position');
+  const res = await client.privateRequest('GET', '/sapi/v1/simple-earn/flexible/position', {
+    size: 100,
+  });
   return res.rows
     .map(x => ({ asset: x.asset, size: +x.totalAmount }))
     .filter(x => x.size > 0);

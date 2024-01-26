@@ -38,9 +38,9 @@ async function fetchSpotWallet(client) {
 }
 
 async function fetchEarnWallet(client) {
-  const res = await client.lending();
-  return res.positionAmountVos
-    .map(x => ({ asset: x.asset, size: +x.amount }))
+  const res = await client.privateRequest('GET', '/sapi/v1/simple-earn/flexible/position');
+  return res.rows
+    .map(x => ({ asset: x.asset, size: +x.totalAmount }))
     .filter(x => x.size > 0);
 }
 
@@ -76,7 +76,7 @@ async function walletFetcher(credentials) {
     apiSecret: credentials.APISECRET,
   });
   const spot = await fetchSpotWallet(client);
-  const earn = await fetchEarnWallet(client);
+  const earn = await fetchEarnWallet(client2);
   const futs = await fetchFuturesWallet(client);
   const perp = await fetchPerpetualWallet(client);
   const lock = await fetchLockStacking(client2);

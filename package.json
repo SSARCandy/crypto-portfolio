@@ -19,7 +19,7 @@
     "core-js": "^3.6.5",
     "dayjs": "^1.10.4",
     "firebase": "^9.0.0-beta.1",
-    "firstrade-cli": "^0.6.8",
+    "firstrade-cli": "git+https://github.com/SSARCandy/firstrade-cli.git",
     "floating-vue": "^1.0.0-beta.17",
     "highcharts": "^10.3.3",
     "highcharts-vue": "^1.4.0",

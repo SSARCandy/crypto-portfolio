@@ -2,7 +2,7 @@ const { ApiPromise, WsProvider } = require('@polkadot/api');
 
 const tokenDecimals = 10;
 async function walletFetcher(credentials) {
-  const wsProvider = new WsProvider('wss://polkadot.publicnode.com');
+  const wsProvider = new WsProvider('wss://rpc.polkadot.io');
   const api = await ApiPromise.create({ provider: wsProvider });
   const { data } = await api.query.system.account(credentials.address);
 

@@ -1,33 +1,9 @@
-const { firstrade } = require('firstrade-cli');
 const fs = require('fs');
 
 async function walletFetcher(credentials) {
   const cache_filename = `./caches/firstrade-cache-${credentials.id}.json`;
-  const now = new Date();
-  if (now.getMinutes() !== 0) {
-    const cache = JSON.parse(fs.readFileSync(cache_filename));
-    return cache;
-  }
-
-  const positions = await firstrade.getPosition(credentials);
-  const { cashBalance } = await firstrade.getBalance(credentials);
-  const result = positions.map(x => ({
-    size: x.quantity,
-    asset: x.symbol,
-    wallet: 'firstrade',
-    price: x.price, ///< special for firstrade
-    changepercent: x.changepercent / 100, ///< special for firstrade
-  }));
-  result.push({
-    size: cashBalance,
-    asset: 'USD',
-    wallet: 'firstrade',
-    price: 1,
-    changepercent: 0,
-  });
-  fs.writeFileSync(cache_filename, JSON.stringify(result));
-
-  return result;
+  const cache = JSON.parse(fs.readFileSync(cache_filename));
+  return cache;
 }
 
 module.exports = walletFetcher;

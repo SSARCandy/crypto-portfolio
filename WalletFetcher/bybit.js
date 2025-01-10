@@ -3,7 +3,7 @@ const crypto = require('crypto');
 
 async function account_balance(credentials, account_type) {
   const timestamp = Date.now();
-  const querystring = `accountType=${account_type}`;
+  const querystring = `accountType=${account_type}&coin=USDT,USDC,VRTX,MNT`;
   const payload = `${timestamp}${credentials.APIKEY}5000${querystring}`;
   const sign = crypto.createHmac('sha256', credentials.APISECRET).update(payload).digest('hex');
   const { data } = await axios.get(`https://api.bybit.com/v5/asset/transfer/query-account-coins-balance?${querystring}`, {

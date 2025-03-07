@@ -7,7 +7,7 @@ const factory = {
   'bybit': require('./bybit'),
   'max': require('./max'),
   // 'terra': require('./terra'),
-  'tezos': require('./tezos'),
+  // 'tezos': require('./tezos'),
   'polkadot': require('./polkadot'),
   'tron': require('./tron'),
   'ethereum': require('./ethereum'),
@@ -35,6 +35,7 @@ async function UniversalWalletFetcher(wallet, credentials) {
     return await factory[wallet](credentials);
   } catch (err) {
     console.log(`>>>>> ${wallet} ${credentials.id} encounter error. <<<<<`);
+	  console.log(err)
     return [
       { 'size': -1, 'asset': 'APP_ERROR', 'wallet': wallet },
     ];

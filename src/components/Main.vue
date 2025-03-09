@@ -179,6 +179,7 @@ import {
   getFirestore,
   onSnapshot,
   doc,
+  collection,
   getDoc,
   setDoc,
 } from "@firebase/firestore";
@@ -428,14 +429,31 @@ export default {
       });
     },
     subscribeToPriceChanges() {
-      const d = doc(database, "price/snapshots");
-      onSnapshot(d, (price_maps) => {
-        if (!price_maps.exists()) return;
-        const data = price_maps.data();
-        this.price_history = sortBy(Object.entries(data), (o) => o[0]).map(x => x[1]);
+      const snapshotsCol = collection(database, "price/history/snapshots");
+      // 2. Listen to changes in the entire collection
+      onSnapshot(snapshotsCol, (snapshotQuery) => {
+        if (snapshotQuery.empty) {
+          // If no documents at all, you can early-return or handle appropriately
+          console.log("No snapshots found");
+          return;
+        }
+
+        // 3. Convert each document into an object keyed by date
+        const snapshotsData = {};
+        snapshotQuery.forEach((docSnap) => {
+          snapshotsData[docSnap.id] = docSnap.data();
+        });
+
+        // 4. Sort the data by date (doc ID), then map to just the doc values
+        this.price_history = sortBy(
+          Object.entries(snapshotsData), 
+          ([date]) => date  // Sort by the key (the doc ID), which is the date
+        ).map(([, value]) => value); // Keep only the value portion
+
+        // 5. The most recent snapshot is the last one in the array
         this.price_map = this.price_history.slice(-1)[0];
         this.update_assets_table();
-      });
+      });  
     },
   },
   watch: {

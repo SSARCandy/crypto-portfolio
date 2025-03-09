@@ -115,13 +115,8 @@ async function constructPriceMap(assets, stock_prices) {
   const today = ((new Date())).toISOString().slice(0, 10);
   const price_map = await constructPriceMap(assets, stock_prices);
 
-  const price_info = doc(database, 'price/spot');
-  await setDoc(price_info, price_map);
-
-  const snapshots = doc(database, 'price/snapshots');
-  await updateDoc(snapshots, {
-    [today]: price_map,
-  });
+  const snapshotRef = doc(database, 'price', 'history', 'snapshots', today);
+  await setDoc(snapshotRef, price_map);
 
   // update NAV
   for (const id of Object.keys(results)) {

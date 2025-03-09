@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "4e7b71e20ed3abe0c101",
+    "revision": "6a89a6ec763c7d537ef0",
     "url": "/crypto-portfolio/css/app.c2ee1b4d.css"
   },
   {
-    "revision": "056af83fb809fc34f635",
+    "revision": "5549338ae60ff5083ff8",
     "url": "/crypto-portfolio/css/chunk-vendors.821d61d2.css"
   },
   {
@@ -28,16 +28,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/crypto-portfolio/icons/favicon-32x32.png"
   },
   {
-    "revision": "e7a58fba81140aefcfddee3eab24b601",
+    "revision": "546739cd0a75ee4d5927f385e0cd47bd",
     "url": "/crypto-portfolio/index.html"
   },
   {
-    "revision": "4e7b71e20ed3abe0c101",
-    "url": "/crypto-portfolio/js/app.73f28ff3.js"
+    "revision": "6a89a6ec763c7d537ef0",
+    "url": "/crypto-portfolio/js/app.e9203652.js"
   },
   {
-    "revision": "056af83fb809fc34f635",
-    "url": "/crypto-portfolio/js/chunk-vendors.7149db60.js"
+    "revision": "5549338ae60ff5083ff8",
+    "url": "/crypto-portfolio/js/chunk-vendors.c8c0afd0.js"
   },
   {
     "revision": "13ea3d52e4d2b5102010a4d44b319ec9",

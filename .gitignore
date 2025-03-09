@@ -106,3 +106,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+__pycache__/
+firstrade-cli.py
+ft_cookiesssarcandy.pkl

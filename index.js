@@ -68,7 +68,7 @@ async function constructPriceMap(assets, stock_prices) {
       console.log(type, cnf.id);
       const balances = await UniversalWalletFetcher(type, cnf);
       results[cnf.id].push(...balances);
-      if (type == 'firstrade') {
+      if (['firstrade', 'ibkr'].includes(type)) {
         for (const { asset, price } of balances) {
           stock_prices[asset] = price;
         }

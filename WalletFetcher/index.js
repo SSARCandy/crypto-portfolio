@@ -14,6 +14,7 @@ const factory = {
   'bitcoin': require('./bitcoin'),
   'bitcoincash': require('./bitcoincash'),
   'firstrade': require('./firstrade'),
+  'ibkr': require('./ibkr'),
 };
 
 /**

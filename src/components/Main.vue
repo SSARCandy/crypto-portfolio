@@ -367,6 +367,7 @@ export default {
       return (this.price_map[symbol] - prev[symbol]) / prev[symbol];
     },
     update_assets_table() {
+      const stock_types = ['firstrade', 'ibkr'];
       const res = this.assets.map((x) => ({
           ...x,
           tag: this.userdata[this.symbol_key(x.asset, x.wallet, 'tag')],
@@ -380,8 +381,8 @@ export default {
         .filter(x => {
           return this.asset_type === 'all' ? true :
             this.asset_type === 'stocks'
-              ? x.wallet === 'firstrade'
-              : x.wallet !== 'firstrade';
+              ? stock_types.includes(x.wallet)
+              : !stock_types.includes(x.wallet);
         });
       this.assets_table = orderBy(
         res,

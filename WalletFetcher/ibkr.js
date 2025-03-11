@@ -1,3 +1,4 @@
+const fs = require('fs');
 const axios = require('axios');
 const xml2js = require('xml2js');
 const requestBase = "https://ndcdyn.interactivebrokers.com/AccountManagement/FlexWebService";
@@ -36,9 +37,21 @@ function parseCsvToJson(csvText) {
   return positions;
 }
 
+function readFromCache(id) {
+  const cache_filename = `./caches/ibkr-cache-${id}.json`;
+  const oldestTimeDiff = 1000 * 3600 * 12; // 12 hours
+  if (!fs.existsSync(cache_filename)) return false;
+
+  const cache_stat = fs.statSync(cache_filename);
+  if (cache_stat.mtimeMs + oldestTimeDiff < Date.now()) return false
+
+  return JSON.parse(fs.readFileSync(cache_filename));
+}
 
 async function fetchFlexQuery(credentials) {
-  const { token, queryId } = credentials;
+  const { token, queryId, id } = credentials;
+  const cache = readFromCache(id);
+  if (cache) return cache;
 
   const res1 = await axios.get(`${requestBase}/SendRequest?t=${token}&q=${queryId}&v=3`);
   const { FlexStatementResponse } = await xml2js.parseStringPromise(res1.data, { explicitArray: false });
@@ -50,6 +63,7 @@ async function fetchFlexQuery(credentials) {
 
   const res2 = await axios.get(`${requestBase}/GetStatement?t=${token}&q=${ReferenceCode}&v=3`);
   const result = parseCsvToJson(res2.data);
+  fs.writeFileSync(`./caches/ibkr-cache-${id}.json`, JSON.stringify(result));
   return result;
 }
 

@@ -38,10 +38,26 @@ async function fetchSpotWallet(client) {
 }
 
 async function fetchEarnWallet(client) {
-  const res = await client.privateRequest('GET', '/sapi/v1/simple-earn/flexible/position', {
-    size: 100,
-  });
-  return res.rows
+  const allRows = [];
+  const pageSize = 100;
+  let currentPage = 1;
+  let totalPages = 1;
+
+  // Loop until all pages are fetched
+  while (currentPage <= totalPages) {
+    const res = await client.privateRequest('GET', '/sapi/v1/simple-earn/flexible/position', {
+      size: pageSize,
+      current: currentPage,
+    });
+
+    // Accumulate results
+    allRows = allRows.concat(res.rows);
+    totalPages = Math.ceil(res.total / pageSize);  // Calculate total pages
+    currentPage++;  // Move to next page
+  }
+
+  // Process and return the results
+  return allRows
     .map(x => ({ asset: x.asset, size: +x.totalAmount }))
     .filter(x => x.size > 0);
 }

@@ -51,7 +51,7 @@ async function fetchEarnWallet(client) {
     });
 
     // Accumulate results
-    allRows = allRows.concat(res.rows);
+    allRows.push(...res.rows);
     totalPages = Math.ceil(res.total / pageSize);  // Calculate total pages
     currentPage++;  // Move to next page
   }

@@ -5,8 +5,8 @@ async function walletFetcher(credentials) {
   const wsProvider = new WsProvider('wss://rpc.polkadot.io');
   const api = await ApiPromise.create({ provider: wsProvider });
   const { data } = await api.query.system.account(credentials.address);
-
-  const balance = +(data.free.toString()) / (10 ** tokenDecimals);
+  const { free, reserved } = data;
+  const balance = ((+free) + (+reserved)) / (10 ** tokenDecimals);
   await api.disconnect();
 
   return [{

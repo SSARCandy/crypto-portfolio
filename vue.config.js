@@ -17,7 +17,8 @@ module.exports = {
     manifestOptions: {
       name: 'Asset Allocation',
       short_name: 'Portfolio',
-      start_url: `${publicPath}/index.html?source=pwa`,
+      start_url: `${publicPath}/`,
+      scope: `${publicPath}/`,
       theme_color: '#ffffff',
       background_color: '#ffffff',
       display: 'standalone',

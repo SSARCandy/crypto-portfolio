@@ -188,6 +188,16 @@ initializeApp(firebase);
 getAnalytics();
 
 const database = getFirestore();
+const ID_STORAGE_KEY = "portfolio_id";
+const getIdFromUrl = () => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("id");
+};
+const buildUrlWithId = (id) => {
+  const url = new URL(window.location.href);
+  url.searchParams.set("id", id);
+  return url.toString();
+};
 
 export default {
   name: "Main",
@@ -502,6 +512,26 @@ export default {
   },
   created: async function () {
     this.$i18n.locale = this.language;
+
+    const urlId = getIdFromUrl();
+    let activeId = urlId;
+    if (!activeId) {
+      activeId = (localStorage.getItem(ID_STORAGE_KEY) || "").trim();
+      if (!activeId) {
+        const input = window.prompt("Please enter your portfolio ID");
+        activeId = (input || "").trim();
+      }
+    }
+    if (!activeId) {
+      console.warn("Missing id; data loading is skipped.");
+      return;
+    }
+    if (activeId !== urlId) {
+      localStorage.setItem(ID_STORAGE_KEY, activeId);
+      window.location.replace(buildUrlWithId(activeId));
+      return;
+    }
+    localStorage.setItem(ID_STORAGE_KEY, activeId);
 
     try {
       await this.loadData();

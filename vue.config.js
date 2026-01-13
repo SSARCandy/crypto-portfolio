@@ -11,6 +11,9 @@ module.exports = {
   configureWebpack: {
   },
   pwa: {
+    appleMobileWebAppCapable: 'yes',
+    appleMobileWebAppStatusBarStyle: 'default',
+    appleMobileWebAppTitle: 'Asset Allocation',
     workboxOptions: {
       skipWaiting: true,
     },

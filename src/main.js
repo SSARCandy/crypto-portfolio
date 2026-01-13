@@ -18,19 +18,27 @@ const i18n = new VueI18n({
 });
 
 const LAST_URL_KEY = 'last_url';
-const basePath = process.env.BASE_URL || '/';
+const normalizeBasePath = (path) => {
+  if (!path) {
+    return '/';
+  }
+  return path.endsWith('/') ? path : `${path}/`;
+};
+const basePath = normalizeBasePath(process.env.BASE_URL || '/');
 const baseUrl = new URL(basePath, window.location.origin);
+const basePathname = baseUrl.pathname;
 
 const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches
   || window.navigator.standalone === true;
 
-const isEntryUrl = (url) => url.pathname === baseUrl.pathname
-  && !url.search
-  && !url.hash;
+const hasIdParam = (url) => new URLSearchParams(url.search).has('id');
+const isEntryPath = (pathname) => pathname === basePathname
+  || pathname === `${basePathname}index.html`;
+const isEntryUrl = (url) => isEntryPath(url.pathname) && !url.hash;
 
 const saveCurrentUrl = () => {
   const url = new URL(window.location.href);
-  if (isEntryUrl(url)) {
+  if (!hasIdParam(url)) {
     return;
   }
   if (!url.pathname.startsWith(baseUrl.pathname)) {
@@ -45,6 +53,9 @@ const redirectToLastUrlIfNeeded = () => {
   }
   const url = new URL(window.location.href);
   if (!isEntryUrl(url)) {
+    return;
+  }
+  if (hasIdParam(url)) {
     return;
   }
   const lastUrl = localStorage.getItem(LAST_URL_KEY);
@@ -69,6 +80,11 @@ saveCurrentUrl();
 window.addEventListener('pagehide', saveCurrentUrl);
 window.addEventListener('popstate', saveCurrentUrl);
 window.addEventListener('hashchange', saveCurrentUrl);
+window.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    saveCurrentUrl();
+  }
+});
 
 new Vue({
   i18n,

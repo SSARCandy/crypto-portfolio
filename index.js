@@ -20,7 +20,7 @@ const COIN2ID = {
 async function fetchTokenPrice(tokens) {
   const keys = config.coinmarketcap.cmc_api_keys;
   const key = keys[new Date().getHours() % keys.length];
-  const batch_list = tokens.filter(x => !~x.indexOf('_')).join(',');
+  const batch_list = tokens.filter(x => !~x.indexOf('_') && !~x.indexOf(' ')).join(',');
   const query = `CMC_PRO_API_KEY=${key}&aux=cmc_rank&symbol=${batch_list}`;
   const res = await axios.get(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?${query}`);
   const data = res.data.data;

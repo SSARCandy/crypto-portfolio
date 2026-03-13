@@ -1,5 +1,4 @@
 const Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.HttpProvider('https://rpc.ankr.com/eth'));
 
 const minABI = [{
   constant: true,
@@ -19,6 +18,8 @@ const tokens = [{
 }];
 
 async function walletFetcher(credentials) {
+  const rpc_uri = `https://rpc.ankr.com/eth/${credentials.api_key}`;
+  const web3 = new Web3(new Web3.providers.HttpProvider(rpc_uri));
   const balances = [];
   const x = await web3.eth.getBalance(credentials.address);
   balances.push({

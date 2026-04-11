@@ -52,6 +52,9 @@
           {{asset.wallet }} KEY ERROR
         </li>
       </ul>
+      <div style="display: flex; justify-content: space-between; padding-bottom: 5px;">
+        <input type="text" class="search-input" v-model="keywords" placeholder="Search...">
+      </div>
       <table id="asset">
         <tr>
           <th v-on:click="change_sortkey('tag')" v-if="should_show('tag')">
@@ -87,7 +90,7 @@
           <th v-if="screen_width > 500">{{ $t("note") }}</th>
         </tr>
         <tr
-          v-for="asset in assets_table"
+          v-for="asset in displayed_assets_table"
           v-bind:key="asset.asset+asset.wallet"
           v-show="asset.asset != 'APP_ERROR' && (!is_hide_small_balance || asset.size * asset.price > small_balance_threshold)"
         >
@@ -211,6 +214,7 @@ export default {
   props: {},
   data() {
     return {
+      keywords: '',
       time: 0,
       reported_total_cost: 0,
       assets: [],
@@ -242,6 +246,11 @@ export default {
     };
   },
   computed: {
+    displayed_assets_table() {
+      if (!this.keywords) return this.assets_table;
+      const kw = this.keywords.toUpperCase();
+      return this.assets_table.filter(x => x.asset.toUpperCase().includes(kw));
+    },
     title() {
       return this.is_show_nav_title
         ? `$${this.$options.filters.Number(this.nav, 0)}`
@@ -710,5 +719,16 @@ button:hover {
 .btn-tag {
   width: 27px;
   text-align: center;
+}
+
+.search-input {
+  font-size: 12px;
+  width: 40%;
+  font-family: monospace;
+  border-style: hidden;
+  border-bottom: solid 1px;
+  border-color: var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 </style>

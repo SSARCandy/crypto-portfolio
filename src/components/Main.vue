@@ -92,7 +92,7 @@
         <tr
           v-for="asset in displayed_assets_table"
           v-bind:key="asset.asset+asset.wallet"
-          v-show="asset.asset != 'APP_ERROR' && (!is_hide_small_balance || asset.size * asset.price > small_balance_threshold)"
+          v-show="asset.asset != 'APP_ERROR' && (!is_hide_small_balance || keywords !== '' || asset.size * asset.price > small_balance_threshold)"
         >
           <td
             class="btn-tag"

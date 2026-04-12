@@ -722,7 +722,7 @@ button:hover {
 }
 
 .search-input {
-  font-size: 12px;
+  font-size: 16px;
   width: 40%;
   font-family: monospace;
   border-style: hidden;

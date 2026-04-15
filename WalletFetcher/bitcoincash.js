@@ -1,19 +1,18 @@
 const axios = require('axios').default;
-const https = require('https');
 
-const URL = 'https://bch.fullstack.cash/v6/fulcrum/balance';
-const decimal = 10**8;
+// Bitcore public API - no API key required
+// Response: { confirmed, unconfirmed, balance } in satoshis
+const URL = 'https://api.bitcore.io/api/BCH/mainnet/address';
+const decimal = 10 ** 8;
 
-const httpsAgent = new https.Agent({  
-  rejectUnauthorized: false
-});
 async function walletFetcher(credentials) {
-  const res = await axios.get(`${URL}/${credentials.address}`, {
-    httpsAgent,
+  const address = credentials.address;
+  const res = await axios.get(`${URL}/${address}/balance`, {
+    timeout: 10000,
   });
   return [{
     asset: 'BCH',
-    size: +res.data.balance.confirmed / decimal,
+    size: res.data.confirmed / decimal,
     wallet: 'bitcoincash',
   }];
 }

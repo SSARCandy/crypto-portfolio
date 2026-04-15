@@ -16,6 +16,7 @@ module.exports = {
     appleMobileWebAppTitle: 'Asset Allocation',
     workboxOptions: {
       skipWaiting: true,
+      cleanupOutdatedCaches: true,
     },
     manifestOptions: {
       name: 'Asset Allocation',

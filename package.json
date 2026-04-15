@@ -1,6 +1,6 @@
 {
   "name": "v2",
-  "version": "1.5.10",
+  "version": "1.6.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -23,6 +23,7 @@
     "floating-vue": "^1.0.0-beta.17",
     "highcharts": "^10.3.3",
     "highcharts-vue": "^1.4.0",
+    "html2canvas": "^1.4.1",
     "isomorphic-fetch": "^3.0.0",
     "lodash": "^4.17.21",
     "node-binance-api": "^0.12.5",

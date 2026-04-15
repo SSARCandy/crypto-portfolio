@@ -1,7 +1,7 @@
 <template>
   <highcharts
-    id="pie"
-    style="height: 400px; width: 500"
+    :id="chartId"
+    :style="`height: ${height}px; width: 100%`"
     :options="chartOptions"
   ></highcharts>
 </template>
@@ -15,6 +15,9 @@ export default {
   name: "PieChart",
   props: {
     assets: Array, // [{ name: "", value: 0 }]
+    chartId: { type: String, default: 'pie' },
+    height:  { type: Number, default: 400 },
+    centerTitle: { type: String, default: null },
   },
   components: {
     highcharts: Chart,
@@ -63,12 +66,16 @@ export default {
           },
         },
         title: {
+          useHTML: this.centerTitle !== null && this.centerTitle.includes('<'),
           verticalAlign: "middle",
           floating: true,
-          text: `Total<br>$${new Intl.NumberFormat("en-US", {
-            maximumFractionDigits: 0,
-            minimumFractionDigits: 0,
-          }).format(this.nav)}`,
+          style: { textAlign: 'center' },
+          text: this.centerTitle !== null
+            ? this.centerTitle
+            : `Total<br>$${new Intl.NumberFormat("en-US", {
+                maximumFractionDigits: 0,
+                minimumFractionDigits: 0,
+              }).format(this.nav)}`,
         },
         tooltip: {
           pointFormat: "<b>{point.percentage:.1f}%</b><br><b>${point.y:.0f}</b>",
@@ -111,7 +118,7 @@ export default {
     },
   },
   mounted() {
-    const dom = document.getElementById("pie");
+    const dom = document.getElementById(this.chartId);
     this.chart_size = [dom.offsetWidth, dom.offsetHeight];
     window.addEventListener("touchend", this.stopDrag, { passive: false });
     window.addEventListener("mouseup", this.stopDrag, { passive: false });

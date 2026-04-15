@@ -11,6 +11,9 @@
         <button class="setting-btn" v-show="!is_nav_mode && !is_position_mode" v-on:click="is_exchange_chart = !is_exchange_chart">
           <i class="fas fa-fw fa-chart-pie"></i>
         </button>
+        <button class="setting-btn" v-show="!is_nav_mode && !is_position_mode" v-on:click="is_share_mode = true" title="Share">
+          <i class="fas fa-fw fa-share-alt"></i>
+        </button>
         <div style="width: 20px;"></div>
         <button class="setting-btn" v-on:click="is_position_mode = !is_position_mode; is_nav_mode = false;">
           <i class="fas fa-fw fa-scroll"></i>
@@ -20,6 +23,14 @@
         </button>
       </div>
     </div>
+    <share-modal
+      v-if="is_share_mode"
+      :chart_data="chart_data"
+      :nav="nav"
+      :pnl_return="total_pnl_return"
+      :is_dark_mode="is_dark_mode"
+      v-on:close="is_share_mode = false"
+    />
     <setting
       :is_setting_mode.sync="is_setting_mode"
       :is_dark_mode.sync="is_dark_mode"
@@ -169,6 +180,7 @@ import 'floating-vue/dist/style.css';
 import { firebase } from "../../config/config.json";
 import PieChart from "./PieChart";
 import ExportTable from "./ExportTable.vue";
+import ShareModal from "./ShareModal.vue";
 import AccountValue from "./AccountValue";
 import PositionView from "./PositionView.vue";
 import Setting from "./Setting";
@@ -208,6 +220,7 @@ export default {
   components: {
     PieChart,
     ExportTable,
+    ShareModal,
     AccountValue,
     PositionView,
     Setting,
@@ -234,6 +247,7 @@ export default {
       is_exchange_chart: false,
       is_nav_mode: false,
       is_position_mode: false,
+      is_share_mode: false,
       is_hide_small_balance: localStorage.is_hide_small_balance === "true",
       is_dark_mode: localStorage.is_dark_mode === "true",
       is_perfer_return: localStorage.is_perfer_return === "true",
@@ -241,7 +255,7 @@ export default {
       is_show_nav_title: localStorage.is_show_nav_title === "true",
       language: localStorage.language || 'en',
       timeframe: localStorage.timeframe || '1d',
-      asset_type: localStorage.asset_type || 'crypto', //  'crypto' 'stocks' 'all'
+      asset_type: localStorage.asset_type || 'all', //  'crypto' 'stocks' 'all'
 
       sort_key: "notional_value",
       sort_order: 1, // 0: asc, 1: desc, 2: un-sorted
@@ -300,6 +314,10 @@ export default {
           };
         });
       }
+    },
+    total_pnl_return() {
+      if (!this.estimate_total_cost) return 0;
+      return this.sum_pnl(this.assets_table) / this.estimate_total_cost;
     },
   },
   filters: filters,

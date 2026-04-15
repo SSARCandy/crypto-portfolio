@@ -50,5 +50,11 @@
     "is_show_nav_title": "「総資産」をウェブページのタイトルに表示する",
     "language": "言語切り替え",
     "timeframe": "価格変動に使用される時間枠",
-    "asset_type": "表示するアセットタイプ"
+    "asset_type": "表示するアセットタイプ",
+
+    "share_show_nav": "総資産を表示",
+    "share_show_pnl": "損益率を表示",
+    "share_portfolio_title": "マイポートフォリオ",
+    "save_png": "PNG を保存",
+    "generating": "生成中..."
 }

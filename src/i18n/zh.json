@@ -50,5 +50,11 @@
     "is_show_nav_title": "在網頁標題顯示總資產",
     "language": "切換語言",
     "timeframe": "價格變化率使用時框",
-    "asset_type": "顯示的資產類型"
+    "asset_type": "顯示的資產類型",
+
+    "share_show_nav": "顯示總資產",
+    "share_show_pnl": "顯示損益率",
+    "share_portfolio_title": "我的投資組合",
+    "save_png": "儲存 PNG",
+    "generating": "產生中..."
 }

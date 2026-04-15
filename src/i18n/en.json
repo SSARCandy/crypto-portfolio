@@ -50,5 +50,11 @@
     "is_show_nav_title": "Show NAV on tab title",
     "language": "Change language",
     "timeframe": "Time-frame used for price changes",
-    "asset_type": "Asset type to show"
+    "asset_type": "Asset type to show",
+
+    "share_show_nav": "Show Total Assets",
+    "share_show_pnl": "Show PnL %",
+    "share_portfolio_title": "My Portfolio",
+    "save_png": "Save PNG",
+    "generating": "Generating..."
 }

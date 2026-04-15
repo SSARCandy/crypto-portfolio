@@ -54,6 +54,7 @@
       </ul>
       <div style="display: flex; justify-content: space-between; padding-bottom: 5px;">
         <input type="text" class="search-input" v-model="keywords" placeholder="Search...">
+        <export-table :table_id="'asset'" />
       </div>
       <table id="asset">
         <tr>
@@ -167,7 +168,7 @@
 import 'floating-vue/dist/style.css';
 import { firebase } from "../../config/config.json";
 import PieChart from "./PieChart";
-
+import ExportTable from "./ExportTable.vue";
 import AccountValue from "./AccountValue";
 import PositionView from "./PositionView.vue";
 import Setting from "./Setting";
@@ -206,6 +207,7 @@ export default {
   name: "Main",
   components: {
     PieChart,
+    ExportTable,
     AccountValue,
     PositionView,
     Setting,

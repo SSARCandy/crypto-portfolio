@@ -122,8 +122,36 @@ export default {
           useCORS: true,
           logging: false,
         });
+
+        const fileName = `portfolio_${this.today}.png`;
+
+        // Try Web Share API first on mobile (best for iOS/Android photos app)
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile && navigator.share && navigator.canShare) {
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+          const file = new File([blob], fileName, { type: 'image/png' });
+
+          if (navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                files: [file],
+                title: 'Crypto Portfolio',
+              });
+              this.exporting = false;
+              return;
+            } catch (err) {
+              if (err.name === 'AbortError') {
+                this.exporting = false;
+                return;
+              }
+              console.warn('Share failed, falling back to download', err);
+            }
+          }
+        }
+
+        // Fallback: Traditional download link (Desktop)
         const link = document.createElement('a');
-        link.download = `portfolio_${this.today}.png`;
+        link.download = fileName;
         link.href = canvas.toDataURL('image/png');
         link.click();
       } catch (e) {

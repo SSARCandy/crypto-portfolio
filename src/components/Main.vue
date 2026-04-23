@@ -11,6 +11,9 @@
         <button class="setting-btn" v-show="!is_nav_mode && !is_position_mode" v-on:click="is_exchange_chart = !is_exchange_chart">
           <i class="fas fa-fw fa-chart-pie"></i>
         </button>
+        <button class="setting-btn" v-show="!is_nav_mode && !is_position_mode" v-on:click="showSummary" :title="$t('summary')">
+          <i class="fas fa-fw fa-trophy"></i>
+        </button>
         <button class="setting-btn" v-show="!is_nav_mode && !is_position_mode" v-on:click="is_share_mode = true" title="Share">
           <i class="fas fa-fw fa-share-alt"></i>
         </button>
@@ -30,6 +33,14 @@
       :pnl_return="total_pnl_return"
       :is_dark_mode="is_dark_mode"
       v-on:close="is_share_mode = false"
+    />
+    <summary-modal
+      v-if="is_summary_mode"
+      :topGainer="summary_top_gainer"
+      :topLoser="summary_top_loser"
+      :timeframe="timeframe"
+      :is_dark_mode="is_dark_mode"
+      v-on:close="is_summary_mode = false"
     />
     <setting
       :is_setting_mode.sync="is_setting_mode"
@@ -181,6 +192,7 @@ import { firebase } from "../../config/config.json";
 import PieChart from "./PieChart";
 import ExportTable from "./ExportTable.vue";
 import ShareModal from "./ShareModal.vue";
+import SummaryModal from "./SummaryModal.vue";
 import AccountValue from "./AccountValue";
 import PositionView from "./PositionView.vue";
 import Setting from "./Setting";
@@ -221,6 +233,7 @@ export default {
     PieChart,
     ExportTable,
     ShareModal,
+    SummaryModal,
     AccountValue,
     PositionView,
     Setting,
@@ -248,6 +261,9 @@ export default {
       is_nav_mode: false,
       is_position_mode: false,
       is_share_mode: false,
+      is_summary_mode: false,
+      summary_top_gainer: null,
+      summary_top_loser: null,
       is_hide_small_balance: localStorage.is_hide_small_balance === "true",
       is_dark_mode: localStorage.is_dark_mode === "true",
       is_perfer_return: localStorage.is_perfer_return === "true",
@@ -398,6 +414,33 @@ export default {
       if (this.userdata[k] == 8) {
         delete this.userdata[k];
       }
+    },
+    showSummary() {
+      if (this.price_history.length < 2) return;
+      const tf = parseInt(this.timeframe) + 1;
+      const prevIdx = Math.max(0, this.price_history.length - tf);
+      const prev = this.price_history[prevIdx];
+
+      const summary = this.assets_table
+        .map((asset) => {
+          const p_now = this.price_map[asset.asset];
+          const p_prev = prev[asset.asset];
+          if (p_now === undefined || p_prev === undefined) return null;
+          const pnl_change = (p_now - p_prev) * asset.size;
+          return {
+            asset: asset.asset,
+            wallet: asset.wallet,
+            pnl_change,
+          };
+        })
+        .filter((x) => x !== null);
+
+      if (summary.length === 0) return;
+
+      const sorted = summary.sort((a, b) => b.pnl_change - a.pnl_change);
+      this.summary_top_gainer = sorted.slice(0, 3);
+      this.summary_top_loser = sorted.slice(-3);
+      this.is_summary_mode = true;
     },
     assets_chages(symbol) {
       if (this.price_history.length === 0) return NaN;

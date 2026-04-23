@@ -56,5 +56,10 @@
     "share_show_pnl": "損益率を表示",
     "share_portfolio_title": "マイポートフォリオ",
     "save_png": "PNG を保存",
-    "generating": "生成中..."
+    "generating": "生成中...",
+    "summary": "サマリー",
+    "summary_title": "ポートフォリオサマリー",
+    "top_gainers": "値上がり上位3銘柄",
+    "top_losers": "値下がり上位3銘柄",
+    "no_data": "データなし"
 }

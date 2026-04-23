@@ -56,5 +56,10 @@
     "share_show_pnl": "Show PnL %",
     "share_portfolio_title": "My Portfolio",
     "save_png": "Save PNG",
-    "generating": "Generating..."
+    "generating": "Generating...",
+    "summary": "Summary",
+    "summary_title": "Portfolio Summary",
+    "top_gainers": "Top 3 Gainers",
+    "top_losers": "Top 3 Losers",
+    "no_data": "No data available"
 }

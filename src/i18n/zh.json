@@ -56,5 +56,10 @@
     "share_show_pnl": "顯示損益率",
     "share_portfolio_title": "我的投資組合",
     "save_png": "儲存 PNG",
-    "generating": "產生中..."
+    "generating": "產生中...",
+    "summary": "摘要",
+    "summary_title": "投資組合摘要",
+    "top_gainers": "前三大獲利",
+    "top_losers": "前三大虧損",
+    "no_data": "無資料"
 }

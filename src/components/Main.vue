@@ -42,6 +42,16 @@
       :is_dark_mode="is_dark_mode"
       v-on:close="is_summary_mode = false"
     />
+    <position-share-modal
+      v-if="is_position_share_mode"
+      :asset="position_share_data.asset"
+      :wallet="position_share_data.wallet"
+      :price="position_share_data.price"
+      :entry="position_share_data.entry"
+      :pnl_return="position_share_data.pnl_return"
+      :is_dark_mode="is_dark_mode"
+      v-on:close="is_position_share_mode = false"
+    />
     <setting
       :is_setting_mode.sync="is_setting_mode"
       :is_dark_mode.sync="is_dark_mode"
@@ -134,7 +144,9 @@
           <td v-bind:class="color(asset.price_changes)" v-if="should_show('price_changes')" style="width: 0px">
             {{ asset.price_changes | Precentage(1) }}
           </td>
-          <td>{{ asset.price | toPrecision(5) }}</td>
+          <td v-on:click="showPositionShare(asset)" style="cursor: pointer;">
+            {{ asset.price | toPrecision(5) }}
+          </td>
           <td class="entry-price">
             <input v-model.lazy="userdata[entry_k(asset.asset, asset.wallet)]" type="number" />
           </td>
@@ -193,6 +205,7 @@ import PieChart from "./PieChart";
 import ExportTable from "./ExportTable.vue";
 import ShareModal from "./ShareModal.vue";
 import SummaryModal from "./SummaryModal.vue";
+import PositionShareModal from "./PositionShareModal.vue";
 import AccountValue from "./AccountValue";
 import PositionView from "./PositionView.vue";
 import Setting from "./Setting";
@@ -234,6 +247,7 @@ export default {
     ExportTable,
     ShareModal,
     SummaryModal,
+    PositionShareModal,
     AccountValue,
     PositionView,
     Setting,
@@ -264,6 +278,14 @@ export default {
       is_summary_mode: false,
       summary_top_gainer: null,
       summary_top_loser: null,
+      is_position_share_mode: false,
+      position_share_data: {
+        asset: "",
+        wallet: "",
+        price: 0,
+        entry: 0,
+        pnl_return: 0,
+      },
       is_hide_small_balance: localStorage.is_hide_small_balance === "true",
       is_dark_mode: localStorage.is_dark_mode === "true",
       is_perfer_return: localStorage.is_perfer_return === "true",
@@ -447,6 +469,16 @@ export default {
       const tf = parseInt(this.timeframe) + 1;
       const prev = this.price_history.slice(-tf)[0];
       return (this.price_map[symbol] - prev[symbol]) / prev[symbol];
+    },
+    showPositionShare(asset) {
+      this.position_share_data = {
+        asset: asset.asset,
+        wallet: asset.wallet,
+        price: asset.price,
+        entry: asset.entry,
+        pnl_return: asset.pnl_return,
+      };
+      this.is_position_share_mode = true;
     },
     update_assets_table() {
       const stock_types = ['firstrade', 'ibkr'];

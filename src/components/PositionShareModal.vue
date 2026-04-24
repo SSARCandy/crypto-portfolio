@@ -1,38 +1,28 @@
 <template>
   <div class="modal" v-on:click="$emit('close')">
     <div class="modal-content" v-on:click.stop>
-      <div ref="card" class="summary-card" :class="is_dark_mode ? 'dark' : 'light'">
+      <div ref="card" class="position-card" :class="is_dark_mode ? 'dark' : 'light'">
         <div class="card-top">
-          <span class="card-title">{{ $t('summary_title') }} ({{ timeframe }})</span>
+          <span class="card-title">{{ asset }} ({{ wallet }})</span>
           <span class="card-date">{{ today }}</span>
         </div>
 
-        <div class="summary-section">
-          <div class="section-label">{{ $t('top_gainers') }}</div>
-          <div v-if="topGainer && topGainer.length">
-            <div class="asset-info" v-for="(g, i) in topGainer" :key="'g'+i" :style="i > 0 ? 'margin-top: 10px' : ''">
-              <div class="asset-name">
-                {{ g.asset }} 
-                <span class="wallet-name">({{ g.wallet }})</span>
-              </div>
-              <div class="pnl-change pos">{{ format(g.pnl_change) }}</div>
-            </div>
+        <div class="pnl-section">
+          <div class="pnl-label">{{ $t('pnl_return') }}</div>
+          <div class="pnl-val" :class="pnl_return >= 0 ? 'pos' : 'neg'">
+            {{ pnl_return >= 0 ? '+' : '' }}{{ (pnl_return * 100).toFixed(2) }}%
           </div>
-          <div v-else class="no-data">{{ $t('no_data') }}</div>
         </div>
 
-        <div class="summary-section">
-          <div class="section-label">{{ $t('top_losers') }}</div>
-          <div v-if="topLoser && topLoser.length">
-            <div class="asset-info" v-for="(l, i) in topLoser" :key="'l'+i" :style="i > 0 ? 'margin-top: 10px' : ''">
-              <div class="asset-name">
-                {{ l.asset }} 
-                <span class="wallet-name">({{ l.wallet }})</span>
-              </div>
-              <div class="pnl-change neg">{{ format(l.pnl_change) }}</div>
-            </div>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-label">{{ $t('price') }}</div>
+            <div class="stat-val">${{ price | Number(2) }}</div>
           </div>
-          <div v-else class="no-data">{{ $t('no_data') }}</div>
+          <div class="stat-item">
+            <div class="stat-label">{{ $t('entry') }}</div>
+            <div class="stat-val">${{ entry | Number(2) }}</div>
+          </div>
         </div>
       </div>
 
@@ -46,13 +36,17 @@
 
 <script>
 import html2canvas from 'html2canvas';
+import { filters } from '../common/common';
 
 export default {
-  name: 'SummaryModal',
+  name: 'PositionShareModal',
+  filters,
   props: {
-    topGainer: Array,
-    topLoser: Array,
-    timeframe: String,
+    asset: String,
+    wallet: String,
+    price: Number,
+    entry: [Number, String],
+    pnl_return: Number,
     is_dark_mode: Boolean,
   },
   data() {
@@ -69,12 +63,6 @@ export default {
     },
   },
   methods: {
-    format(val) {
-      return (val >= 0 ? "+" : "") + val.toLocaleString(undefined, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      });
-    },
     async exportPng() {
       this.exporting = true;
       await this.$nextTick();
@@ -86,7 +74,7 @@ export default {
           logging: false,
         });
 
-        const fileName = `summary_${this.today}.png`;
+        const fileName = `position_${this.asset}_${this.today}.png`;
 
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (isMobile && navigator.share && navigator.canShare) {
@@ -97,7 +85,7 @@ export default {
             try {
               await navigator.share({
                 files: [file],
-                title: 'Portfolio Summary',
+                title: `${this.asset} Position Performance`,
               });
               this.exporting = false;
               return;
@@ -120,8 +108,8 @@ export default {
       }
       this.exporting = false;
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -141,75 +129,72 @@ export default {
   border: 1px solid var(--color-border);
   border-radius: 10px;
   width: 90%;
-  max-width: 400px;
+  max-width: 320px;
   padding: 18px;
   box-sizing: border-box;
 }
 
-.summary-card {
+.position-card {
   border-radius: 12px;
-  padding: 16px 20px;
+  padding: 20px;
   font-family: 'Courier New', monospace;
   margin-bottom: 14px;
+  text-align: center;
 }
 
-.summary-card.dark  { background: #1a1d2e; color: #e8e8f0; }
-.summary-card.light { background: #f0f4ff; color: #1a1d2e; }
+.position-card.dark  { background: #1a1d2e; color: #e8e8f0; }
+.position-card.light { background: #f0f4ff; color: #1a1d2e; }
 
 .card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   border-bottom: 1px solid rgba(128, 128, 128, 0.3);
   padding-bottom: 10px;
 }
 
-.card-title { font-size: 14px; font-weight: bold; }
+.card-title { font-size: 16px; font-weight: bold; }
 .card-date { font-size: 11px; color: gray; }
 
-.summary-section {
-  margin-bottom: 20px;
+.pnl-section {
+  margin-bottom: 24px;
 }
 
-.section-label {
-  font-size: 12px;
+.pnl-label {
+  font-size: 14px;
   color: gray;
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.asset-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.asset-name {
-  font-size: 16px;
+.pnl-val {
+  font-size: 32px;
   font-weight: bold;
 }
 
-.wallet-name {
-  font-size: 12px;
-  font-weight: normal;
-  color: gray;
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(128, 128, 128, 0.2);
 }
 
-.pnl-change {
-  font-size: 18px;
+.stat-label {
+  font-size: 11px;
+  color: gray;
+  margin-bottom: 4px;
+}
+
+.stat-val {
+  font-size: 16px;
   font-weight: bold;
 }
 
 .pos { color: #2ecc71; }
 .neg { color: #e74c3c; }
-
-.no-data {
-  font-size: 14px;
-  color: gray;
-  font-style: italic;
-}
 
 .export-btn {
   width: 100%;
@@ -228,12 +213,6 @@ export default {
   gap: 8px;
 }
 
-.export-btn:hover:not(:disabled) {
-  background: #2d45e0;
-}
-
-.export-btn:disabled {
-  opacity: .5;
-  cursor: not-allowed;
-}
+.export-btn:hover:not(:disabled) { background: #2d45e0; }
+.export-btn:disabled { opacity: .5; cursor: not-allowed; }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="modal" v-on:click="$emit('close')">
     <div class="modal-content" v-on:click.stop>
-      <div class="summary-card" :class="is_dark_mode ? 'dark' : 'light'">
+      <div ref="card" class="summary-card" :class="is_dark_mode ? 'dark' : 'light'">
         <div class="card-top">
           <span class="card-title">{{ $t('summary_title') }} ({{ timeframe }})</span>
           <span class="card-date">{{ today }}</span>
@@ -35,11 +35,18 @@
           <div v-else class="no-data">{{ $t('no_data') }}</div>
         </div>
       </div>
+
+      <button class="export-btn" :disabled="exporting" v-on:click="exportPng">
+        <i class="fas fa-save"></i>
+        {{ exporting ? $t('generating') : $t('save_png') }}
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import html2canvas from 'html2canvas';
+
 export default {
   name: 'SummaryModal',
   props: {
@@ -48,9 +55,17 @@ export default {
     timeframe: String,
     is_dark_mode: Boolean,
   },
+  data() {
+    return {
+      exporting: false,
+    };
+  },
   computed: {
     today() {
       return new Date().toISOString().slice(0, 10);
+    },
+    cardBg() {
+      return this.is_dark_mode ? '#1a1d2e' : '#f0f4ff';
     },
   },
   methods: {
@@ -59,7 +74,52 @@ export default {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
       });
-    }
+    },
+    async exportPng() {
+      this.exporting = true;
+      await this.$nextTick();
+      try {
+        const canvas = await html2canvas(this.$refs.card, {
+          scale: 2,
+          backgroundColor: this.cardBg,
+          useCORS: true,
+          logging: false,
+        });
+
+        const fileName = `summary_${this.today}.png`;
+
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile && navigator.share && navigator.canShare) {
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+          const file = new File([blob], fileName, { type: 'image/png' });
+
+          if (navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                files: [file],
+                title: 'Portfolio Summary',
+              });
+              this.exporting = false;
+              return;
+            } catch (err) {
+              if (err.name === 'AbortError') {
+                this.exporting = false;
+                return;
+              }
+              console.warn('Share failed, falling back to download', err);
+            }
+          }
+        }
+
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } catch (e) {
+        console.error('Export failed', e);
+      }
+      this.exporting = false;
+    },
   }
 }
 </script>
@@ -151,20 +211,29 @@ export default {
   font-style: italic;
 }
 
-.close-btn {
+.export-btn {
   width: 100%;
   padding: 10px;
-  background: var(--color-border);
-  color: var(--color-text);
+  background: #4059FB;
+  color: #fff;
   border: none;
   border-radius: 6px;
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
   font-family: monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.close-btn:hover {
-  background: rgba(170, 170, 170, 0.6);
+.export-btn:hover:not(:disabled) {
+  background: #2d45e0;
+}
+
+.export-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
 }
 </style>

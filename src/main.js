@@ -83,6 +83,17 @@ window.addEventListener('hashchange', saveCurrentUrl);
 window.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {
     saveCurrentUrl();
+  } else if (document.visibilityState === 'visible' && isStandalone()) {
+    const appEl = document.getElementById('app');
+    if (!appEl || appEl.innerHTML.trim() === '') {
+      window.location.reload();
+    }
+  }
+});
+
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted && isStandalone()) {
+    window.location.reload();
   }
 });
 

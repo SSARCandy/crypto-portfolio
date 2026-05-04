@@ -21,7 +21,17 @@ if (process.env.NODE_ENV === 'production') {
     },
     updated () {
       console.log('New content is available; please refresh.')
-      window.location.reload();
+      if (document.visibilityState === 'hidden') {
+        const reloadOnVisible = () => {
+          if (document.visibilityState === 'visible') {
+            window.removeEventListener('visibilitychange', reloadOnVisible);
+            window.location.reload();
+          }
+        };
+        window.addEventListener('visibilitychange', reloadOnVisible);
+      } else {
+        window.location.reload();
+      }
     },
     offline () {
       console.log('No internet connection found. App is running in offline mode.')

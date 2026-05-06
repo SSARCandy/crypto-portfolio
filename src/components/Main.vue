@@ -461,7 +461,7 @@ export default {
 
       const sorted = summary.sort((a, b) => b.pnl_change - a.pnl_change);
       this.summary_top_gainer = sorted.slice(0, 3);
-      this.summary_top_loser = sorted.slice(-3);
+      this.summary_top_loser = sorted.slice(-3).reverse();
       this.is_summary_mode = true;
     },
     assets_chages(symbol) {

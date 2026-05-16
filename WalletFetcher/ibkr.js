@@ -7,10 +7,10 @@ function parseCsvToJson(csvText) {
   // Split the CSV into lines and remove quotes from each line, then split by comma
   const lines = csvText.trim().split("\n").map(line => line.replace(/"/g, '').split(","));
 
-  // Extract the EndingSettledCash value from the first two rows
+  // Extract the EndingCash value from the first two rows
   const endingCashValues = lines[1];
-  // Assuming the first column corresponds to EndingSettledCash
-  const endingSettledCash = parseFloat(endingCashValues[0]);
+  // The fourth column (index 3) corresponds to EndingCash
+  const endingCash = parseFloat(endingCashValues[3]);
 
   // Find the header row for positions (starting with "Symbol")
   const headerRowIndex = lines.findIndex(line => line[0] === "Symbol");
@@ -26,10 +26,10 @@ function parseCsvToJson(csvText) {
     wallet: 'ibkr',
   }));
 
-  // Add the ending settled cash as a position with fixed price 1 and asset "USD"
+  // Add the ending cash as a position with fixed price 1 and asset "USD"
   positions.unshift({
     asset: "USD",
-    size: endingSettledCash,
+    size: endingCash,
     price: 1,
     wallet: 'ibkr',
   });

@@ -217,7 +217,7 @@ import { filters, methods } from "../common/common";
 import { initializeApp } from "@firebase/app";
 import { getAnalytics } from "@firebase/analytics";
 import {
-  getFirestore,
+  initializeFirestore,
   onSnapshot,
   doc,
   collection,
@@ -225,10 +225,13 @@ import {
   setDoc,
 } from "@firebase/firestore";
 
-initializeApp(firebase);
-getAnalytics();
+const app = initializeApp(firebase);
+getAnalytics(app);
 
-const database = getFirestore();
+const database = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+  useFetchStreams: false,
+});
 const ID_STORAGE_KEY = "portfolio_id";
 const getIdFromUrl = () => {
   const params = new URLSearchParams(window.location.search);

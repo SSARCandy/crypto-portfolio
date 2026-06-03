@@ -199,6 +199,8 @@
 </template>
 
 <script>
+import Notify from 'simple-notify';
+import 'simple-notify/dist/simple-notify.css';
 import 'floating-vue/dist/style.css';
 import { firebase } from "../../config/config.json";
 import PieChart from "./PieChart";
@@ -368,6 +370,22 @@ export default {
       const doc1 = doc(database, `config/${this.id}`);
       await setDoc(doc1, this.userdata);
       this.saved = true;
+      new Notify({
+        status: 'success',
+        title: this.$t("saved"),
+        effect: 'fade',
+        speed: 300,
+        customClass: '',
+        customIcon: '',
+        showIcon: true,
+        showCloseButton: true,
+        autoclose: true,
+        autotimeout: 3000,
+        gap: 20,
+        distance: 20,
+        type: 1,
+        position: 'x-center top'
+      });
       setTimeout(() => {
         this.saved = false;
       }, 5000);

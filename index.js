@@ -48,7 +48,7 @@ async function constructPriceMap(assets, stock_prices) {
       return;
     }
     if (k === 'USDT') {
-	    price_map[k] = 1;
+      price_map[k] = 1;
     }
     price_map[k] = overwrite[k] || prices[k] || 0;
   });

@@ -367,28 +367,34 @@ export default {
   methods: {
     ...methods,
     async save() {
-      const doc1 = doc(database, `config/${this.id}`);
-      await setDoc(doc1, this.userdata);
-      this.saved = true;
-      new Notify({
-        status: 'success',
-        title: this.$t("saved"),
-        effect: 'fade',
-        speed: 300,
-        customClass: '',
-        customIcon: '',
-        showIcon: true,
-        showCloseButton: true,
-        autoclose: true,
-        autotimeout: 3000,
-        gap: 20,
-        distance: 20,
-        type: 1,
-        position: 'x-center top'
-      });
-      setTimeout(() => {
-        this.saved = false;
-      }, 5000);
+      if (this.is_saving) return;
+      this.is_saving = true;
+      try {
+        const doc1 = doc(database, `config/${this.id}`);
+        await setDoc(doc1, this.userdata);
+        this.saved = true;
+        new Notify({
+          status: 'success',
+          title: this.$t("saved"),
+          effect: 'fade',
+          speed: 300,
+          customClass: '',
+          customIcon: '',
+          showIcon: true,
+          showCloseButton: true,
+          autoclose: true,
+          autotimeout: 3000,
+          gap: 20,
+          distance: 20,
+          type: 1,
+          position: 'x-center top'
+        });
+        setTimeout(() => {
+          this.saved = false;
+        }, 5000);
+      } finally {
+        this.is_saving = false;
+      }
     },
     pnl(row) {
       const { asset, size, wallet } = row;
@@ -455,7 +461,7 @@ export default {
       }
       this.userdata[k] = (this.userdata[k] + 1) % 9;
       if (this.userdata[k] == 8) {
-        delete this.userdata[k];
+        this.$delete(this.userdata, k);
       }
     },
     showSummary() {

@@ -51,6 +51,8 @@ export default {
     language: String,
     timeframe: String,
     asset_type: String,
+    is_relative_chart: Boolean,
+    benchmark_asset: String,
   },
   data() {
     return {
@@ -75,6 +77,10 @@ export default {
         key: "is_show_nav_title",
         value: this.is_show_nav_title,
         label: "is_show_nav_title",
+      }, {
+        key: "is_relative_chart",
+        value: this.is_relative_chart,
+        label: "is_relative_chart",
       }],
       settingOptions: {
         language: [
@@ -92,6 +98,12 @@ export default {
           { value: 'all', label: 'all' },
           { value: 'crypto', label: 'crypto' },
           { value: 'stocks', label: 'stocks' },
+        ],
+        benchmark_asset: [
+          { value: 'none', label: 'None' },
+          { value: 'SP500', label: 'SP500' },
+          { value: 'BTC', label: 'BTC' },
+          { value: 'TAIEX', label: 'TAIEX' },
         ],
       },
     };

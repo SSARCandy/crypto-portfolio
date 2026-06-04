@@ -24,6 +24,7 @@
     "nav": "總資產",
     "nav_page": "總資產走勢",
     "diff": "日增減",
+    "daily_change_percent": "日增減%",
     "estimate_total_cost": "預估總成本",
     "export_as_csv": "匯出 CSV",
 
@@ -51,6 +52,8 @@
     "language": "切換語言",
     "timeframe": "價格變化率使用時框",
     "asset_type": "顯示的資產類型",
+    "is_relative_chart": "在資產走勢圖表顯示相對報酬率%",
+    "benchmark_asset": "資產走勢圖表顯示大盤對比",
 
     "share_show_nav": "顯示總資產",
     "share_show_pnl": "顯示損益率",

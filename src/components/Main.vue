@@ -62,11 +62,16 @@
       :language.sync="language"
       :timeframe.sync="timeframe"
       :asset_type.sync="asset_type"
+      :is_relative_chart.sync="is_relative_chart"
+      :benchmark_asset.sync="benchmark_asset"
     />
     <account-value
       v-if="is_nav_mode"
       :daily_nav="daily_nav" 
       :estimate_total_cost="estimate_total_cost"
+      :is_relative_chart="is_relative_chart"
+      :benchmark_asset="benchmark_asset"
+      :price_snapshots="price_snapshots"
     />
     <position-view
       v-if="is_position_mode"
@@ -269,6 +274,7 @@ export default {
       assets_table: [],
       price_map: {},
       price_history: [],
+      price_snapshots: {},
       userdata: {},
       daily_nav: [],
 
@@ -299,6 +305,8 @@ export default {
       language: localStorage.language || 'en',
       timeframe: localStorage.timeframe || '1d',
       asset_type: localStorage.asset_type || 'all', //  'crypto' 'stocks' 'all'
+      is_relative_chart: localStorage.is_relative_chart === "true",
+      benchmark_asset: localStorage.benchmark_asset || 'none',
 
       sort_key: "notional_value",
       sort_order: 1, // 0: asc, 1: desc, 2: un-sorted
@@ -586,6 +594,8 @@ export default {
           snapshotsData[docSnap.id] = docSnap.data();
         });
 
+        this.price_snapshots = snapshotsData;
+
         // 4. Sort the data by date (doc ID), then map to just the doc values
         this.price_history = sortBy(
           Object.entries(snapshotsData), 
@@ -630,6 +640,12 @@ export default {
     asset_type: function (val) {
       localStorage.asset_type = val;
       this.update_assets_table();
+    },
+    is_relative_chart: function (val) {
+      localStorage.is_relative_chart = val;
+    },
+    benchmark_asset: function (val) {
+      localStorage.benchmark_asset = val;
     }
   },
   mounted() {

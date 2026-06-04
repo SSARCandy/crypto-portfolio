@@ -17,10 +17,22 @@ const overwrite = {
 const COIN2ID = {
   MAX: 5067,
 };
+async function fetchYahooIndex(symbol) {
+  try {
+    const res = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`);
+    return res.data.chart.result[0].meta.regularMarketPrice;
+  } catch (e) {
+    console.error('Failed to fetch', symbol, e.message);
+    return null;
+  }
+}
+
 async function fetchTokenPrice(tokens) {
   const keys = config.coinmarketcap.cmc_api_keys;
   const key = keys[new Date().getHours() % keys.length];
-  const batch_list = tokens.filter(x => !~x.indexOf('_') && !~x.indexOf(' ')).join(',');
+  // Ensure BTC is fetched even if not in portfolio
+  const fetch_tokens = _.union(tokens, ['BTC']);
+  const batch_list = fetch_tokens.filter(x => !~x.indexOf('_') && !~x.indexOf(' ')).join(',');
   const query = `CMC_PRO_API_KEY=${key}&aux=cmc_rank&symbol=${batch_list}`;
   const res = await axios.get(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?${query}`);
   const data = res.data.data;
@@ -52,6 +64,13 @@ async function constructPriceMap(assets, stock_prices) {
     }
     price_map[k] = overwrite[k] || prices[k] || 0;
   });
+  // Add baseline assets
+  price_map['BTC'] = prices['BTC'] || 0;
+  const sp500 = await fetchYahooIndex('^GSPC');
+  if (sp500) price_map['SP500'] = sp500;
+  const taiex = await fetchYahooIndex('^TWII');
+  if (taiex) price_map['TAIEX'] = taiex;
+  
   console.log(price_map);
   return price_map;
 }

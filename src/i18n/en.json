@@ -24,6 +24,7 @@
     "nav": "Net Account Value",
     "nav_page": "Net Account Value",
     "diff": "Daily PnL",
+    "daily_change_percent": "Daily Change %",
     "estimate_total_cost": "Estimated Total Cost",
     "export_as_csv": "Export as CSV",
 
@@ -51,6 +52,8 @@
     "language": "Change language",
     "timeframe": "Time-frame used for price changes",
     "asset_type": "Asset type to show",
+    "is_relative_chart": "Show relative return % in NAV chart",
+    "benchmark_asset": "Benchmark asset for NAV chart",
 
     "share_show_nav": "Show Total Assets",
     "share_show_pnl": "Show PnL %",

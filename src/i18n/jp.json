@@ -24,6 +24,7 @@
     "nav": "純資産価値",
     "nav_page": "純資産価値",
     "diff": "日次利益と損失",
+    "daily_change_percent": "日次変動率%",
     "estimate_total_cost": "総コスト見積り",
     "export_as_csv": "CSV でエクスポート",
 
@@ -51,6 +52,8 @@
     "language": "言語切り替え",
     "timeframe": "価格変動に使用される時間枠",
     "asset_type": "表示するアセットタイプ",
+    "is_relative_chart": "純資産チャートに相対リターン（%）を表示する",
+    "benchmark_asset": "純資産チャートのベンチマーク資産",
 
     "share_show_nav": "総資産を表示",
     "share_show_pnl": "損益率を表示",

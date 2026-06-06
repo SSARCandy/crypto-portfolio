@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { FTSession, FTAccountData } = require('firstrade-api-node');
+const { FTSession, FTAccountData, SymbolQuote } = require('firstrade-api-node');
 
 async function walletFetcher(credentials) {
   const cache_filename = `./caches/firstrade-cache-${credentials.id}.json`;
@@ -33,7 +33,7 @@ async function walletFetcher(credentials) {
         size: parseFloat(item.quantity),
         asset: item.symbol,
         wallet: 'firstrade',
-        price: parseFloat(item.last_price || item.price || 0),
+        price: parseFloat(item.last),
       });
     }
   }
